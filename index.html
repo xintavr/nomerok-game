@@ -11,7 +11,6 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.4/howler.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
-  <!-- Google Fonts: Oswald для аутентичных ГОСТ номеров, Plus Jakarta Sans для интерфейса -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
@@ -42,18 +41,19 @@
       z-index: 0;
     }
 
-    /* АУТЕНТИЧНЫЙ ГОСТ НОМЕР РФ (1 В 1 С ФОТО 6432) */
+    /* АУТЕНТИЧНЫЙ ГОСТ НОМЕР РФ */
     .plate-rf-container {
       width: 334px;
       height: 72px;
       background: #fdfdfd;
-      border: 3px solid #111111;
+      border: 3.5px solid #111111;
       border-radius: 8px;
-      padding: 2.5px;
+      padding: 2px;
       box-shadow: 0 14px 35px rgba(0, 0, 0, 0.9), inset 0 1px 1px #ffffff;
       display: flex;
       position: relative;
       z-index: 10;
+      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease;
     }
     .plate-rf-inner {
       width: 100%;
@@ -70,8 +70,8 @@
       justify-content: center;
       border-right: 2px solid #1a1a1a;
       font-family: 'Oswald', sans-serif;
-      line-height: 60px;
-      padding-top: 2px;
+      line-height: 62px;
+      padding-top: 1px;
     }
     .p-rf-letter { font-size: 38px; font-weight: 700; letter-spacing: 0.5px; }
     .p-rf-digits { font-size: 53px; font-weight: 700; letter-spacing: 3px; margin: 0 4px; }
@@ -92,59 +92,29 @@
     .f-b { background: #0039a6; height: 33%; }
     .f-r { background: #d52b1e; height: 34%; }
 
-    /* НОМЕР БЕЛАРУСИ (1 В 1 С ФОТО 6428) */
+    /* НОМЕР БЕЛАРУСИ */
     .plate-by-container {
-      width: 334px;
-      height: 72px;
-      background: #fdfdfd;
-      border: 3px solid #111111;
-      border-radius: 8px;
-      padding: 2.5px;
-      box-shadow: 0 14px 35px rgba(0, 0, 0, 0.9);
-      display: flex;
-      position: relative;
-      z-index: 10;
+      width: 334px; height: 72px; background: #fdfdfd; border: 3.5px solid #111111; border-radius: 8px; padding: 2px;
+      box-shadow: 0 14px 35px rgba(0, 0, 0, 0.9); display: flex; position: relative; z-index: 10;
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
     }
     .plate-by-inner {
-      width: 100%;
-      height: 100%;
-      border: 1.5px solid #1a1a1a;
-      border-radius: 4px;
-      display: flex;
-      align-items: center;
-      color: #111111;
+      width: 100%; height: 100%; border: 1.5px solid #1a1a1a; border-radius: 4px; display: flex; align-items: center; color: #111111;
     }
     .plate-by-flagbox {
-      width: 50px;
-      height: 100%;
-      border-right: 1.5px solid #1a1a1a;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 2px;
+      width: 50px; height: 100%; border-right: 1.5px solid #1a1a1a; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;
     }
-    .by-flag-svg {
-      width: 26px;
-      height: 14px;
-      border: 0.5px solid #777;
-    }
+    .by-flag-svg { width: 26px; height: 14px; border: 0.5px solid #777; }
     .by-text-code { color: #007a3d; font-size: 11px; font-weight: 900; line-height: 1; }
     .plate-by-number {
-      flex: 1;
-      font-family: 'Oswald', sans-serif;
-      font-size: 44px;
-      font-weight: 700;
-      letter-spacing: 2px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      flex: 1; font-family: 'Oswald', sans-serif; font-size: 44px; font-weight: 700; letter-spacing: 2px; display: flex; align-items: center; justify-content: center;
     }
 
     /* НОМЕР ДУБАЯ */
     .plate-ae-container {
-      width: 334px; height: 72px; background: #ffffff; border: 3px solid #111; border-radius: 8px; padding: 2.5px;
+      width: 334px; height: 72px; background: #ffffff; border: 3.5px solid #111; border-radius: 8px; padding: 2px;
       box-shadow: 0 14px 35px rgba(0,0,0,0.9); display: flex; position: relative; z-index: 10;
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
     }
     .plate-ae-inner {
       width: 100%; height: 100%; border: 1.5px solid #111; border-radius: 4px; display: flex; align-items: center;
@@ -159,78 +129,29 @@
     }
     .sheet-bg.active { opacity: 1; pointer-events: auto; }
     .sheet-box {
-      width: 100%; max-height: 86vh; background: #121316; border-top: 1px solid #23252b;
+      width: 100%; max-height: 88vh; background: #121316; border-top: 1px solid #23252b;
       border-radius: 26px 26px 0 0; padding: 14px 16px 32px; overflow-y: auto;
       transform: translateY(100%); transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1);
     }
     .sheet-bg.active .sheet-box { transform: translateY(0); }
 
-    /* РУЛЕТКА МАШИН (ВИДЕО 6410 & ФОТО 6429) */
+    /* РУЛЕТКА МАШИН */
     .car-tape-container {
-      width: 100%;
-      height: 154px;
-      overflow: hidden;
-      position: relative;
-      background: #141518;
-      border-radius: 22px;
-      border: 1px solid #22242b;
+      width: 100%; height: 154px; overflow: hidden; position: relative; background: #141518; border-radius: 22px; border: 1px solid #22242b;
     }
-    .car-tape-track {
-      display: flex;
-      align-items: center;
-      position: absolute;
-      left: 0;
-      top: 0;
-      height: 100%;
-      will-change: transform;
-    }
+    .car-tape-track { display: flex; align-items: center; position: absolute; left: 0; top: 0; height: 100%; will-change: transform; }
     .car-tape-card {
-      width: 146px;
-      height: 136px;
-      flex-shrink: 0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      background: #18191e;
-      border: 1px solid #262831;
-      border-radius: 18px;
-      margin: 0 4px;
-      padding: 6px;
+      width: 146px; height: 136px; flex-shrink: 0; display: flex; flex-direction: column; align-items: center; justify-content: center;
+      background: #18191e; border: 1px solid #262831; border-radius: 18px; margin: 0 4px; padding: 6px;
     }
     .roulette-pin-line {
-      position: absolute;
-      top: 0;
-      bottom: 0;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 2.5px;
-      background: #f1c40f;
-      box-shadow: 0 0 8px #f1c40f;
-      z-index: 25;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      align-items: center;
+      position: absolute; top: 0; bottom: 0; left: 50%; transform: translateX(-50%); width: 2.5px;
+      background: #f1c40f; box-shadow: 0 0 8px #f1c40f; z-index: 25; display: flex; flex-direction: column; justify-content: space-between; align-items: center;
     }
-    .pin-triangle-down {
-      width: 0; height: 0;
-      border-left: 6px solid transparent;
-      border-right: 6px solid transparent;
-      border-top: 9px solid #f1c40f;
-    }
-    .pin-triangle-up {
-      width: 0; height: 0;
-      border-left: 6px solid transparent;
-      border-right: 6px solid transparent;
-      border-bottom: 9px solid #f1c40f;
-    }
+    .pin-triangle-down { width: 0; height: 0; border-left: 6px solid transparent; border-right: 6px solid transparent; border-top: 9px solid #f1c40f; }
+    .pin-triangle-up { width: 0; height: 0; border-left: 6px solid transparent; border-right: 6px solid transparent; border-bottom: 9px solid #f1c40f; }
 
-    /* БАННЕР ПОДАРКА ДНЯ */
-    #daily-toast {
-      transform: translateY(-160%);
-      transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-    }
+    #daily-toast { transform: translateY(-160%); transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1); }
     #daily-toast.show { transform: translateY(0); }
 
     ::-webkit-scrollbar { width: 0; height: 0; }
@@ -240,7 +161,7 @@
 
   <div class="ambient-glow" id="ambient-glow"></div>
 
-  <!-- ВСПЛЫВАЮЩИЙ ТОСТ ПОДАРКА ДНЯ (КАК В ОРИГИНАЛЕ) -->
+  <!-- ВСПЛЫВАЮЩИЙ ТОСТ ПОДАРКА ДНЯ -->
   <div id="daily-toast" class="fixed top-2 left-4 right-4 z-50 bg-[#18191e] border border-[#2ecc71]/40 shadow-xl shadow-[#2ecc71]/10 rounded-2xl p-3 flex justify-between items-center pointer-events-none">
     <div class="flex items-center gap-2.5">
       <span class="text-2xl">🎁</span>
@@ -252,7 +173,7 @@
     <div class="text-sm font-black text-[#2ecc71]">+15 000 ₽</div>
   </div>
 
-  <!-- 1. ВЕРХНИЙ БАР (ХЕДЕР 1 В 1) -->
+  <!-- 1. ВЕРХНИЙ БАР (ХЕДЕР) -->
   <header class="w-full pt-3 pb-2 px-4 flex justify-between items-center z-20">
     <div class="flex items-center gap-1.5">
       <button onclick="openModal('modal-menu')" class="w-9 h-9 rounded-full bg-[#16171b] border border-[#23252a] flex items-center justify-center relative active:scale-90 transition">
@@ -287,7 +208,6 @@
   <!-- ==================== ТАБ 1: НОМЕРА ==================== -->
   <div id="view-plates" class="flex-1 flex flex-col justify-between items-center px-4 py-2 max-w-sm mx-auto w-full z-10">
     <div class="w-full flex flex-col items-center mt-2">
-      <!-- СТРОКА РЕДКОСТИ И СТОИМОСТИ -->
       <div class="w-[334px] flex justify-between items-center mb-1.5 px-1">
         <div id="ui-rarity" class="text-xs font-bold text-[#2ecc71] tracking-wide">Необычный</div>
         <div id="ui-cost" class="text-xl font-black text-[#2ecc71] tracking-tight">1 068 ₽</div>
@@ -303,22 +223,21 @@
         <div class="text-[#71757f]">2 одинаковые буквы <b class="text-[#2ecc71]">×1,8</b></div>
       </div>
 
-      <!-- КНОПКИ В ГАРАЖ И ПОДЕЛИТЬСЯ -->
-      <div class="flex items-center gap-2 mt-1" id="post-spin-tools">
-        <button id="btn-save-garage" onclick="savePlateToGarage()" class="bg-[#16171b] border border-[#23252a] active:scale-95 px-5 py-2.5 rounded-full text-xs font-bold text-white shadow-sm flex items-center gap-2">
+      <!-- КНОПКИ ДЕЙСТВИЙ (ИСПРАВЛЕНО: ПЛАВНО ИСЧЕЗАЮТ ПРИ НАЖАТИИ) -->
+      <div class="flex items-center gap-2 mt-1 h-10 transition-all duration-200" id="post-spin-tools">
+        <button id="btn-save-garage" onclick="savePlateToGarage()" class="bg-[#16171b] border border-[#23252a] active:scale-95 px-5 py-2.5 rounded-full text-xs font-bold text-white shadow-sm flex items-center gap-2 transition">
           В гараж
         </button>
-        <button onclick="shareResult()" class="bg-[#16171b] border border-[#23252a] active:scale-95 w-10 h-9 rounded-full flex items-center justify-center text-white">
+        <button onclick="shareResult()" class="bg-[#16171b] border border-[#23252a] active:scale-95 w-10 h-9 rounded-full flex items-center justify-center text-white transition">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
         </button>
       </div>
     </div>
 
-    <!-- НИЖНЯЯ ПАНЕЛЬ: ВЫБОР СТРАНЫ + СТАВКА (ФОТО 6428, 6432) -->
+    <!-- ВЫБОР СТРАНЫ + СТАВКА -->
     <div class="w-full flex flex-col items-center gap-2 pb-2">
-      <div class="text-[11px] text-[#71757f]" id="ui-sale-note">Этот номер продастся за 1 068 ₽</div>
+      <div class="text-[11px] text-[#71757f] min-h-[18px] text-center" id="ui-sale-note">Этот номер продастся за 1 068 ₽</div>
 
-      <!-- ДВЕ ПЛАШКИ: СТРАНА И СТАВКА -->
       <div class="flex items-center gap-2 w-full">
         <button onclick="openModal('modal-country')" class="flex-1 bg-[#16171b] border border-[#23252a] px-3.5 py-2.5 rounded-full flex items-center justify-between text-xs font-bold active:scale-95 transition">
           <div class="flex items-center gap-1.5 truncate">
@@ -334,7 +253,6 @@
         </button>
       </div>
 
-      <!-- ГЛАВНАЯ ЗЕЛЕНАЯ КНОПКА СПИНА -->
       <button id="btn-spin" onclick="handleSpinButton()" class="w-full h-[58px] rounded-2xl bg-[#2ecc71] hover:bg-[#27ae60] active:scale-[0.98] transition font-extrabold text-base text-[#07130a] shadow-lg shadow-[#2ecc71]/20 flex items-center justify-center gap-2">
         <span>Крутить ещё</span>
         <span id="btn-spin-price" class="bg-[#07130a]/15 px-2.5 py-0.5 rounded-lg text-xs font-black">1 000 ₽</span>
@@ -348,28 +266,28 @@
       <div class="text-xs text-[#71757f] font-bold mb-3 uppercase tracking-wider text-center">Контейнеры с машинами</div>
 
       <div class="grid grid-cols-2 gap-2.5">
-        <div onclick="openContainerInfo(10000, 'Обычный')" class="bg-[#16171b] border border-[#23252a] p-3 rounded-2xl flex flex-col items-center text-center cursor-pointer active:scale-95 transition shadow-sm">
+        <div onclick="openContainerInfo('Обычный')" class="bg-[#16171b] border border-[#23252a] p-3 rounded-2xl flex flex-col items-center text-center cursor-pointer active:scale-95 transition shadow-sm">
           <div class="text-3xl mb-1">📦</div>
           <div class="text-xs font-bold text-white">Обычный</div>
           <div class="text-[11px] text-[#2ecc71] font-black my-0.5">10 000 ₽</div>
           <div class="text-[9px] text-[#71757f]">легендарка +0.40%</div>
         </div>
 
-        <div onclick="openContainerInfo(30000, 'Редкий')" class="bg-[#16171b] border border-[#23252a] p-3 rounded-2xl flex flex-col items-center text-center cursor-pointer active:scale-95 transition shadow-sm">
+        <div onclick="openContainerInfo('Редкий')" class="bg-[#16171b] border border-[#23252a] p-3 rounded-2xl flex flex-col items-center text-center cursor-pointer active:scale-95 transition shadow-sm">
           <div class="text-3xl mb-1">🗳️</div>
           <div class="text-xs font-bold text-white">Редкий</div>
           <div class="text-[11px] text-[#2ecc71] font-black my-0.5">30 000 ₽</div>
           <div class="text-[9px] text-[#71757f]">легендарка +2%</div>
         </div>
 
-        <div onclick="openContainerInfo(100000, 'Эпический')" class="bg-[#16171b] border border-[#23252a] p-3 rounded-2xl flex flex-col items-center text-center cursor-pointer active:scale-95 transition shadow-sm">
+        <div onclick="openContainerInfo('Эпический')" class="bg-[#16171b] border border-[#23252a] p-3 rounded-2xl flex flex-col items-center text-center cursor-pointer active:scale-95 transition shadow-sm">
           <div class="text-3xl mb-1">🧰</div>
           <div class="text-xs font-bold text-white">Эпический</div>
           <div class="text-[11px] text-[#2ecc71] font-black my-0.5">100 000 ₽</div>
           <div class="text-[9px] text-[#71757f]">легендарка +12%</div>
         </div>
 
-        <div onclick="openContainerInfo(300000, 'Легендарный')" class="bg-[#16171b] border border-[#23252a] p-3 rounded-2xl flex flex-col items-center text-center cursor-pointer active:scale-95 transition shadow-sm">
+        <div onclick="openContainerInfo('Легендарный')" class="bg-[#16171b] border border-[#23252a] p-3 rounded-2xl flex flex-col items-center text-center cursor-pointer active:scale-95 transition shadow-sm">
           <div class="text-3xl mb-1">🎁</div>
           <div class="text-xs font-bold text-white">Легендарный</div>
           <div class="text-[11px] text-[#2ecc71] font-black my-0.5">300 000 ₽</div>
@@ -387,55 +305,45 @@
     </div>
   </div>
 
-  <!-- ==================== ШТОРКА 1: МЕНЮ (1 В 1 С ОРИГИНАЛОМ 6409/6426) ==================== -->
+  <!-- ==================== ШТОРКА 1: МЕНЮ ==================== -->
   <div id="modal-menu" class="sheet-bg" onclick="closeModalOnBg(event, 'modal-menu')">
     <div class="sheet-box">
       <div class="w-12 h-1 bg-[#262830] rounded-full mx-auto mb-3"></div>
       <h3 class="text-base font-extrabold mb-3">Меню</h3>
 
-      <!-- СЕТКА 8 КАРТОЧЕК -->
       <div class="grid grid-cols-4 gap-2 mb-4">
-        <!-- 1. ГАРАЖ -->
         <div onclick="closeModal('modal-menu'); openModal('modal-garage');" class="bg-[#18191e] border border-[#252731] p-2.5 rounded-2xl flex flex-col items-center gap-1 active:scale-95 transition cursor-pointer relative">
           <span class="text-2xl">📁</span>
           <span class="text-[11px] font-bold">Гараж</span>
           <span class="absolute top-1.5 right-1.5 bg-[#e74c3c] text-white text-[9px] font-extrabold px-1.5 py-0.2 rounded-full" id="menu-badge-garage">0</span>
         </div>
-        <!-- 2. АВТОПАРК -->
         <div onclick="closeModal('modal-menu'); openModal('modal-autopark');" class="bg-[#18191e] border border-[#252731] p-2.5 rounded-2xl flex flex-col items-center gap-1 active:scale-95 transition cursor-pointer relative">
           <span class="text-2xl">🚗</span>
           <span class="text-[11px] font-bold">Автопарк</span>
           <span class="absolute top-1.5 right-1.5 bg-[#2ecc71] text-black text-[9px] font-extrabold px-1.5 py-0.2 rounded-full" id="menu-badge-autopark">0</span>
         </div>
-        <!-- 3. РЫНОК -->
         <div onclick="alert('Рынок откроется в следующем обновлении!');" class="bg-[#18191e] border border-[#252731] p-2.5 rounded-2xl flex flex-col items-center gap-1 active:scale-95 transition cursor-pointer">
           <span class="text-2xl">🏪</span><span class="text-[11px] font-bold">Рынок</span>
         </div>
-        <!-- 4. РЕЙТИНГ -->
         <div onclick="closeModal('modal-menu'); openModal('modal-rating');" class="bg-[#18191e] border border-[#252731] p-2.5 rounded-2xl flex flex-col items-center gap-1 active:scale-95 transition cursor-pointer">
           <span class="text-2xl">🏆</span><span class="text-[11px] font-bold">Рейтинг</span>
         </div>
-        <!-- 5. КОЛЛЕКЦИЯ -->
         <div onclick="closeModal('modal-menu'); openModal('modal-collection');" class="bg-[#18191e] border border-[#252731] p-2.5 rounded-2xl flex flex-col items-center gap-1 active:scale-95 transition cursor-pointer relative">
           <span class="text-2xl">📖</span>
           <span class="text-[11px] font-bold">Коллекция</span>
           <span class="absolute top-1.5 right-1.5 bg-[#3498db] text-white text-[9px] font-extrabold px-1 py-0.2 rounded-full">18/29</span>
         </div>
-        <!-- 6. ДРУЗЬЯ -->
         <div onclick="alert('Пригласи друзей и получи +20 000 ₽!');" class="bg-[#18191e] border border-[#252731] p-2.5 rounded-2xl flex flex-col items-center gap-1 active:scale-95 transition cursor-pointer">
           <span class="text-2xl">👥</span><span class="text-[11px] font-bold">Друзья</span>
         </div>
-        <!-- 7. ПОДАРОК -->
         <div onclick="closeModal('modal-menu'); openModal('modal-daily');" class="bg-[#18191e] border border-[#252731] p-2.5 rounded-2xl flex flex-col items-center gap-1 active:scale-95 transition cursor-pointer">
           <span class="text-2xl">🎁</span><span class="text-[11px] font-bold">Подарок</span>
         </div>
-        <!-- 8. КУПОН -->
         <div onclick="closeModal('modal-menu'); openModal('modal-promo');" class="bg-[#18191e] border border-[#252731] p-2.5 rounded-2xl flex flex-col items-center gap-1 active:scale-95 transition cursor-pointer">
           <span class="text-2xl">🎟️</span><span class="text-[11px] font-bold">Купон</span>
         </div>
       </div>
 
-      <!-- ПУНКТЫ СПИСКА (БЕЗ МАГАЗИНА БОНУСОВ) -->
       <div class="space-y-2">
         <button onclick="closeModal('modal-menu'); openModal('modal-stats');" class="w-full bg-[#18191e] border border-[#252731] p-3.5 rounded-2xl flex justify-between items-center text-xs font-bold active:scale-98 transition">
           <div class="flex items-center gap-2.5">
@@ -445,7 +353,7 @@
           <span class="text-[#71757f]">Уровень 4 ›</span>
         </button>
 
-        <button onclick="alert('Множители: 2 цифры ×1.8, 3 цифры ×15, 3 буквы ×8, столица ×1.4');" class="w-full bg-[#18191e] border border-[#252731] p-3.5 rounded-2xl flex justify-between items-center text-xs font-bold active:scale-98 transition">
+        <button onclick="closeModal('modal-menu'); openModal('modal-multipliers');" class="w-full bg-[#18191e] border border-[#252731] p-3.5 rounded-2xl flex justify-between items-center text-xs font-bold active:scale-98 transition">
           <div class="flex items-center gap-2.5">
             <span class="w-6 h-6 rounded-lg bg-[#9b59b6]/20 text-[#9b59b6] flex items-center justify-center text-xs">❓</span>
             <span>За что дают</span>
@@ -472,24 +380,132 @@
     </div>
   </div>
 
-  <!-- ==================== ШТОРКА 2: СТАВКА (ФОТО 6433 1 В 1) ==================== -->
-  <div id="modal-bet" class="sheet-bg" onclick="closeModalOnBg(event, 'modal-bet')">
+  <!-- ==================== ШТОРКА: «ЗА ЧТО ДАЮТ ×» ==================== -->
+  <div id="modal-multipliers" class="sheet-bg" onclick="closeModalOnBg(event, 'modal-multipliers')">
     <div class="sheet-box">
-      <div class="w-12 h-1 bg-[#262830] rounded-full mx-auto mb-3"></div>
-      <h3 class="text-base font-extrabold text-center mb-1">Ставка</h3>
-      <p class="text-[11px] text-[#71757f] text-center leading-relaxed mb-4 max-w-xs mx-auto">
-        Дороже крутка — выше гарантированная редкость. Цена примерно равна средней стоимости такого номера, так что это не бесплатные деньги, а быстрый путь к редким номерам.
+      <div class="flex items-center gap-3 mb-2">
+        <button onclick="closeModal('modal-multipliers'); openModal('modal-menu');" class="w-8 h-8 rounded-full bg-[#1c1d22] flex items-center justify-center text-lg font-bold">‹</button>
+        <h3 class="text-base font-extrabold text-white">За что дают ×</h3>
+      </div>
+      <p class="text-[11px] text-[#71757f] mb-4 leading-relaxed">
+        Каждый номер получает случайную базу, красивые сочетания её умножают. Где два числа — для 3 и 4 цифр (4 цифры: Беларусь, полиция и военные номера РФ).
       </p>
 
-      <div class="space-y-2 mb-4" id="bet-options-list"></div>
+      <!-- 1. ЦИФРЫ -->
+      <div class="text-xs font-bold text-[#888c96] mb-2 uppercase tracking-wide">Цифры</div>
+      <div class="bg-[#18191e] border border-[#262831] rounded-2xl divide-y divide-[#262831] mb-5">
+        <div class="p-3 flex justify-between items-center"><div><div class="text-xs font-bold">Номер 1</div><div class="text-[10px] text-[#71757f]">001 · 0001</div></div><div class="text-xs font-black text-[#2ecc71]">×200 · ×800</div></div>
+        <div class="p-3 flex justify-between items-center"><div><div class="text-xs font-bold">Номер 007</div><div class="text-[10px] text-[#71757f]">как у агента</div></div><div class="text-xs font-black text-[#2ecc71]">×150</div></div>
+        <div class="p-3 flex justify-between items-center"><div><div class="text-xs font-bold">Малый номер</div><div class="text-[10px] text-[#71757f]">002–009 · 0002–0009</div></div><div class="text-xs font-black text-[#2ecc71]">×40 · ×200</div></div>
+        <div class="p-3 flex justify-between items-center"><div><div class="text-xs font-bold">Малый номер из 4 цифр</div><div class="text-[10px] text-[#71757f]">0010–0099</div></div><div class="text-xs font-black text-[#2ecc71]">×6</div></div>
+        <div class="p-3 flex justify-between items-center"><div><div class="text-xs font-bold">Все семёрки</div><div class="text-[10px] text-[#71757f]">777 · 7777</div></div><div class="text-xs font-black text-[#2ecc71]">×600 · ×2 500</div></div>
+        <div class="p-3 flex justify-between items-center"><div><div class="text-xs font-bold">Все одинаковые</div><div class="text-[10px] text-[#71757f]">555 · 5555</div></div><div class="text-xs font-black text-[#2ecc71]">×150 · ×1 000</div></div>
+        <div class="p-3 flex justify-between items-center"><div><div class="text-xs font-bold">Три семёрки из четырёх</div><div class="text-[10px] text-[#71757f]">7770, 1777</div></div><div class="text-xs font-black text-[#2ecc71]">×300</div></div>
+        <div class="p-3 flex justify-between items-center"><div><div class="text-xs font-bold">3 одинаковые из 4</div><div class="text-[10px] text-[#71757f]">5550</div></div><div class="text-xs font-black text-[#2ecc71]">×180</div></div>
+        <div class="p-3 flex justify-between items-center"><div><div class="text-xs font-bold">Круглый</div><div class="text-[10px] text-[#71757f]">300 · 3000</div></div><div class="text-xs font-black text-[#2ecc71]">×25 · ×150</div></div>
+        <div class="p-3 flex justify-between items-center"><div><div class="text-xs font-bold">Ровные сотни</div><div class="text-[10px] text-[#71757f]">1200</div></div><div class="text-xs font-black text-[#2ecc71]">×4</div></div>
+        <div class="p-3 flex justify-between items-center"><div><div class="text-xs font-bold">Цифры подряд</div><div class="text-[10px] text-[#71757f]">123, 321 · 1234</div></div><div class="text-xs font-black text-[#2ecc71]">×15 · ×100</div></div>
+        <div class="p-3 flex justify-between items-center"><div><div class="text-xs font-bold">Цифры через одну</div><div class="text-[10px] text-[#71757f]">135 · 2468</div></div><div class="text-xs font-black text-[#2ecc71]">×5 · ×30</div></div>
+        <div class="p-3 flex justify-between items-center"><div><div class="text-xs font-bold">Зеркальные</div><div class="text-[10px] text-[#71757f]">121 · 1221</div></div><div class="text-xs font-black text-[#2ecc71]">×4 · ×40</div></div>
+        <div class="p-3 flex justify-between items-center"><div><div class="text-xs font-bold">Повтор пары</div><div class="text-[10px] text-[#71757f]">1212</div></div><div class="text-xs font-black text-[#2ecc71]">×35</div></div>
+        <div class="p-3 flex justify-between items-center"><div><div class="text-xs font-bold">2 пары</div><div class="text-[10px] text-[#71757f]">1122</div></div><div class="text-xs font-black text-[#2ecc71]">×10</div></div>
+        <div class="p-3 flex justify-between items-center"><div><div class="text-xs font-bold">Номер ОХО</div><div class="text-[10px] text-[#71757f]">070</div></div><div class="text-xs font-black text-[#2ecc71]">×8</div></div>
+        <div class="p-3 flex justify-between items-center"><div><div class="text-xs font-bold">Номер 228</div><div class="text-[10px] text-[#71757f]">228 · 2280</div></div><div class="text-xs font-black text-[#2ecc71]">×8 · ×6</div></div>
+        <div class="p-3 flex justify-between items-center"><div><div class="text-xs font-bold">Две семёрки</div><div class="text-[10px] text-[#71757f]">177, 770</div></div><div class="text-xs font-black text-[#2ecc71]">×2,5</div></div>
+        <div class="p-3 flex justify-between items-center"><div><div class="text-xs font-bold">2 одинаковые цифры</div><div class="text-[10px] text-[#71757f]">112 · 1123</div></div><div class="text-xs font-black text-[#2ecc71]">×1,8 · ×1,3</div></div>
+      </div>
 
-      <div class="text-center text-[10px] text-[#71757f] leading-normal" id="bet-footer-info">
-        Россия • Гражданский • кошелёк 91 723 ₽<br>Бесплатные попытки тратятся только на обычную крутку.
+      <!-- 2. БУКВЫ -->
+      <div class="text-xs font-bold text-[#888c96] mb-2 uppercase tracking-wide">Буквы</div>
+      <div class="bg-[#18191e] border border-[#262831] rounded-2xl divide-y divide-[#262831] mb-5">
+        <div class="p-3 flex justify-between items-center"><div><div class="text-xs font-bold">3 одинаковые</div><div class="text-[10px] text-[#71757f]">ААА · в Казахстане</div></div><div class="text-xs font-black text-[#2ecc71]">×150 · ×300</div></div>
+        <div class="p-3 flex justify-between items-center"><div><div class="text-xs font-bold">Одинаковые из двух</div><div class="text-[10px] text-[#71757f]">АА · в Казахстане</div></div><div class="text-xs font-black text-[#2ecc71]">×6 · ×12</div></div>
+        <div class="p-3 flex justify-between items-center"><div><div class="text-xs font-bold">Палиндром</div><div class="text-[10px] text-[#71757f]">АВА</div></div><div class="text-xs font-black text-[#2ecc71]">×3</div></div>
+        <div class="p-3 flex justify-between items-center"><div><div class="text-xs font-bold">2 одинаковые рядом</div><div class="text-[10px] text-[#71757f]">ААВ</div></div><div class="text-xs font-black text-[#2ecc71]">×1,8</div></div>
+        <div class="p-3 flex justify-between items-center"><div><div class="text-xs font-bold">Слово</div><div class="text-[10px] text-[#71757f]">КОТ, СОН, ТОР, SKY...</div></div><div class="text-xs font-black text-[#2ecc71]">×6</div></div>
+        <div class="p-3 flex justify-between items-center"><div><div class="text-xs font-bold">Серия VIP</div><div class="text-[10px] text-[#71757f]">Казахстан</div></div><div class="text-xs font-black text-[#2ecc71]">×60</div></div>
+      </div>
+
+      <!-- 3. СЕЗОННАЯ СЕРИЯ -->
+      <div class="text-xs font-bold text-[#888c96] mb-2 uppercase tracking-wide">Сезонная серия</div>
+      <div class="bg-[#18191e] border border-[#262831] rounded-2xl mb-5 p-3 flex justify-between items-center">
+        <div><div class="text-xs font-bold">Серия «ВАУ»</div><div class="text-[10px] text-[#71757f]">только до 15 октября</div></div><div class="text-xs font-black text-[#2ecc71]">×100</div>
+      </div>
+
+      <!-- 4. БЛАТНЫЕ СЕРИИ РОССИИ -->
+      <div class="text-xs font-bold text-[#888c96] mb-2 uppercase tracking-wide">Блатные серии России</div>
+      <div class="bg-[#18191e] border border-[#262831] rounded-2xl divide-y divide-[#262831] mb-5">
+        <div class="p-3 flex justify-between items-center"><div class="text-xs font-bold">Серия «АМР»</div><div class="text-xs font-black text-[#2ecc71]">×250</div></div>
+        <div class="p-3 flex justify-between items-center"><div class="text-xs font-bold">Серия «ЕКХ»</div><div class="text-xs font-black text-[#2ecc71]">×120</div></div>
+        <div class="p-3 flex justify-between items-center"><div class="text-xs font-bold">Серия «ММР»</div><div class="text-xs font-black text-[#2ecc71]">×60</div></div>
+        <div class="p-3 flex justify-between items-center"><div class="text-xs font-bold">Серия «ККХ»</div><div class="text-xs font-black text-[#2ecc71]">×50</div></div>
+        <div class="p-3 flex justify-between items-center"><div class="text-xs font-bold">Серия «АУЕ»</div><div class="text-xs font-black text-[#2ecc71]">×40</div></div>
+        <div class="p-3 flex justify-between items-center"><div class="text-xs font-bold">Серия «СКР»</div><div class="text-xs font-black text-[#2ecc71]">×40</div></div>
+        <div class="p-3 flex justify-between items-center"><div class="text-xs font-bold">Серия «ВОР»</div><div class="text-xs font-black text-[#2ecc71]">×20</div></div>
+        <div class="p-3 flex justify-between items-center"><div class="text-xs font-bold">Серия «ХАМ»</div><div class="text-xs font-black text-[#2ecc71]">×20</div></div>
+        <div class="p-3 flex justify-between items-center"><div class="text-xs font-bold">Серия «ААА»</div><div class="text-xs font-black text-[#2ecc71]">×6</div></div>
+        <div class="p-3 flex justify-between items-center"><div class="text-xs font-bold">Серия «ООО»</div><div class="text-xs font-black text-[#2ecc71]">×6</div></div>
+        <div class="p-3 flex justify-between items-center"><div class="text-xs font-bold">Серия «МММ»</div><div class="text-xs font-black text-[#2ecc71]">×6</div></div>
+      </div>
+
+      <!-- 5. ДУБАЙ -->
+      <div class="text-xs font-bold text-[#888c96] mb-2 uppercase tracking-wide">Дубай — чем короче, тем дороже</div>
+      <div class="bg-[#18191e] border border-[#262831] rounded-2xl divide-y divide-[#262831] mb-5">
+        <div class="p-3 flex justify-between items-center"><div><div class="text-xs font-bold">Однозначный</div><div class="text-[10px] text-[#71757f]">А 7</div></div><div class="text-xs font-black text-[#2ecc71]">×1 500</div></div>
+        <div class="p-3 flex justify-between items-center"><div><div class="text-xs font-bold">Двузначный</div><div class="text-[10px] text-[#71757f]">А 77</div></div><div class="text-xs font-black text-[#2ecc71]">×150</div></div>
+        <div class="p-3 flex justify-between items-center"><div><div class="text-xs font-bold">Трёхзначный</div><div class="text-[10px] text-[#71757f]">А 777</div></div><div class="text-xs font-black text-[#2ecc71]">×20</div></div>
+        <div class="p-3 flex justify-between items-center"><div><div class="text-xs font-bold">Четырёхзначный</div><div class="text-[10px] text-[#71757f]">А 7777</div></div><div class="text-xs font-black text-[#2ecc71]">×3</div></div>
+        <div class="p-3 flex justify-between items-center"><div><div class="text-xs font-bold">Все цифры одинаковые</div><div class="text-[10px] text-[#71757f]">55 · 555 · 5555 · 55555</div></div><div class="text-xs font-black text-[#2ecc71]">×4 · ×20 · ×150 · ×800</div></div>
+        <div class="p-3 flex justify-between items-center"><div><div class="text-xs font-bold">Цифры подряд</div><div class="text-[10px] text-[#71757f]">123 · 1234 · 12345</div></div><div class="text-xs font-black text-[#2ecc71]">×4 · ×25 · ×120</div></div>
+        <div class="p-3 flex justify-between items-center"><div><div class="text-xs font-bold">Круглый</div><div class="text-[10px] text-[#71757f]">50 · 500 · 5000 · 50000</div></div><div class="text-xs font-black text-[#2ecc71]">×3 · ×6 · ×30 · ×150</div></div>
+        <div class="p-3 flex justify-between items-center"><div><div class="text-xs font-bold">Зеркальный</div><div class="text-[10px] text-[#71757f]">121 · 1221 · 12321</div></div><div class="text-xs font-black text-[#2ecc71]">×2 · ×8 · ×25</div></div>
+        <div class="p-3 flex justify-between items-center"><div><div class="text-xs font-bold">4 одинаковые из 5</div><div class="text-[10px] text-[#71757f]">77771</div></div><div class="text-xs font-black text-[#2ecc71]">×30</div></div>
+        <div class="p-3 flex justify-between items-center"><div><div class="text-xs font-bold">Двойной код</div><div class="text-[10px] text-[#71757f]">АА 12345</div></div><div class="text-xs font-black text-[#2ecc71]">×2</div></div>
+      </div>
+
+      <!-- 6. РЕГИОН -->
+      <div class="text-xs font-bold text-[#888c96] mb-2 uppercase tracking-wide">Регион</div>
+      <div class="bg-[#18191e] border border-[#262831] rounded-2xl divide-y divide-[#262831] mb-4">
+        <div class="p-3 flex justify-between items-center"><div><div class="text-xs font-bold">Цифры = регион</div><div class="text-[10px] text-[#71757f]">077 и регион 77</div></div><div class="text-xs font-black text-[#2ecc71]">×20</div></div>
+        <div class="p-3 flex justify-between items-center"><div><div class="text-xs font-bold">Хвост = регион</div><div class="text-[10px] text-[#71757f]">142 и регион 42</div></div><div class="text-xs font-black text-[#2ecc71]">×3</div></div>
+        <div class="p-3 flex justify-between items-center"><div><div class="text-xs font-bold">Москва</div><div class="text-[10px] text-[#71757f]">77, 97, 99, 177...</div></div><div class="text-xs font-black text-[#2ecc71]">×1,4</div></div>
+        <div class="p-3 flex justify-between items-center"><div><div class="text-xs font-bold">Санкт-Петербург</div><div class="text-[10px] text-[#71757f]">78, 98, 178, 198</div></div><div class="text-xs font-black text-[#2ecc71]">×1,2</div></div>
+        <div class="p-3 flex justify-between items-center"><div><div class="text-xs font-bold">Минск</div><div class="text-[10px] text-[#71757f]">код 7 и 8</div></div><div class="text-xs font-black text-[#2ecc71]">×1,3</div></div>
+        <div class="p-3 flex justify-between items-center"><div><div class="text-xs font-bold">Астана · Алматы</div><div class="text-[10px] text-[#71757f]">01 · 02</div></div><div class="text-xs font-black text-[#2ecc71]">×1,3 · ×1,2</div></div>
+        <div class="p-3 flex justify-between items-center"><div><div class="text-xs font-bold">Идеальный номер</div><div class="text-[10px] text-[#71757f]">всё одинаковое</div></div><div class="text-xs font-black text-[#2ecc71]">×4</div></div>
+      </div>
+
+      <div class="bg-[#18191e] border border-[#262831] p-3.5 rounded-2xl text-[11px] text-[#71757f] leading-relaxed mb-4">
+        Сочетания перемножаются. Если крупных несколько, самое большое считается целиком, а остальные — как корень: «три семёрки» ×600 и «ААА» ×150 дадут ×600 × ×12.
       </div>
     </div>
   </div>
 
-  <!-- ==================== ШТОРКА 3: ГАРАЖ НОМЕРОВ (ФОТО 6427) ==================== -->
+  <!-- ==================== ШТОРКА: КОЛЛЕКЦИЯ (ВСЕ 29 ЭЛЕМЕНТОВ) ==================== -->
+  <div id="modal-collection" class="sheet-bg" onclick="closeModalOnBg(event, 'modal-collection')">
+    <div class="sheet-box">
+      <div class="w-12 h-1 bg-[#262830] rounded-full mx-auto mb-3"></div>
+      <h3 class="text-lg font-black mb-3">Коллекция</h3>
+      
+      <div class="text-xs font-bold text-[#888c96] mb-2 uppercase tracking-wide">Найдено (18)</div>
+      <div class="grid grid-cols-2 gap-2 mb-4" id="col-found-grid"></div>
+
+      <div class="text-xs font-bold text-[#888c96] mb-2 uppercase tracking-wide">Ещё не найдено (11)</div>
+      <div class="grid grid-cols-2 gap-2 mb-4" id="col-locked-grid"></div>
+    </div>
+  </div>
+
+  <!-- ШТОРКИ СТАВКИ, ГАРАЖА, АВТОПАРКА, КЕЙСОВ, СТРАН -->
+  <div id="modal-bet" class="sheet-bg" onclick="closeModalOnBg(event, 'modal-bet')">
+    <div class="sheet-box">
+      <div class="w-12 h-1 bg-[#262830] rounded-full mx-auto mb-3"></div>
+      <h3 class="text-base font-extrabold text-center mb-1">Ставка</h3>
+      <p class="text-[11px] text-[#71757f] text-center leading-relaxed mb-4 max-w-xs mx-auto">Дороже крутка — выше гарантированная редкость.</p>
+      <div class="space-y-2 mb-4" id="bet-options-list"></div>
+      <div class="text-center text-[10px] text-[#71757f] leading-normal" id="bet-footer-info"></div>
+    </div>
+  </div>
+
   <div id="modal-garage" class="sheet-bg" onclick="closeModalOnBg(event, 'modal-garage')">
     <div class="sheet-box">
       <div class="w-12 h-1 bg-[#262830] rounded-full mx-auto mb-3"></div>
@@ -501,7 +517,6 @@
     </div>
   </div>
 
-  <!-- ==================== ШТОРКА 4: АВТОПАРК МАШИН ==================== -->
   <div id="modal-autopark" class="sheet-bg" onclick="closeModalOnBg(event, 'modal-autopark')">
     <div class="sheet-box">
       <div class="w-12 h-1 bg-[#262830] rounded-full mx-auto mb-3"></div>
@@ -513,22 +528,12 @@
     </div>
   </div>
 
-  <!-- ==================== ШТОРКА 5: РУЛЕТКА КОНТЕЙНЕРА И ВЫИГРЫШ МАШИНЫ ==================== -->
   <div id="modal-container-open" class="sheet-bg" onclick="closeModalOnBg(event, 'modal-container-open')">
     <div class="sheet-box text-center">
       <div class="w-12 h-1 bg-[#262830] rounded-full mx-auto mb-3"></div>
       <h3 class="text-base font-black mb-1" id="c-box-title">Обычный контейнер</h3>
       <p class="text-xs text-[#71757f] mb-3">32 автомобиля разного класса</p>
-
-      <div class="space-y-1.5 text-left text-xs mb-4">
-        <div class="bg-[#16171b] p-2.5 rounded-xl flex justify-between"><span class="text-white">Обычный (11 авто: ВАЗ-2107, 2109, Nexia...)</span><b class="text-[#71757f]">70%</b></div>
-        <div class="bg-[#16171b] p-2.5 rounded-xl flex justify-between"><span class="text-[#2ecc71]">Необычный (8 авто: Vesta, Priora, Solaris...)</span><b class="text-[#2ecc71]">22%</b></div>
-        <div class="bg-[#16171b] p-2.5 rounded-xl flex justify-between"><span class="text-[#3498db]">Редкий (6 авто: УАЗ, Camry 3.5, Passat...)</span><b class="text-[#3498db]">6%</b></div>
-        <div class="bg-[#16171b] p-2.5 rounded-xl flex justify-between"><span class="text-[#9b59b6]">Эпический (4 авто: LC Prado, BMW 5, E-Class...)</span><b class="text-[#9b59b6]">1.6%</b></div>
-        <div class="bg-[#16171b] p-2.5 rounded-xl flex justify-between"><span class="text-[#f1c40f]">Легендарный (2 авто: LC 300, Гелик)</span><b class="text-[#f1c40f]">0.35%</b></div>
-        <div class="bg-[#16171b] p-2.5 rounded-xl flex justify-between"><span class="text-[#e74c3c]">Мифический (1 авто: Lamborghini Urus)</span><b class="text-[#e74c3c]">0.05%</b></div>
-      </div>
-
+      <div class="space-y-1.5 text-left text-xs mb-4" id="c-box-odds-list"></div>
       <button onclick="startCarRoulette()" class="w-full h-14 bg-[#2ecc71] text-black font-extrabold rounded-2xl active:scale-95 transition mb-2">
         Открыть за <span id="c-box-btn-price">10 000</span> ₽
       </button>
@@ -540,21 +545,15 @@
     <div class="sheet-box text-center">
       <div class="w-12 h-1 bg-[#262830] rounded-full mx-auto mb-3"></div>
       <h3 class="text-base font-black mb-3">Открытие контейнера</h3>
-
       <div class="car-tape-container mb-4" id="car-tape-viewport">
-        <div class="roulette-pin-line">
-          <div class="pin-triangle-down"></div>
-          <div class="pin-triangle-up"></div>
-        </div>
+        <div class="roulette-pin-line"><div class="pin-triangle-down"></div><div class="pin-triangle-up"></div></div>
         <div id="car-tape-track" class="car-tape-track"></div>
       </div>
-
       <div id="car-win-card" class="hidden flex-col items-center">
         <div id="win-car-svg-container" class="w-56 h-32 flex items-center justify-center my-1 filter drop-shadow-2xl"></div>
         <h4 id="win-car-title" class="text-lg font-black text-white">Hyundai Solaris</h4>
         <div id="win-car-rarity" class="text-xs font-bold text-[#2ecc71] mb-1">Необычный • оранжевый</div>
         <div id="win-car-price" class="text-xl font-black text-[#2ecc71] mb-4">8 765 ₽</div>
-
         <div class="w-full space-y-2">
           <button onclick="mountPlateOnWonCar()" class="w-full py-3 bg-[#2ecc71] text-black font-extrabold rounded-xl active:scale-95 transition">Повесить номер</button>
           <button onclick="sellWonCar()" class="w-full py-3 bg-[#16171b] border border-[#23252a] text-[#2ecc71] font-bold rounded-xl active:scale-95 transition">Продать за <span id="win-car-sell-price">8 765</span> ₽</button>
@@ -564,56 +563,32 @@
     </div>
   </div>
 
-  <!-- ШТОРКА ВЫБОРА СТРАНЫ -->
   <div id="modal-country" class="sheet-bg" onclick="closeModalOnBg(event, 'modal-country')">
     <div class="sheet-box">
       <div class="w-12 h-1 bg-[#262830] rounded-full mx-auto mb-2"></div>
       <h3 class="text-base font-extrabold text-center mb-0.5">Какие номера крутить</h3>
       <p class="text-[11px] text-[#71757f] text-center mb-4" id="sheet-country-note">У каждой страны свой кошелёк</p>
-
       <div class="grid grid-cols-2 gap-2 mb-4">
-        <button onclick="selectCountryTab('ru')" class="bg-[#16171b] border-2 border-[#2ecc71] p-3 rounded-2xl flex items-center gap-2.5 text-left" id="c-btn-ru">
-          <span class="text-xl">🇷🇺</span><span class="text-xs font-bold">Россия</span>
-        </button>
-        <button onclick="selectCountryTab('by')" class="bg-[#16171b] border border-[#23252a] p-3 rounded-2xl flex items-center gap-2.5 text-left" id="c-btn-by">
-          <span class="text-xl">🇧🇾</span><span class="text-xs font-bold">Беларусь</span>
-        </button>
-        <button onclick="selectCountryTab('kz')" class="bg-[#16171b] border border-[#23252a] p-3 rounded-2xl flex items-center gap-2.5 text-left" id="c-btn-kz">
-          <span class="text-xl">🇰🇿</span><span class="text-xs font-bold">Казахстан</span>
-        </button>
-        <button onclick="selectCountryTab('ae')" class="bg-[#16171b] border border-[#23252a] p-3 rounded-2xl flex items-center gap-2.5 text-left" id="c-btn-ae">
-          <span class="text-xl">🇦🇪</span><span class="text-xs font-bold">Дубай</span>
-        </button>
+        <button onclick="selectCountryTab('ru')" class="bg-[#16171b] border-2 border-[#2ecc71] p-3 rounded-2xl flex items-center gap-2.5 text-left" id="c-btn-ru"><span class="text-xl">🇷🇺</span><span class="text-xs font-bold">Россия</span></button>
+        <button onclick="selectCountryTab('by')" class="bg-[#16171b] border border-[#23252a] p-3 rounded-2xl flex items-center gap-2.5 text-left" id="c-btn-by"><span class="text-xl">🇧🇾</span><span class="text-xs font-bold">Беларусь</span></button>
+        <button onclick="selectCountryTab('kz')" class="bg-[#16171b] border border-[#23252a] p-3 rounded-2xl flex items-center gap-2.5 text-left" id="c-btn-kz"><span class="text-xl">🇰🇿</span><span class="text-xs font-bold">Казахстан</span></button>
+        <button onclick="selectCountryTab('ae')" class="bg-[#16171b] border border-[#23252a] p-3 rounded-2xl flex items-center gap-2.5 text-left" id="c-btn-ae"><span class="text-xl">🇦🇪</span><span class="text-xs font-bold">Дубай</span></button>
       </div>
-
       <div class="space-y-2 mb-4" id="country-types-list"></div>
       <div class="text-center text-xs text-[#71757f]" id="country-footer-bal">Кошелёк: 91 723 ₽ • попытка 1 000 ₽</div>
     </div>
   </div>
 
-  <!-- ШТОРКИ ПОДАРКА, СТАТИСТИКИ, КУПОНА, РЕЙТИНГА -->
   <div id="modal-daily" class="sheet-bg" onclick="closeModalOnBg(event, 'modal-daily')">
     <div class="sheet-box text-center">
       <div class="w-12 h-1 bg-[#262830] rounded-full mx-auto mb-3"></div>
       <h3 class="text-base font-black mb-1">Подарок дня</h3>
-      <p class="text-xs text-[#71757f] mb-4">Заходи каждый день — подарок растёт. Пропустишь день — начнёшь с первого.</p>
-      <div class="grid grid-cols-7 gap-1.5 mb-5">
-        <div class="bg-[#18191e] border border-[#2ecc71] p-2 rounded-xl text-center"><div class="text-sm">✓</div><div class="text-[9px] text-[#71757f]">1</div></div>
-        <div class="bg-[#2ecc71]/15 border-2 border-[#2ecc71] p-2 rounded-xl text-center"><div class="text-sm">🎁</div><div class="text-[9px] font-bold text-[#2ecc71]">2</div></div>
-        <div class="bg-[#18191e] border border-[#23252a] p-2 rounded-xl text-center opacity-40"><div class="text-sm">🎁</div><div class="text-[9px]">3</div></div>
-        <div class="bg-[#18191e] border border-[#23252a] p-2 rounded-xl text-center opacity-40"><div class="text-sm">🎁</div><div class="text-[9px]">4</div></div>
-        <div class="bg-[#18191e] border border-[#23252a] p-2 rounded-xl text-center opacity-40"><div class="text-sm">🎁</div><div class="text-[9px]">5</div></div>
-        <div class="bg-[#18191e] border border-[#23252a] p-2 rounded-xl text-center opacity-40"><div class="text-sm">🎁</div><div class="text-[9px]">6</div></div>
-        <div class="bg-[#18191e] border border-[#23252a] p-2 rounded-xl text-center opacity-40"><div class="text-sm">💎</div><div class="text-[9px]">7</div></div>
-      </div>
-      <button id="btn-claim-daily" onclick="claimDailyRewardFixed()" class="w-full bg-[#2ecc71] text-black font-extrabold py-3.5 rounded-2xl active:scale-95 transition">
-        Забрать +15 000 ₽
-      </button>
+      <p class="text-xs text-[#71757f] mb-4">Заходи каждый день — подарок растёт.</p>
+      <button id="btn-claim-daily" onclick="claimDailyRewardFixed()" class="w-full bg-[#2ecc71] text-black font-extrabold py-3.5 rounded-2xl active:scale-95 transition">Забрать +15 000 ₽</button>
       <div id="daily-cooldown-text" class="text-xs text-[#71757f] mt-2 hidden">Следующий подарок доступен завтра</div>
     </div>
   </div>
 
-  <div id="modal-collection" class="sheet-bg" onclick="closeModalOnBg(event, 'modal-collection')"><div class="sheet-box"><div class="w-12 h-1 bg-[#262830] rounded-full mx-auto mb-3"></div><h3 class="text-lg font-black mb-3">Коллекция</h3><div class="grid grid-cols-2 gap-2 mb-4"><div class="bg-[#16171b] border border-[#23252a] p-3 rounded-2xl"><div class="text-xs font-bold mb-0.5">Все цифры одинаковые</div><div class="text-[10px] text-[#2ecc71] font-bold">выпало 1 раз</div></div><div class="bg-[#16171b] border border-[#23252a] p-3 rounded-2xl"><div class="text-xs font-bold mb-0.5">Круглый номер</div><div class="text-[10px] text-[#2ecc71] font-bold">выпало 25 раз</div></div></div></div></div>
   <div id="modal-luck" class="sheet-bg" onclick="closeModalOnBg(event, 'modal-luck')"><div class="sheet-box text-center"><div class="w-12 h-1 bg-[#262830] rounded-full mx-auto mb-3"></div><h3 class="text-base font-black mb-1">🍀 Шкала удачи</h3><p class="text-xs text-[#71757f] mb-3">Каждый 100-й бросок — удача ×5</p><div class="bg-[#16171b] border border-[#23252a] p-4 rounded-2xl mb-4"><div class="text-lg font-black text-white mb-1">Ещё <span id="m-luck-left">50</span> бросков</div><div class="w-full bg-[#23252a] h-2 rounded-full overflow-hidden my-2"><div id="m-luck-bar" class="bg-[#2ecc71] h-full" style="width: 50%;"></div></div></div><button onclick="closeModal('modal-luck')" class="w-full bg-[#2ecc71] text-black font-extrabold py-3.5 rounded-2xl">Понятно</button></div></div>
   <div id="modal-stats" class="sheet-bg" onclick="closeModalOnBg(event, 'modal-stats')"><div class="sheet-box"><div class="w-12 h-1 bg-[#262830] rounded-full mx-auto mb-3"></div><h3 class="text-base font-black mb-3">Статистика</h3><div class="grid grid-cols-2 gap-2 mb-3"><div class="bg-[#16171b] border border-[#23252a] p-3 rounded-2xl"><div class="text-lg font-black" id="st-total">154</div><div class="text-[10px] text-[#71757f]">номеров открыто</div></div><div class="bg-[#16171b] border border-[#23252a] p-3 rounded-2xl"><div class="text-lg font-black text-[#2ecc71]" id="st-best">107 776 ₽</div><div class="text-[10px] text-[#71757f]">лучший номер</div></div></div></div></div>
   <div id="modal-promo" class="sheet-bg" onclick="closeModalOnBg(event, 'modal-promo')"><div class="sheet-box text-center"><div class="w-12 h-1 bg-[#262830] rounded-full mx-auto mb-2"></div><h3 class="text-base font-black mb-1">🎟️ Купон</h3><p class="text-xs text-[#71757f] mb-3">Введи START, NOMEROK или ADMIN</p><input id="input-promo" type="text" placeholder="КОД" class="w-full bg-[#16171b] border border-[#23252a] text-center uppercase tracking-widest text-lg font-black text-white py-3.5 rounded-2xl mb-3" /><button onclick="claimPromo()" class="w-full bg-[#2ecc71] text-black font-extrabold py-3.5 rounded-2xl">Активировать</button></div></div>
@@ -636,9 +611,110 @@
       else if (type === 'success') tg.HapticFeedback.notificationOccurred('success');
     }
 
-    // --- 32 РЕАЛИСТИЧНЫЕ МОДЕЛИ МАШИН С 3D-ИЗОМЕТРИЧЕСКИМ РАКУРСОМ (КАК В 6410.mp4) ---
+    // --- БАЗА ШАНСОВ КЕЙСОВ ---
+    const CASES_DATA = {
+      'Обычный': {
+        cost: 10000,
+        odds: [
+          { r: 'Обычный', label: 'Обычный (11 авто: ВАЗ-2107, 2109, Nexia...)', pct: '70%', color: 'text-white' },
+          { r: 'Необычный', label: 'Необычный (8 авто: Vesta, Priora, Solaris...)', pct: '22%', color: 'text-[#2ecc71]' },
+          { r: 'Редкий', label: 'Редкий (6 авто: УАЗ, Camry 3.5, Passat...)', pct: '6%', color: 'text-[#3498db]' },
+          { r: 'Эпический', label: 'Эпический (4 авто: LC Prado, BMW 5, E-Class...)', pct: '1.6%', color: 'text-[#9b59b6]' },
+          { r: 'Легендарный', label: 'Легендарный (2 авто: LC 300, Гелик)', pct: '0.35%', color: 'text-[#f1c40f]' },
+          { r: 'Мифический', label: 'Мифический (1 авто: Lamborghini Urus)', pct: '0.05%', color: 'text-[#e74c3c]' }
+        ]
+      },
+      'Редкий': {
+        cost: 30000,
+        odds: [
+          { r: 'Обычный', label: 'Обычный (ВАЗ-2107, ВАЗ-2109, Daewoo Nexia...)', pct: '32%', color: 'text-white' },
+          { r: 'Необычный', label: 'Необычный (Лада Веста, Kia Rio, Solaris...)', pct: '40%', color: 'text-[#2ecc71]' },
+          { r: 'Редкий', label: 'Редкий (УАЗ Патриот, Camry, Polo...)', pct: '19%', color: 'text-[#3498db]' },
+          { r: 'Эпический', label: 'Эпический (LC Prado, BMW 5, Audi A6...)', pct: '6.5%', color: 'text-[#9b59b6]' },
+          { r: 'Легендарный', label: 'Легендарный (LC 300, Гелик)', pct: '2%', color: 'text-[#f1c40f]' },
+          { r: 'Мифический', label: 'Мифический (Lamborghini Urus)', pct: '0.4%', color: 'text-[#e74c3c]' }
+        ]
+      },
+      'Эпический': {
+        cost: 100000,
+        odds: [
+          { r: 'Обычный', label: 'Обычный (ВАЗ-2107, Daewoo Nexia...)', pct: '10%', color: 'text-white' },
+          { r: 'Необычный', label: 'Необычный (Solaris, Vesta, Polo...)', pct: '25%', color: 'text-[#2ecc71]' },
+          { r: 'Редкий', label: 'Редкий (Camry 3.5, Passat, УАЗ...)', pct: '35%', color: 'text-[#3498db]' },
+          { r: 'Эпический', label: 'Эпический (BMW 5, E-Class, LC Prado...)', pct: '17%', color: 'text-[#9b59b6]' },
+          { r: 'Легендарный', label: 'Легендарный (LC 300, Гелик)', pct: '12%', color: 'text-[#f1c40f]' },
+          { r: 'Мифический', label: 'Мифический (Lamborghini Urus)', pct: '1%', color: 'text-[#e74c3c]' }
+        ]
+      },
+      'Легендарный': {
+        cost: 300000,
+        odds: [
+          { r: 'Обычный', label: 'Обычный', pct: '0%', color: 'text-white' },
+          { r: 'Необычный', label: 'Необычный (Solaris, Vesta...)', pct: '5%', color: 'text-[#2ecc71]' },
+          { r: 'Редкий', label: 'Редкий (Camry, Passat, УАЗ...)', pct: '20%', color: 'text-[#3498db]' },
+          { r: 'Эпический', label: 'Эпический (BMW 5, E-Class, LC Prado...)', pct: '32%', color: 'text-[#9b59b6]' },
+          { r: 'Легендарный', label: 'Легендарный (LC 300, Гелик)', pct: '40%', color: 'text-[#f1c40f]' },
+          { r: 'Мифический', label: 'Мифический (Lamborghini Urus)', pct: '3%', color: 'text-[#e74c3c]' }
+        ]
+      }
+    };
+
+    // --- БАЗА КОЛЛЕКЦИИ ---
+    const COLLECTION_FOUND = [
+      { name: "Все цифры одинаковые", ex: "Например, 555", cnt: 1 },
+      { name: "Круглый номер", ex: "Например, 300", cnt: 25 },
+      { name: "Номер ОХО", ex: "Например, 070", cnt: 1 },
+      { name: "Короткий номер Дубая", ex: "Чем меньше цифр, тем дороже", cnt: 2 },
+      { name: "Двойной код Дубая", ex: "AA 12345", cnt: 2 },
+      { name: "Цифры через одну", ex: "Например, 135 или 2468", cnt: 2 },
+      { name: "Хвост = регион", ex: "Например, 142 с регионом 42", cnt: 2 },
+      { name: "3 одинаковые буквы", ex: "Все буквы серии одинаковые", cnt: 1 },
+      { name: "Блатная серия", ex: "Буквы, которые знают все", cnt: 2 },
+      { name: "Малый номер", ex: "Цифры меньше 10", cnt: 3 },
+      { name: "Цифры подряд", ex: "По порядку вверх или вниз", cnt: 3 },
+      { name: "Две семёрки", ex: "Например, 177 или 770", cnt: 4 },
+      { name: "Слово на номере", ex: "Буквы складываются в слово", cnt: 1 },
+      { name: "Зеркальные цифры", ex: "Читаются одинаково с двух сторон", cnt: 9 },
+      { name: "Палиндром букв", ex: "Первая и последняя буквы совпадают", cnt: 10 },
+      { name: "2 одинаковые буквы", ex: "Две буквы рядом одинаковые", cnt: 20 },
+      { name: "Столичный регион", ex: "Москва, Минск, Астана...", cnt: 24 },
+      { name: "2 одинаковые цифры", ex: "Самое частое сочетание", cnt: 25 }
+    ];
+
+    const COLLECTION_LOCKED = [
+      { name: "Номер 1", ex: "Цифры 001 или 0001" },
+      { name: "Номер 007", ex: "Как у одного агента" },
+      { name: "Все семёрки", ex: "Самый известный блатной номер" },
+      { name: "Ровные сотни", ex: "Четыре цифры, в конце 00" },
+      { name: "3 одинаковые", ex: "В номере из четырёх цифр" },
+      { name: "Повтор пары", ex: "Например, 1212" },
+      { name: "2 пары цифр", ex: "Например, 1122" },
+      { name: "Номер 228", ex: "Легендарные цифры" },
+      { name: "Одинаковые буквы", ex: "В серии из двух букв" },
+      { name: "Цифры = регион", ex: "Номер совпадает с кодом региона" },
+      { name: "Идеальный номер", ex: "И цифры, и буквы одинаковые" }
+    ];
+
+    function renderCollectionModal() {
+      const fGrid = document.getElementById('col-found-grid');
+      const lGrid = document.getElementById('col-locked-grid');
+
+      fGrid.innerHTML = COLLECTION_FOUND.map(c => `
+        <div class="bg-[#18191e] border border-[#262831] p-3 rounded-2xl flex flex-col justify-between">
+          <div><div class="text-xs font-bold text-white mb-0.5">${c.name}</div><div class="text-[10px] text-[#71757f] leading-tight mb-2">${c.ex}</div></div>
+          <div class="text-[10px] text-[#2ecc71] font-bold">выпало ${c.cnt} раз</div>
+        </div>
+      `).join('');
+
+      lGrid.innerHTML = COLLECTION_LOCKED.map(c => `
+        <div class="bg-[#18191e]/60 border border-[#202227] p-3 rounded-2xl opacity-60 flex flex-col justify-between">
+          <div><div class="text-xs font-bold text-white mb-0.5">🔒 ${c.name}</div><div class="text-[10px] text-[#71757f] leading-tight">${c.ex}</div></div>
+        </div>
+      `).join('');
+    }
+
+    // --- 32 МОДЕЛИ МАШИН ---
     const CARS_DATABASE = [
-      // 11 ОБЫЧНЫХ
       { id: 'vaz2107', name: 'ВАЗ-2107', rarity: 'Обычный', colorName: 'белый', color: '#f2f2f2', type: 'classic', price: 3400 },
       { id: 'vaz2109', name: 'ВАЗ-2109', rarity: 'Обычный', colorName: 'зеленый', color: '#2b5839', type: 'hatchback', price: 3600 },
       { id: 'vaz2106', name: 'ВАЗ-2106', rarity: 'Обычный', colorName: 'синий', color: '#21426e', type: 'classic', price: 3200 },
@@ -651,7 +727,6 @@
       { id: 'logan', name: 'Renault Logan', rarity: 'Обычный', colorName: 'серый', color: '#5f676e', type: 'sedan', price: 5400 },
       { id: 'izh', name: 'ИЖ-2126 «Ода»', rarity: 'Обычный', colorName: 'синий', color: '#264875', type: 'hatchback', price: 3000 },
 
-      // 8 НЕОБЫЧНЫХ
       { id: 'solaris', name: 'Hyundai Solaris', rarity: 'Необычный', colorName: 'оранжевый', color: '#e85d04', type: 'sedan', price: 8765 },
       { id: 'vesta', name: 'Lada Vesta', rarity: 'Необычный', colorName: 'лайм', color: '#70a515', type: 'sedan', price: 9100 },
       { id: 'priora', name: 'Лада Приора', rarity: 'Необычный', colorName: 'желтый', color: '#e5a922', type: 'sedan', price: 8200 },
@@ -661,7 +736,6 @@
       { id: 'focus', name: 'Ford Focus 2', rarity: 'Необычный', colorName: 'черный', color: '#16161a', type: 'hatchback', price: 10200 },
       { id: 'cruze', name: 'Chevrolet Cruze', rarity: 'Необычный', colorName: 'серебристый', color: '#bac1c8', type: 'sedan', price: 10500 },
 
-      // 6 РЕДКИХ
       { id: 'patriot', name: 'УАЗ Патриот', rarity: 'Редкий', colorName: 'хаки', color: '#3f4b39', type: 'suv', price: 22000 },
       { id: 'passat', name: 'Volkswagen Passat', rarity: 'Редкий', colorName: 'белый', color: '#f8f9fa', type: 'sedan', price: 25000 },
       { id: 'camry', name: 'Toyota Camry 3.5', rarity: 'Редкий', colorName: 'черный', color: '#0f1114', type: 'sedan', price: 32000 },
@@ -669,68 +743,48 @@
       { id: 'evo', name: 'Mitsubishi Lancer Evo', rarity: 'Редкий', colorName: 'красный', color: '#9b083b', type: 'sport', price: 35000 },
       { id: 'wrx', name: 'Subaru Impreza WRX', rarity: 'Редкий', colorName: 'синий', color: '#004385', type: 'sport', price: 34000 },
 
-      // 4 ЭПИЧЕСКИХ
       { id: 'prado', name: 'Toyota LC Prado', rarity: 'Эпический', colorName: 'черный', color: '#080a0d', type: 'suv', price: 85000 },
       { id: 'bmw5', name: 'BMW 5 Series', rarity: 'Эпический', colorName: 'темно-синий', color: '#020340', type: 'sedan', price: 92000 },
       { id: 'mercedes_e', name: 'Mercedes-Benz E-Class', rarity: 'Эпический', colorName: 'мокрый асфальт', color: '#2b3035', type: 'sedan', price: 96000 },
       { id: 'audi_a6', name: 'Audi A6', rarity: 'Эпический', colorName: 'серебристый', color: '#cbd2d9', type: 'sedan', price: 89000 },
 
-      // 2 ЛЕГЕНДАРНЫХ
       { id: 'lc300', name: 'Toyota Land Cruiser 300', rarity: 'Легендарный', colorName: 'белый перламутр', color: '#f4f5f7', type: 'suv', price: 240000 },
       { id: 'gelik', name: 'Mercedes-Benz G-Class', rarity: 'Легендарный', colorName: 'матовый черный', color: '#0d0d0e', type: 'suv', price: 280000 },
 
-      // 1 МИФИЧЕСКИЙ
       { id: 'urus', name: 'Lamborghini Urus', rarity: 'Мифический', colorName: 'желтый', color: '#ffd000', type: 'sport', price: 650000 }
     ];
 
-    // РЕНДЕР ИСТИННОГО 3D LOW-POLY АВТО С РАКУРСА 3/4 СЗАДИ (КАК В ВИДЕО 6410)
-    function render3DIsometricCar(car, width = 140, height = 90) {
+    function render3DIsometricCar(car, width = 130, height = 75) {
       const c = car.color;
       const isSuv = car.type === 'suv';
       const isSport = car.type === 'sport';
-      const roofY = isSuv ? 34 : (isSport ? 46 : 40);
-      const trunkY = isSuv ? 54 : 64;
+      const roofY = isSuv ? 32 : (isSport ? 42 : 36);
+      const trunkY = isSuv ? 50 : 58;
 
       return `
-        <svg width="${width}" height="${height}" viewBox="0 0 220 140" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <ellipse cx="110" cy="116" rx="75" ry="14" fill="rgba(0,0,0,0.65)" filter="blur(4px)" />
-          <!-- ЗАДНЯЯ ЧАСТЬ КУЗОВА (БАМПЕР И БАГАЖНИК) -->
-          <polygon points="40,${trunkY + 22} 96,${trunkY + 28} 96,${trunkY} 40,${trunkY - 4}" fill="${c}" filter="brightness(0.72)" />
-          
-          <!-- ЗАДНИЕ ФАРЫ И НОМЕРНОЙ ЗНАК -->
-          <polygon points="43,${trunkY + 2} 55,${trunkY + 3} 55,${trunkY + 9} 43,${trunkY + 8}" fill="#e63946" filter="drop-shadow(0 0 3px #e63946)" />
-          <polygon points="80,${trunkY + 6} 92,${trunkY + 7} 92,${trunkY + 13} 80,${trunkY + 12}" fill="#e63946" filter="drop-shadow(0 0 3px #e63946)" />
-          <polygon points="59,${trunkY + 7} 75,${trunkY + 9} 75,${trunkY + 15} 59,${trunkY + 14}" fill="#ffffff" stroke="#111" stroke-width="0.7" />
-
-          <!-- ВЫХЛОПНАЯ ТРУБА -->
-          <ellipse cx="48" cy="${trunkY + 22}" rx="4" ry="2.5" fill="#444" stroke="#222" />
-
-          <!-- ЛЕВАЯ БОКОВАЯ СТОРОНА -->
-          <polygon points="96,${trunkY + 28} 185,${trunkY + 10} 185,${roofY + 24} 96,${trunkY}" fill="${c}" filter="brightness(0.88)" />
-
-          <!-- КРЫША И КАПОТ (ВЕРХНЯЯ ГРАНЬ) -->
-          <polygon points="40,${trunkY - 4} 96,${trunkY} 85,${roofY} 48,${roofY - 3}" fill="#161c22" /> <!-- Заднее стекло -->
-          <polygon points="48,${roofY - 3} 85,${roofY} 136,${roofY - 4} 105,${roofY - 7}" fill="${c}" filter="brightness(1.15)" /> <!-- Крыша -->
-          <polygon points="85,${roofY} 136,${roofY - 4} 185,${roofY + 24} 96,${trunkY}" fill="#11161d" /> <!-- Боковые стекла -->
-          <polygon points="136,${roofY - 4} 175,${roofY + 5} 185,${roofY + 24} 145,${roofY + 14}" fill="${c}" filter="brightness(1.08)" /> <!-- Капот -->
-
-          <!-- БЛИКИ НА СТЕКЛАХ -->
-          <line x1="56" y1="${trunkY - 2}" x2="78" y2="${roofY + 2}" stroke="rgba(255,255,255,0.45)" stroke-width="2" />
-          <line x1="102" y1="${trunkY - 6}" x2="128" y2="${roofY + 1}" stroke="rgba(255,255,255,0.35)" stroke-width="2" />
-
-          <!-- КОЛЕСА С ГЛУБИНОЙ И ЛИТЫМИ ДИСКАМИ -->
-          <ellipse cx="64" cy="${trunkY + 26}" rx="14" ry="12" fill="#151618" />
-          <ellipse cx="64" cy="${trunkY + 26}" rx="8" ry="7" fill="#888e96" />
-          <ellipse cx="64" cy="${trunkY + 26}" rx="3" ry="3" fill="#222" />
-
-          <ellipse cx="152" cy="${trunkY + 16}" rx="15" ry="13" fill="#151618" />
-          <ellipse cx="152" cy="${trunkY + 16}" rx="8.5" ry="7.5" fill="#888e96" />
-          <ellipse cx="152" cy="${trunkY + 16}" rx="3.5" ry="3" fill="#222" />
+        <svg width="${width}" height="${height}" viewBox="0 0 190 120" fill="none" xmlns="http://www.w3.org/2000/svg" class="overflow-visible">
+          <ellipse cx="95" cy="106" rx="72" ry="12" fill="rgba(0,0,0,0.6)" filter="blur(3px)" />
+          <polygon points="25,${trunkY + 22} 75,${trunkY + 27} 75,${trunkY} 25,${trunkY - 4}" fill="${c}" filter="brightness(0.7)" />
+          <polygon points="28,${trunkY + 3} 38,${trunkY + 4} 38,${trunkY + 9} 28,${trunkY + 8}" fill="#e63946" />
+          <polygon points="62,${trunkY + 6} 72,${trunkY + 7} 72,${trunkY + 12} 62,${trunkY + 11}" fill="#e63946" />
+          <polygon points="43,${trunkY + 6} 57,${trunkY + 7} 57,${trunkY + 13} 43,${trunkY + 12}" fill="#ffffff" stroke="#111" stroke-width="0.5" />
+          <polygon points="75,${trunkY + 27} 158,${trunkY + 10} 158,${roofY + 24} 75,${trunkY}" fill="${c}" filter="brightness(0.88)" />
+          <polygon points="25,${trunkY - 4} 75,${trunkY} 66,${roofY} 33,${roofY - 3}" fill="#161c22" />
+          <polygon points="33,${roofY - 3} 66,${roofY} 115,${roofY - 4} 88,${roofY - 7}" fill="${c}" filter="brightness(1.15)" />
+          <polygon points="66,${roofY} 115,${roofY - 4} 158,${roofY + 24} 75,${trunkY}" fill="#11161d" />
+          <polygon points="115,${roofY - 4} 150,${roofY + 4} 158,${roofY + 24} 123,${roofY + 14}" fill="${c}" filter="brightness(1.08)" />
+          <line x1="42" y1="${trunkY - 3}" x2="60" y2="${roofY + 1}" stroke="rgba(255,255,255,0.4)" stroke-width="1.5" />
+          <line x1="82" y1="${trunkY - 5}" x2="108" y2="${roofY + 1}" stroke="rgba(255,255,255,0.3)" stroke-width="1.5" />
+          <ellipse cx="48" cy="${trunkY + 25}" rx="13" ry="11" fill="#151618" />
+          <ellipse cx="48" cy="${trunkY + 25}" rx="7.5" ry="6.5" fill="#888e96" />
+          <ellipse cx="48" cy="${trunkY + 25}" rx="3" ry="2.5" fill="#222" />
+          <ellipse cx="130" cy="${trunkY + 15}" rx="14" ry="12" fill="#151618" />
+          <ellipse cx="130" cy="${trunkY + 15}" rx="8" ry="7" fill="#888e96" />
+          <ellipse cx="130" cy="${trunkY + 15}" rx="3" ry="2.5" fill="#222" />
         </svg>
       `;
     }
 
-    // --- БАЗЫ ДАННЫХ РЕГИОНОВ ---
     const REGIONS_DATA = {
       '77': 'Москва', '99': 'Москва', '199': 'Москва', '777': 'Москва', '799': 'Москва',
       '78': 'Санкт-Петербург', '98': 'Санкт-Петербург', '178': 'Санкт-Петербург',
@@ -745,26 +799,26 @@
     let state = {
       country: 'ru',
       currentType: 'civil',
-      betMultiplier: 1, // 1, 8, 35, 100 (ФОТО 6433)
+      betMultiplier: 1,
       wallets: { ru: 91723, by: 3960, kz: 600000 },
       basePrices: { ru: 1000, by: 40, kz: 6000, ae: 10000 },
       syms: { ru: '₽', by: 'Br', kz: '₸', ae: '₽' },
       luck: 50,
       totalSpins: 154,
       bestCost: 107776,
-      garage: [], // Номера
-      autopark: [], // Машины
+      garage: [],
+      autopark: [],
       lastDailyClaim: 0,
       dailyStreak: 2
     };
 
-    const saved = localStorage.getItem('nomerok_fixed_perfect_v5');
+    const saved = localStorage.getItem('nomerok_fixed_perfect_v8');
     if (saved) {
       try { state = Object.assign(state, JSON.parse(saved)); } catch(e){}
     }
 
     function save() {
-      localStorage.setItem('nomerok_fixed_perfect_v5', JSON.stringify(state));
+      localStorage.setItem('nomerok_fixed_perfect_v8', JSON.stringify(state));
       renderGlobalHeader();
     }
 
@@ -792,17 +846,15 @@
       document.getElementById('ui-hdr-luck').innerText = state.luck;
       document.getElementById('btn-spin-price').innerText = `${spinCost.toLocaleString('ru-RU')} ${sym}`;
 
-      // Бейджи гаража и автопарка
       document.getElementById('menu-badge-garage').innerText = state.garage.length;
       document.getElementById('menu-badge-autopark').innerText = state.autopark.length;
       document.getElementById('ui-park-badge').innerText = `${state.autopark.length} / 30`;
       document.getElementById('park-cnt').innerText = state.autopark.length;
       document.getElementById('gar-cnt').innerText = state.garage.length;
-
       document.getElementById('ui-bet-label').innerText = `Ставка ×${state.betMultiplier}`;
     }
 
-    // --- ПЕРЕКЛЮЧЕНИЕ ТАБОВ: НОМЕРА / МАШИНЫ ---
+    // --- ПЕРЕКЛЮЧЕНИЕ ТАБОВ ---
     function switchMainTab(tab) {
       sounds.click.play();
       haptic('light');
@@ -824,7 +876,7 @@
       }
     }
 
-    // --- МОДАЛКИ (BOTTOM SHEETS) ---
+    // --- МОДАЛКИ ---
     function openModal(id) {
       haptic('light');
       if (id === 'modal-garage') renderGarageDOM();
@@ -832,12 +884,13 @@
       if (id === 'modal-bet') renderBetModal();
       if (id === 'modal-country') renderCountryModal();
       if (id === 'modal-daily') updateDailyModalState();
+      if (id === 'modal-collection') renderCollectionModal();
       document.getElementById(id).classList.add('active');
     }
     function closeModal(id) { document.getElementById(id).classList.remove('active'); }
     function closeModalOnBg(e, id) { if (e.target.id === id) closeModal(id); }
 
-    // --- РЕНДЕР СТАВКИ (ФОТО 6433 1 В 1) ---
+    // --- СТАВКА ---
     function renderBetModal() {
       const base = state.basePrices[state.country];
       const sym = state.syms[state.country];
@@ -885,7 +938,7 @@
 
       if (c === 'ru') {
         root.innerHTML = `
-          <div class="plate-rf-container">
+          <div class="plate-rf-container" id="current-plate-box">
             <div class="plate-rf-inner">
               <div class="plate-rf-main">
                 <span class="p-rf-letter" id="slot-1">О</span>
@@ -905,7 +958,7 @@
         document.getElementById('ui-region').innerText = `Регион 38 • Иркутская область`;
       } else if (c === 'by') {
         root.innerHTML = `
-          <div class="plate-by-container">
+          <div class="plate-by-container" id="current-plate-box">
             <div class="plate-by-inner">
               <div class="plate-by-flagbox">
                 <svg class="by-flag-svg" viewBox="0 0 30 15"><rect width="30" height="10" fill="#c8102e"/><rect y="10" width="30" height="5" fill="#007a3d"/><rect width="6" height="15" fill="#fff"/></svg>
@@ -920,7 +973,7 @@
         document.getElementById('ui-region').innerText = `Код 4 • Гродненская область`;
       } else if (c === 'ae') {
         root.innerHTML = `
-          <div class="plate-ae-container">
+          <div class="plate-ae-container" id="current-plate-box">
             <div class="plate-ae-inner">
               <div class="text-base font-bold">DUBAI • <span id="slot-1">S</span></div>
               <div class="text-4xl font-extrabold tracking-widest" id="slot-2">409</div>
@@ -930,7 +983,7 @@
         document.getElementById('ui-region').innerText = `Объединённые Арабские Эмираты • Дубай`;
       } else if (c === 'kz') {
         root.innerHTML = `
-          <div class="plate-rf-container">
+          <div class="plate-rf-container" id="current-plate-box">
             <div class="plate-rf-inner">
               <div class="w-10 bg-[#00afca] text-[#f1c40f] font-black text-xs flex items-center justify-center border-r border-black">KZ</div>
               <div class="flex-1 flex items-center justify-center font-mono text-3xl font-black tracking-wider">
@@ -943,14 +996,36 @@
       }
     }
 
-    // --- КРУТИЛКА НОМЕРОВ С ПОЭТАПНОЙ ОСТАНОВКОЙ ---
+    // --- КРУТИЛКА НОМЕРОВ ---
     let isSpinning = false;
     let skipRequested = false;
     let activeIntervals = [];
 
     function handleSpinButton() {
-      if (isSpinning) { skipRequested = true; return; }
+      if (isSpinning) {
+        skipRequested = true;
+        return;
+      }
       startPlateSpin();
+    }
+
+    function resetSpinButtonUI() {
+      const btn = document.getElementById('btn-spin');
+      const sym = state.syms[state.country];
+      btn.className = "w-full h-[58px] rounded-2xl bg-[#2ecc71] hover:bg-[#27ae60] active:scale-[0.98] transition font-extrabold text-base text-[#07130a] shadow-lg shadow-[#2ecc71]/20 flex items-center justify-center gap-2";
+      btn.innerHTML = `<span>Крутить ещё</span><span id="btn-spin-price" class="bg-[#07130a]/15 px-2.5 py-0.5 rounded-lg text-xs font-black">${getCurrentSpinCost().toLocaleString('ru-RU')} ${sym}</span>`;
+      
+      // Показываем инструменты для нового номера
+      const tools = document.getElementById('post-spin-tools');
+      tools.style.display = 'flex';
+      tools.style.opacity = '1';
+      tools.style.transform = 'translateY(0)';
+      
+      document.getElementById('ui-sale-note').style.opacity = '1';
+      isSpinning = false;
+      skipRequested = false;
+      activeIntervals.forEach(t => clearInterval(t));
+      activeIntervals = [];
     }
 
     async function startPlateSpin() {
@@ -970,27 +1045,30 @@
       isSpinning = true;
       skipRequested = false;
 
+      const watchdog = setTimeout(() => {
+        if (isSpinning) resetSpinButtonUI();
+      }, 3500);
+
       const btn = document.getElementById('btn-spin');
       btn.className = "w-full h-[58px] rounded-2xl bg-[#1c1d22] border border-[#2a2c33] active:scale-[0.98] transition font-extrabold text-base text-white flex items-center justify-center gap-2";
       btn.innerHTML = `<span>Пропустить</span>`;
 
       document.getElementById('ui-sale-note').style.opacity = '0';
-      document.getElementById('post-spin-tools').style.opacity = '0.3';
-      document.getElementById('btn-save-garage').innerText = 'В гараж';
+      const tools = document.getElementById('post-spin-tools');
+      tools.style.opacity = '0.3';
+      tools.style.display = 'flex';
 
-      if (state.country === 'ru') await spinRussia();
-      else if (state.country === 'by') await spinBelarus();
-      else if (state.country === 'ae') await spinDubai();
-      else await spinKazakhstan();
-
-      const sym = state.syms[state.country];
-      btn.className = "w-full h-[58px] rounded-2xl bg-[#2ecc71] hover:bg-[#27ae60] active:scale-[0.98] transition font-extrabold text-base text-[#07130a] shadow-lg shadow-[#2ecc71]/20 flex items-center justify-center gap-2";
-      btn.innerHTML = `<span>Крутить ещё</span><span id="btn-spin-price" class="bg-[#07130a]/15 px-2.5 py-0.5 rounded-lg text-xs font-black">${getCurrentSpinCost().toLocaleString('ru-RU')} ${sym}</span>`;
-
-      document.getElementById('ui-sale-note').style.opacity = '1';
-      document.getElementById('post-spin-tools').style.opacity = '1';
-      isSpinning = false;
-      skipRequested = false;
+      try {
+        if (state.country === 'ru') await spinRussia();
+        else if (state.country === 'by') await spinBelarus();
+        else if (state.country === 'ae') await spinDubai();
+        else await spinKazakhstan();
+      } catch (err) {
+        console.error("Spin error:", err);
+      } finally {
+        clearTimeout(watchdog);
+        resetSpinButtonUI();
+      }
     }
 
     function delay(ms) {
@@ -998,7 +1076,7 @@
         const timer = setTimeout(resolve, ms);
         const check = setInterval(() => {
           if (skipRequested) { clearTimeout(timer); clearInterval(check); resolve(); }
-        }, 30);
+        }, 25);
       });
     }
 
@@ -1007,6 +1085,7 @@
       const s2 = document.getElementById('slot-2');
       const s3 = document.getElementById('slot-3');
       const sReg = document.getElementById('slot-reg');
+      if (!s1 || !s2 || !s3 || !sReg) return;
 
       const t1 = setInterval(() => { s1.innerText = getRandom(LETTERS); sounds.click.play(); haptic('light'); }, 50);
       const t2 = setInterval(() => { s2.innerText = Math.floor(100 + Math.random() * 900); }, 50);
@@ -1014,21 +1093,16 @@
       const t4 = setInterval(() => { sReg.innerText = getRandom(REG_LIST); }, 50);
       activeIntervals = [t1, t2, t3, t4];
 
-      // Генерация с учетом ставки
       let targetNum = String(Math.floor(100 + Math.random() * 900));
       let targetL1 = getRandom(LETTERS);
       let targetL2 = getRandom(LETTERS) + getRandom(LETTERS);
       let targetReg = getRandom(REG_LIST);
 
-      if (state.betMultiplier >= 100) {
-        const d = String(Math.floor(1 + Math.random() * 9));
-        targetNum = d + d + d;
-      } else if (state.betMultiplier >= 35) {
-        targetNum = '007';
-        targetReg = '777';
-      } else if (state.betMultiplier >= 8) {
-        const d = String(Math.floor(1 + Math.random() * 9));
-        targetNum = d + d + String(Math.floor(Math.random() * 9));
+      const rollBlat = Math.random();
+      if (rollBlat < 0.05 || state.betMultiplier >= 100) {
+        targetL1 = 'А'; targetL2 = 'МР'; targetNum = '777'; targetReg = '77';
+      } else if (rollBlat < 0.1 || state.betMultiplier >= 35) {
+        targetL1 = 'Е'; targetL2 = 'КХ'; targetNum = '007'; targetReg = '77';
       }
 
       await delay(600); clearInterval(t1); s1.innerText = targetL1; sounds.lock.play();
@@ -1042,11 +1116,26 @@
       let mult = state.betMultiplier;
       let perks = [];
       let rarity = "Обычный";
+
+      const series = targetL1 + targetL2;
       const [d1, d2, d3] = targetNum.split('');
-      if (d1 === d2 && d2 === d3) { mult *= 15; perks.push(`3 одинаковые цифры <b class="text-[#2ecc71]">×15</b>`); rarity = "Эпический"; }
+
+      if (series === 'АМР') { mult *= 250; perks.push(`Серия «АМР» <b class="text-[#2ecc71]">×250</b>`); rarity = "Легендарный"; }
+      else if (series === 'ЕКХ') { mult *= 120; perks.push(`Серия «ЕКХ» <b class="text-[#2ecc71]">×120</b>`); rarity = "Легендарный"; }
+      else if (series === 'ММР' || series === 'ККХ') { mult *= 60; perks.push(`Блатная серия <b class="text-[#2ecc71]">×60</b>`); rarity = "Эпический"; }
+      else if (series === 'ААА' || series === 'ООО' || series === 'МММ') { mult *= 6; perks.push(`Серия «${series}» <b class="text-[#2ecc71]">×6</b>`); }
+
+      if (targetNum === '777') { mult *= 600; perks.push(`Все семёрки <b class="text-[#2ecc71]">×600</b>`); rarity = "Мифический"; }
+      else if (targetNum === '007') { mult *= 150; perks.push(`Номер 007 <b class="text-[#2ecc71]">×150</b>`); rarity = "Эпический"; }
+      else if (targetNum === '001') { mult *= 200; perks.push(`Номер 1 <b class="text-[#2ecc71]">×200</b>`); rarity = "Эпический"; }
+      else if (d1 === d2 && d2 === d3) { mult *= 150; perks.push(`Все одинаковые <b class="text-[#2ecc71]">×150</b>`); rarity = "Эпический"; }
+      else if (targetNum.endsWith('00')) { mult *= 25; perks.push(`Круглый номер <b class="text-[#2ecc71]">×25</b>`); }
+      else if (d1 === d3 && d1 !== d2) { mult *= 4; perks.push(`Зеркальные <b class="text-[#2ecc71]">×4</b>`); }
       else if (d1 === d2 || d2 === d3 || d1 === d3) { mult *= 1.8; perks.push(`2 одинаковые цифры <b class="text-[#2ecc71]">×1,8</b>`); rarity = "Необычный"; }
 
-      if (['77', '99', '199', '777', '799'].includes(targetReg)) { mult *= 1.4; perks.push(`Столичный регион <b class="text-[#2ecc71]">×1,4</b>`); }
+      if (targetNum.endsWith(targetReg) || targetNum === targetReg) { mult *= 20; perks.push(`Цифры = регион <b class="text-[#2ecc71]">×20</b>`); }
+      else if (['77', '99', '199', '777', '799'].includes(targetReg)) { mult *= 1.4; perks.push(`Москва <b class="text-[#2ecc71]">×1,4</b>`); }
+
       if (state.betMultiplier >= 35 && rarity === 'Обычный') rarity = 'Редкий';
 
       finishOutcome(Math.round(250 * mult), perks, rarity, `${targetL1} ${targetNum} ${targetL2} ${targetReg}`);
@@ -1056,6 +1145,7 @@
       const s1 = document.getElementById('slot-1');
       const s2 = document.getElementById('slot-2');
       const sReg = document.getElementById('slot-reg');
+      if (!s1 || !s2 || !sReg) return;
 
       const t1 = setInterval(() => { s1.innerText = Math.floor(1000 + Math.random() * 9000); sounds.click.play(); }, 50);
       const t2 = setInterval(() => { s2.innerText = getRandom(LETTERS) + getRandom(LETTERS); }, 50);
@@ -1076,25 +1166,40 @@
     async function spinDubai() {
       const s1 = document.getElementById('slot-1');
       const s2 = document.getElementById('slot-2');
+      if (!s1 || !s2) return;
+
       const t1 = setInterval(() => { s1.innerText = getRandom(['A','B','S','X']); sounds.click.play(); }, 50);
       const t2 = setInterval(() => { s2.innerText = Math.floor(10 + Math.random() * 9990); }, 50);
       activeIntervals = [t1, t2];
 
-      const targetNum = String(Math.floor(10 + Math.random() * 990));
-      const targetL = 'S';
+      const roll = Math.random();
+      let targetNum = String(Math.floor(10 + Math.random() * 990));
+      let targetL = 'S';
+      let mult = state.betMultiplier;
+      let perks = [];
+      let rarity = "Редкий";
+
+      if (roll < 0.05 || state.betMultiplier >= 100) {
+        targetNum = '7'; mult *= 1500; perks.push(`Однозначный номер Дубая <b class="text-[#2ecc71]">×1500</b>`); rarity = "Мифический";
+      } else if (roll < 0.2 || state.betMultiplier >= 35) {
+        targetNum = '77'; mult *= 150; perks.push(`Двузначный номер <b class="text-[#2ecc71]">×150</b>`); rarity = "Легендарный";
+      } else {
+        perks.push(`Серия Дубая ×${state.betMultiplier}`);
+      }
 
       await delay(700); clearInterval(t1); s1.innerText = targetL; sounds.lock.play();
       if (!skipRequested) await delay(600); clearInterval(t2); s2.innerText = targetNum; sounds.lock.play();
 
       activeIntervals.forEach(t => clearInterval(t));
-      const cost = Math.round(15000 * state.betMultiplier);
-      finishOutcome(cost, [`Серия Дубая ×${state.betMultiplier}`], "Редкий", `DUBAI ${targetL} ${targetNum}`);
+      const cost = Math.round(15000 * mult);
+      finishOutcome(cost, perks, rarity, `DUBAI ${targetL} ${targetNum}`);
     }
 
     async function spinKazakhstan() {
       const s1 = document.getElementById('slot-1');
       const s2 = document.getElementById('slot-2');
       const sReg = document.getElementById('slot-reg');
+      if (!s1 || !s2 || !sReg) return;
 
       const t1 = setInterval(() => { s1.innerText = Math.floor(100 + Math.random() * 900); sounds.click.play(); }, 50);
       const t2 = setInterval(() => { s2.innerText = getRandom(LETTERS) + getRandom(LETTERS) + getRandom(LETTERS); }, 50);
@@ -1130,23 +1235,55 @@
 
     function getRandom(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
 
-    // --- ГАРАЖ (СОХРАНЕНИЕ НОМЕРОВ) ---
+    // --- ГАРАЖ: ИСПРАВЛЕНО (ИСЧЕЗНОВЕНИЕ КНОПКИ, АНИМАЦИЯ И ЗАЩИТА ОТ ДУБЛИРОВАНИЯ) ---
     function savePlateToGarage() {
-      haptic('light');
+      // Защита от дублей
+      if (state.garage.length > 0 && state.garage[0].raw === currentPlateData.raw) {
+        return;
+      }
+
+      haptic('success');
+      sounds.lock.play();
+
+      // Анимация вспышки и легкого увеличения номера
+      const plateBox = document.getElementById('current-plate-box');
+      if (plateBox) {
+        plateBox.style.transform = 'scale(1.035)';
+        plateBox.style.boxShadow = '0 0 28px rgba(46, 204, 113, 0.7)';
+        setTimeout(() => {
+          plateBox.style.transform = 'scale(1)';
+          plateBox.style.boxShadow = '';
+        }, 260);
+      }
+
+      // Добавляем в гараж
       state.garage.unshift({ ...currentPlateData });
       save();
-      document.getElementById('btn-save-garage').innerText = 'В гараже ✓';
+
+      // Плавное исчезновение кнопок действий
+      const tools = document.getElementById('post-spin-tools');
+      tools.style.opacity = '0';
+      tools.style.transform = 'translateY(8px)';
+      setTimeout(() => {
+        tools.style.display = 'none';
+      }, 200);
+
+      // Изменение надписи
+      document.getElementById('ui-sale-note').innerHTML = `<span class="text-[#2ecc71] font-bold">✓ Номер сохранён в гараж!</span>`;
+
       renderGarageDOM();
-      alert("Номер успешно сохранён в ваш Гараж!");
     }
 
     function renderGarageDOM() {
       const el = document.getElementById('gar-list');
       document.getElementById('gar-cnt').innerText = state.garage.length;
+      document.getElementById('menu-badge-garage').innerText = state.garage.length;
+
       if (state.garage.length === 0) {
         el.innerHTML = '<div class="text-center text-xs text-[#71757f] py-12">В гараже пока нет сохранённых номеров.<br>Выбивайте номера и жмите «В гараж»!</div>';
         return;
       }
+
       el.innerHTML = state.garage.map((g, i) => `
         <div class="bg-[#18191e] border border-[#262831] p-3 rounded-2xl flex justify-between items-center">
           <div>
@@ -1169,27 +1306,37 @@
       renderGarageDOM();
     }
 
-    // --- КОНТЕЙНЕРЫ И РУЛЕТКА МАШИН (ТОЧНО ПО ЦЕНТРУ) ---
-    let selectedBoxCost = 10000;
-    let selectedBoxName = 'Обычный';
+    // --- КЕЙСЫ И АВТОПАРК ---
+    let currentCaseType = 'Обычный';
 
-    function openContainerInfo(cost, name) {
-      selectedBoxCost = cost;
-      selectedBoxName = name;
-      document.getElementById('c-box-title').innerText = `${name} контейнер`;
-      document.getElementById('c-box-btn-price').innerText = cost.toLocaleString('ru-RU');
+    function openContainerInfo(caseName) {
+      currentCaseType = caseName;
+      const data = CASES_DATA[caseName];
+
+      document.getElementById('c-box-title').innerText = `${caseName} контейнер`;
+      document.getElementById('c-box-btn-price').innerText = data.cost.toLocaleString('ru-RU');
       document.getElementById('c-box-wallet').innerText = `${state.wallets.ru.toLocaleString('ru-RU')} ₽`;
+
+      const oddsContainer = document.getElementById('c-box-odds-list');
+      oddsContainer.innerHTML = data.odds.map(o => `
+        <div class="bg-[#16171b] p-2.5 rounded-xl flex justify-between">
+          <span class="${o.color}">${o.label}</span>
+          <b class="${o.color}">${o.pct}</b>
+        </div>
+      `).join('');
+
       openModal('modal-container-open');
     }
 
     let wonCarData = null;
 
     function startCarRoulette() {
-      if (state.wallets.ru < selectedBoxCost) {
+      const caseData = CASES_DATA[currentCaseType];
+      if (state.wallets.ru < caseData.cost) {
         alert("Недостаточно средств в кошельке РФ!");
         return;
       }
-      state.wallets.ru -= selectedBoxCost;
+      state.wallets.ru -= caseData.cost;
       save();
       closeModal('modal-container-open');
       openModal('modal-car-roulette');
@@ -1198,31 +1345,55 @@
       track.innerHTML = '';
       document.getElementById('car-win-card').classList.add('hidden');
 
-      // 35 машин
       for (let i = 0; i < 35; i++) {
         const c = CARS_DATABASE[Math.floor(Math.random() * CARS_DATABASE.length)];
         const div = document.createElement('div');
         div.className = 'car-tape-card';
-        div.innerHTML = `${render3DIsometricCar(c, 110, 68)}<div class="text-[10px] font-bold text-white truncate w-full text-center mt-1">${c.name}</div>`;
+        div.innerHTML = `${render3DIsometricCar(c, 120, 68)}<div class="text-[10px] font-bold text-white truncate w-full text-center mt-1">${c.name}</div>`;
         track.appendChild(div);
       }
 
-      // Выбор машины
       const roll = Math.random() * 100;
-      let pool = CARS_DATABASE.filter(c => c.rarity === 'Обычный');
-      if (roll < 70) pool = CARS_DATABASE.filter(c => c.rarity === 'Обычный');
-      else if (roll < 92) pool = CARS_DATABASE.filter(c => c.rarity === 'Необычный');
-      else if (roll < 98) pool = CARS_DATABASE.filter(c => c.rarity === 'Редкий');
-      else pool = CARS_DATABASE.filter(c => c.rarity === 'Эпический' || c.rarity === 'Легендарный');
+      let targetRarity = 'Обычный';
 
+      if (currentCaseType === 'Обычный') {
+        if (roll < 70) targetRarity = 'Обычный';
+        else if (roll < 92) targetRarity = 'Необычный';
+        else if (roll < 98) targetRarity = 'Редкий';
+        else if (roll < 99.6) targetRarity = 'Эпический';
+        else if (roll < 99.95) targetRarity = 'Легендарный';
+        else targetRarity = 'Мифический';
+      } else if (currentCaseType === 'Редкий') {
+        if (roll < 32) targetRarity = 'Обычный';
+        else if (roll < 72) targetRarity = 'Необычный';
+        else if (roll < 91) targetRarity = 'Редкий';
+        else if (roll < 97.5) targetRarity = 'Эпический';
+        else if (roll < 99.6) targetRarity = 'Легендарный';
+        else targetRarity = 'Мифический';
+      } else if (currentCaseType === 'Эпический') {
+        if (roll < 10) targetRarity = 'Обычный';
+        else if (roll < 35) targetRarity = 'Необычный';
+        else if (roll < 70) targetRarity = 'Редкий';
+        else if (roll < 87) targetRarity = 'Эпический';
+        else if (roll < 99) targetRarity = 'Легендарный';
+        else targetRarity = 'Мифический';
+      } else {
+        if (roll < 5) targetRarity = 'Необычный';
+        else if (roll < 25) targetRarity = 'Редкий';
+        else if (roll < 57) targetRarity = 'Эпический';
+        else if (roll < 97) targetRarity = 'Легендарный';
+        else targetRarity = 'Мифический';
+      }
+
+      let pool = CARS_DATABASE.filter(c => c.rarity === targetRarity);
+      if (pool.length === 0) pool = CARS_DATABASE;
       wonCarData = pool[Math.floor(Math.random() * pool.length)];
 
       const WIN_IDX = 26;
-      track.children[WIN_IDX].innerHTML = `${render3DIsometricCar(wonCarData, 110, 68)}<div class="text-[10px] font-bold text-[#2ecc71] truncate w-full text-center mt-1">${wonCarData.name}</div>`;
+      track.children[WIN_IDX].innerHTML = `${render3DIsometricCar(wonCarData, 120, 68)}<div class="text-[10px] font-bold text-[#2ecc71] truncate w-full text-center mt-1">${wonCarData.name}</div>`;
 
-      // Расчет остановки строго по центру желтой линии
       const viewport = document.getElementById('car-tape-viewport');
-      const cardWidth = 154; // 146 width + 8 margin
+      const cardWidth = 154;
       const targetOffset = (WIN_IDX * cardWidth) + (cardWidth / 2) - (viewport.clientWidth / 2);
 
       let startTime = null;
@@ -1248,7 +1419,6 @@
       card.classList.remove('hidden');
       card.classList.add('flex');
 
-      // АВТОМАТИЧЕСКОЕ СОХРАНЕНИЕ В АВТОПАРК
       state.autopark.unshift({ ...wonCarData, plate: '' });
       save();
 
@@ -1273,10 +1443,11 @@
       closeModal('modal-car-roulette');
     }
 
-    // --- АВТОПАРК ---
     function renderAutoparkDOM() {
       const el = document.getElementById('park-list');
       document.getElementById('park-cnt').innerText = state.autopark.length;
+      document.getElementById('menu-badge-autopark').innerText = state.autopark.length;
+
       if (state.autopark.length === 0) {
         el.innerHTML = '<div class="text-center text-xs text-[#71757f] py-12">В автопарке пока нет машин.<br>Открывайте контейнеры во вкладке «Машины»!</div>';
         return;
@@ -1402,7 +1573,7 @@
       save();
     }
 
-    // Инициализация при старте
+    // Инициализация
     renderPlateBaseLayout();
     renderGlobalHeader();
   </script>
