@@ -4,328 +4,760 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
   <title>Номерок</title>
-  <!-- Подключение Telegram WebApp SDK -->
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
   <style>
     :root {
-      --bg-color: #0f1012;
-      --card-bg: #1c1d22;
-      --green: #2ecc71;
-      --text-muted: #888a93;
+      --bg: #0b0c0e;
+      --card: #16171b;
+      --card-border: #23252b;
+      --accent: #2ecc71;
+      --accent-glow: rgba(46, 204, 113, 0.25);
+      --text: #ffffff;
+      --text-dim: #7f838d;
+      --gold: #f1c40f;
     }
 
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; }
     body {
       margin: 0;
-      padding: 20px;
-      background-color: var(--bg-color);
-      color: #ffffff;
+      padding: 0;
+      background: var(--bg);
+      color: var(--text);
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      min-height: 100vh;
       display: flex;
       flex-direction: column;
-      align-items: center;
-      justify-content: space-between;
-      min-height: 90vh;
       user-select: none;
-      -webkit-tap-highlight-color: transparent;
+      overflow-x: hidden;
     }
 
-    .top-bar {
-      width: 100%;
+    /* Верхняя панель */
+    .header {
+      padding: 14px 18px;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      background: rgba(17, 18, 22, 0.85);
+      backdrop-filter: blur(10px);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      border-bottom: 1px solid var(--card-border);
     }
-
-    .balance-badge {
-      background: var(--card-bg);
-      padding: 8px 16px;
+    .header-left { display: flex; gap: 8px; align-items: center; }
+    .badge {
+      background: var(--card);
+      border: 1px solid var(--card-border);
+      padding: 6px 12px;
       border-radius: 20px;
-      font-weight: bold;
-      font-size: 16px;
+      font-size: 13px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      cursor: pointer;
     }
+    .balance-box { text-align: right; }
+    .balance-label { font-size: 10px; color: var(--text-dim); text-transform: uppercase; }
+    .balance-val { font-size: 17px; font-weight: 900; color: #fff; }
 
-    .game-area {
+    /* Контейнер экранов */
+    .screen { display: none; padding: 16px; flex-direction: column; flex: 1; }
+    .screen.active { display: flex; }
+
+    /* Экран игры */
+    .plate-wrapper {
+      margin: 30px auto 10px;
       display: flex;
       flex-direction: column;
       align-items: center;
-      width: 100%;
+      min-height: 180px;
+      justify-content: center;
     }
+    .rarity-pill {
+      font-size: 13px;
+      font-weight: 700;
+      padding: 4px 14px;
+      border-radius: 20px;
+      margin-bottom: 10px;
+      background: rgba(255,255,255,0.06);
+      color: var(--text-dim);
+    }
+    .cost-text { font-size: 28px; font-weight: 900; color: var(--accent); margin-bottom: 16px; }
 
-    .status-badge {
-      font-size: 14px;
-      padding: 4px 10px;
+    /* СТИЛИ АВТОМОБИЛЬНЫХ ПЛИТ */
+    .plate {
+      width: 320px;
+      height: 68px;
+      background: #fff;
+      border: 3.5px solid #111;
       border-radius: 8px;
-      margin-bottom: 12px;
-      font-weight: 600;
-      color: var(--text-muted);
-    }
-
-    .cost-preview {
-      font-size: 24px;
-      font-weight: 800;
-      color: var(--green);
-      margin-bottom: 20px;
-    }
-
-    /* Русский автомобильный номер на чистом CSS */
-    .plate-container {
-      width: 90%;
-      max-width: 340px;
-      height: 72px;
-      background: #ffffff;
-      border: 3px solid #111;
-      border-radius: 8px;
-      box-shadow: 0 8px 25px rgba(0,0,0,0.5);
-      display: flex;
       color: #111;
-      overflow: hidden;
+      display: flex;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.6);
       position: relative;
     }
-
-    .plate-main {
-      flex: 3;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 38px;
-      font-weight: 900;
-      letter-spacing: 2px;
-      border-right: 2px solid #222;
-      font-family: monospace, sans-serif;
-    }
-
-    .plate-region {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      font-family: monospace, sans-serif;
-    }
-
-    .region-code {
-      font-size: 26px;
-      font-weight: 900;
-      line-height: 1;
-    }
-
-    .region-sub {
-      display: flex;
-      align-items: center;
-      gap: 3px;
-      font-size: 11px;
-      font-weight: 700;
-      margin-top: 2px;
-    }
-
-    .flag {
-      width: 14px;
-      height: 9px;
-      display: flex;
-      flex-direction: column;
-      border: 0.5px solid #ccc;
-    }
+    /* РФ */
+    .plate-ru .main { flex: 72; font-family: "Courier New", monospace, sans-serif; font-size: 38px; font-weight: 900; display: flex; align-items: center; justify-content: center; letter-spacing: 3px; border-right: 2.5px solid #111; }
+    .plate-ru .side { flex: 28; display: flex; flex-direction: column; align-items: center; justify-content: center; font-family: monospace; }
+    .plate-ru .side-code { font-size: 26px; font-weight: 900; line-height: 1; }
+    .plate-ru .side-sub { display: flex; align-items: center; gap: 4px; font-size: 10px; font-weight: 800; }
+    .flag { width: 13px; height: 9px; display: flex; flex-direction: column; border: 0.5px solid #888; }
     .flag-w { background: #fff; height: 33%; }
     .flag-b { background: #0039A6; height: 33%; }
     .flag-r { background: #D52B1E; height: 34%; }
 
-    .multipliers-list {
-      margin-top: 20px;
-      font-size: 13px;
-      color: var(--text-muted);
+    /* Дубай */
+    .plate-ae { background: #fff; justify-content: space-between; align-items: center; padding: 0 16px; font-weight: 900; }
+    .plate-ae .city { font-size: 18px; border-right: 2px solid #111; padding-right: 12px; }
+    .plate-ae .number { font-size: 36px; letter-spacing: 4px; }
+
+    /* Казахстан */
+    .plate-kz { display: flex; }
+    .plate-kz .flag-kz { width: 35px; background: #00afca; display: flex; align-items: center; justify-content: center; color: #f1c40f; font-size: 11px; font-weight: bold; border-right: 2px solid #111; }
+    .plate-kz .main { flex: 1; font-size: 34px; font-weight: 900; display: flex; align-items: center; justify-content: center; }
+
+    /* Описание и множители */
+    .perks-box {
+      min-height: 60px;
+      margin-top: 15px;
       text-align: center;
-      min-height: 40px;
-      line-height: 1.5;
+      font-size: 13px;
+      color: var(--text-dim);
+      line-height: 1.6;
+    }
+    .perks-box b { color: #fff; }
+
+    /* Действия с номером */
+    .action-row { display: flex; gap: 10px; width: 100%; max-width: 340px; margin: 15px auto; }
+    .btn-sec {
+      flex: 1;
+      background: var(--card);
+      border: 1px solid var(--card-border);
+      color: #fff;
+      padding: 12px;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 14px;
+      cursor: pointer;
     }
 
-    .controls {
-      width: 100%;
+    /* Селектор страны */
+    .country-selector {
+      background: var(--card);
+      border: 1px solid var(--card-border);
+      padding: 10px 16px;
+      border-radius: 14px;
       display: flex;
-      flex-direction: column;
-      gap: 12px;
+      justify-content: space-between;
+      align-items: center;
+      margin: 15px auto 25px;
+      width: 90%;
+      max-width: 340px;
+      cursor: pointer;
     }
 
-    .btn-spin {
-      background: var(--green);
-      color: #000;
+    /* Главная кнопка крутить */
+    .btn-main {
+      width: 100%;
+      max-width: 360px;
+      background: var(--accent);
+      color: #05160c;
       border: none;
       padding: 18px;
       border-radius: 16px;
       font-size: 18px;
-      font-weight: 800;
+      font-weight: 900;
       cursor: pointer;
-      box-shadow: 0 4px 15px rgba(46, 204, 113, 0.3);
+      box-shadow: 0 6px 20px var(--accent-glow);
+      margin: 0 auto 15px;
+      display: block;
     }
+    .btn-main:active { transform: scale(0.98); }
 
-    .btn-spin:active {
-      transform: scale(0.98);
+    /* Нижняя навигация */
+    .bottom-nav {
+      position: sticky;
+      bottom: 0;
+      background: rgba(17, 18, 22, 0.95);
+      backdrop-filter: blur(12px);
+      border-top: 1px solid var(--card-border);
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      padding: 8px 4px 14px;
+      z-index: 50;
     }
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      font-size: 10px;
+      color: var(--text-dim);
+      cursor: pointer;
+      font-weight: 600;
+    }
+    .nav-item.active { color: var(--accent); }
+    .nav-icon { font-size: 20px; }
+
+    /* Модалки и выпадающие окна */
+    .sheet-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.75);
+      z-index: 100;
+      display: none;
+      align-items: flex-end;
+    }
+    .sheet-overlay.show { display: flex; }
+    .sheet {
+      background: #141518;
+      border-top: 1px solid var(--card-border);
+      border-radius: 24px 24px 0 0;
+      width: 100%;
+      max-height: 85vh;
+      overflow-y: auto;
+      padding: 24px 20px 30px;
+    }
+    .sheet-title { font-size: 18px; font-weight: 900; margin-bottom: 6px; }
+    .sheet-sub { font-size: 12px; color: var(--text-dim); margin-bottom: 20px; }
+
+    /* Сетка меню */
+    .menu-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 20px; }
+    .menu-card {
+      background: var(--card);
+      border: 1px solid var(--card-border);
+      padding: 16px 8px;
+      border-radius: 16px;
+      text-align: center;
+      cursor: pointer;
+    }
+    .menu-card span { font-size: 24px; display: block; margin-bottom: 6px; }
+    .menu-card p { margin: 0; font-size: 12px; font-weight: 700; }
+
+    /* Списки и элементы */
+    .list-card {
+      background: var(--card);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      padding: 12px 16px;
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .progress-bar {
+      height: 8px;
+      background: #252830;
+      border-radius: 8px;
+      overflow: hidden;
+      margin: 8px 0;
+    }
+    .progress-fill { height: 100%; background: var(--accent); width: 0%; transition: width 0.3s; }
   </style>
 </head>
 <body>
 
-  <div class="top-bar">
-    <div class="status-badge" id="rarity">Обычный</div>
-    <div class="balance-badge"><span id="balance">100 000</span> ₽</div>
+  <!-- ВЕРХНИЙ БАР -->
+  <div class="header">
+    <div class="header-left">
+      <div class="badge" onclick="openMenu()"><span style="font-size:16px;">☰</span> Меню</div>
+      <div class="badge" onclick="openScreen('stats')">Ур. <span id="lvl">1</span></div>
+      <div class="badge" onclick="openLuckSheet()">🍀 <span id="luckVal">48</span>/100</div>
+    </div>
+    <div class="balance-box">
+      <div class="balance-label" id="curName">Кошелек РФ</div>
+      <div class="balance-val"><span id="bal">100 000</span> <span id="curSym">₽</span></div>
+    </div>
   </div>
 
-  <div class="game-area">
-    <div class="cost-preview" id="cost">0 ₽</div>
+  <!-- ЭКРАН 1: КРУТИЛКА -->
+  <div class="screen active" id="screen-game">
+    <div class="plate-wrapper">
+      <div class="rarity-pill" id="rarity">Обычный</div>
+      <div class="cost-text" id="cost">0 ₽</div>
 
-    <div class="plate-container">
-      <div class="plate-main" id="plateMain">А000АА</div>
-      <div class="plate-region">
-        <span class="region-code" id="plateReg">77</span>
-        <div class="region-sub">
-          <span>RUS</span>
-          <div class="flag">
-            <div class="flag-w"></div>
-            <div class="flag-b"></div>
-            <div class="flag-r"></div>
+      <div class="plate plate-ru" id="plateBox">
+        <div class="main" id="plateTxt">А000АА</div>
+        <div class="side" id="plateSide">
+          <span class="side-code" id="plateReg">77</span>
+          <div class="side-sub">
+            <span>RUS</span>
+            <div class="flag">
+              <div class="flag-w"></div><div class="flag-b"></div><div class="flag-r"></div>
+            </div>
           </div>
         </div>
       </div>
+
+      <div class="perks-box" id="perks">Нажмите кнопку, чтобы крутить номера</div>
     </div>
 
-    <div class="multipliers-list" id="perks">Нажмите «Крутить», чтобы испытать удачу</div>
+    <div class="action-row" id="postSpinActions" style="display:none;">
+      <button class="btn-sec" onclick="keepNumber()">В гараж 🚗</button>
+      <button class="btn-sec" onclick="sellCurrent()">Продать 💰</button>
+    </div>
+
+    <div class="country-selector" onclick="openCountrySheet()">
+      <div style="display:flex; align-items:center; gap:10px;">
+        <span id="countryFlag" style="font-size:22px;">🇷🇺</span>
+        <div>
+          <div style="font-size:13px; font-weight:800;" id="countryTitle">Россия</div>
+          <div style="font-size:11px; color:var(--text-dim);" id="countryType">Гражданский</div>
+        </div>
+      </div>
+      <span style="color:var(--text-dim);">Изменить ▾</span>
+    </div>
+
+    <button class="btn-main" id="spinBtn" onclick="spin()">Крутить (<span id="spinPrice">1 000</span> <span id="spinSym">₽</span>)</button>
   </div>
 
-  <div class="controls">
-    <button class="btn-spin" id="spinBtn" onclick="spin()">Крутить (1 000 ₽)</button>
+  <!-- ЭКРАН 2: ГАРАЖ -->
+  <div class="screen" id="screen-garage">
+    <h2 style="margin:0 0 14px;">Гараж номеров</h2>
+    <div style="color:var(--text-dim); font-size:12px; margin-bottom:15px;">Номера, которые вы оставили себе:</div>
+    <div id="garageList"></div>
+  </div>
+
+  <!-- ЭКРАН 3: КОЛЛЕКЦИЯ -->
+  <div class="screen" id="screen-collection">
+    <h2 style="margin:0 0 14px;">Коллекция сочетаний</h2>
+    <div id="collectionList"></div>
+  </div>
+
+  <!-- ЭКРАН 4: РЕЙТИНГ -->
+  <div class="screen" id="screen-leaderboard">
+    <h2 style="margin:0 0 14px;">Топ игроков</h2>
+    <div class="list-card" style="border-color:var(--gold);">
+      <div>🥇 <b>Александр</b><div style="font-size:11px; color:var(--text-dim);">Х777ХХ 77</div></div>
+      <div style="font-weight:900; color:var(--gold);">12 374 020 ₽</div>
+    </div>
+    <div class="list-card">
+      <div>🥈 <b>Илья</b><div style="font-size:11px; color:var(--text-dim);">Е222ЕЕ 22</div></div>
+      <div style="font-weight:900;">4 253 975 ₽</div>
+    </div>
+    <div class="list-card">
+      <div>🥉 <b>Максим</b><div style="font-size:11px; color:var(--text-dim);">А001АА 99</div></div>
+      <div style="font-weight:900;">3 440 007 ₽</div>
+    </div>
+  </div>
+
+  <!-- ЭКРАН 5: СТАТИСТИКА -->
+  <div class="screen" id="screen-stats">
+    <h2 style="margin:0 0 14px;">Статистика профиля</h2>
+    <div class="list-card" style="flex-direction:column; align-items:flex-start;">
+      <div style="width:100%; display:flex; justify-content:space-between;">
+        <span>Опыт: <b id="xpVal">0</b> / <span id="xpMax">100</span> XP</span>
+        <span style="color:var(--accent);">Уровень <span id="lvlVal">1</span></span>
+      </div>
+      <div class="progress-bar" style="width:100%;"><div class="progress-fill" id="xpFill"></div></div>
+    </div>
+    <div class="list-card">
+      <span>Всего открытий</span>
+      <b id="totalSpins">0</b>
+    </div>
+    <div class="list-card">
+      <span>Лучший номер</span>
+      <b id="bestNumber" style="color:var(--accent);">-</b>
+    </div>
+  </div>
+
+  <!-- НИЖНЯЯ НАВИГАЦИЯ -->
+  <div class="bottom-nav">
+    <div class="nav-item active" onclick="navTo('game')"><span class="nav-icon">🎰</span>Крутить</div>
+    <div class="nav-item" onclick="navTo('garage')"><span class="nav-icon">📁</span>Гараж</div>
+    <div class="nav-item" onclick="navTo('collection')"><span class="nav-icon">🏆</span>Коллекция</div>
+    <div class="nav-item" onclick="navTo('leaderboard')"><span class="nav-icon">📊</span>Рейтинг</div>
+    <div class="nav-item" onclick="openMenu()"><span class="nav-icon">⚙️</span>Меню</div>
+  </div>
+
+  <!-- ШИТ ВЫБОРА СТРАНЫ -->
+  <div class="sheet-overlay" id="countrySheet">
+    <div class="sheet">
+      <div class="sheet-title">Какие номера крутить?</div>
+      <div class="sheet-sub">У каждой страны свой отдельный кошелек</div>
+      
+      <div class="list-card" onclick="setCountry('ru')">
+        <div>🇷🇺 <b>Россия</b> (Гражданский)</div>
+        <div style="font-size:12px; color:var(--accent);">1 000 ₽</div>
+      </div>
+      <div class="list-card" onclick="setCountry('by')">
+        <div>🇧🇾 <b>Беларусь</b></div>
+        <div style="font-size:12px; color:var(--accent);">40 Br</div>
+      </div>
+      <div class="list-card" onclick="setCountry('kz')">
+        <div>🇰🇿 <b>Казахстан</b></div>
+        <div style="font-size:12px; color:var(--accent);">6 000 ₸</div>
+      </div>
+      <div class="list-card" onclick="setCountry('ae')">
+        <div>🇦🇪 <b>Дубай</b></div>
+        <div style="font-size:12px; color:var(--accent);">10 000 ₽</div>
+      </div>
+      <button class="btn-sec" style="width:100%; margin-top:10px;" onclick="closeSheet('countrySheet')">Закрыть</button>
+    </div>
+  </div>
+
+  <!-- ШИТ МЕНЮ -->
+  <div class="sheet-overlay" id="menuSheet">
+    <div class="sheet">
+      <div class="sheet-title">Разделы и функции</div>
+      <div class="sheet-sub">Быстрый доступ к сервисам</div>
+
+      <div class="menu-grid">
+        <div class="menu-card" onclick="closeSheet('menuSheet'); openDailyReward();"><span>🎁</span><p>Подарок</p></div>
+        <div class="menu-card" onclick="closeSheet('menuSheet'); openPromo();"><span>🎟️</span><p>Купон</p></div>
+        <div class="menu-card" onclick="closeSheet('menuSheet'); navTo('stats');"><span>📈</span><p>Статистика</p></div>
+      </div>
+      <button class="btn-sec" style="width:100%;" onclick="closeSheet('menuSheet')">Закрыть</button>
+    </div>
+  </div>
+
+  <!-- ШИТ ШКАЛЫ УДАЧИ -->
+  <div class="sheet-overlay" id="luckSheet">
+    <div class="sheet">
+      <div class="sheet-title">🍀 Шкала удачи</div>
+      <div class="sheet-sub">Каждый 100-й бросок — гарантированная удача ×5. Каждый 500-й — супер-удача ×25.</div>
+      <div class="list-card">
+        <span>Прогресс до бонуса:</span>
+        <b><span id="luckProg">48</span> / 100</b>
+      </div>
+      <button class="btn-sec" style="width:100%; margin-top:10px;" onclick="closeSheet('luckSheet')">Понятно</button>
+    </div>
   </div>
 
   <script>
+    // --- ИНИЦИАЛИЗАЦИЯ И ЗВУКИ (WEB AUDIO API) ---
     const tg = window.Telegram?.WebApp;
-    if (tg) tg.expand();
+    if (tg) { tg.expand(); }
 
-    // Разрешенные буквы по ГОСТ РФ
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    function playTone(freq, type = 'sine', duration = 0.05) {
+      try {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = type;
+        osc.frequency.value = freq;
+        gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + duration);
+      } catch (e) {}
+    }
+
+    // --- СОСТОЯНИЕ ИГРЫ ---
     const LETTERS = ['А', 'В', 'Е', 'К', 'М', 'Н', 'О', 'Р', 'С', 'Т', 'У', 'Х'];
     const REGIONS = ['77', '99', '199', '777', '799', '78', '98', '178', '23', '93', '123', '16', '116', '54', '63'];
 
-    let balance = parseInt(localStorage.getItem('balance')) || 100000;
-    const SPIN_COST = 1000;
+    let state = {
+      country: 'ru',
+      wallets: { ru: 100000, by: 4000, kz: 600000, ae: 100000 },
+      prices: { ru: 1000, by: 40, kz: 6000, ae: 10000 },
+      syms: { ru: '₽', by: 'Br', kz: '₸', ae: '₽' },
+      xp: 0,
+      level: 1,
+      totalSpins: 0,
+      luck: 0,
+      bestPlate: '',
+      bestCost: 0,
+      garage: [],
+      collection: {
+        allDigits: 0,
+        allLetters: 0,
+        mirror: 0,
+        capital: 0,
+        pairs: 0
+      }
+    };
 
-    function updateBalance(val) {
-      balance = val;
-      localStorage.setItem('balance', balance);
-      document.getElementById('balance').innerText = balance.toLocaleString('ru-RU');
+    // Загрузка сохраненных данных
+    const saved = localStorage.getItem('nomerok_state');
+    if (saved) {
+      try { state = Object.assign(state, JSON.parse(saved)); } catch(e){}
     }
 
-    updateBalance(balance);
-
-    function getRandomItem(arr) {
-      return arr[Math.floor(Math.random() * arr.length)];
+    function save() {
+      localStorage.setItem('nomerok_state', JSON.stringify(state));
+      renderHeader();
     }
 
-    function generateNumber() {
-      const l1 = getRandomItem(LETTERS);
-      const l2 = getRandomItem(LETTERS);
-      const l3 = getRandomItem(LETTERS);
-      const d1 = Math.floor(Math.random() * 10);
-      const d2 = Math.floor(Math.random() * 10);
-      const d3 = Math.floor(Math.random() * 10);
-      const reg = getRandomItem(REGIONS);
+    function renderHeader() {
+      document.getElementById('bal').innerText = state.wallets[state.country].toLocaleString('ru-RU');
+      document.getElementById('curSym').innerText = state.syms[state.country];
+      document.getElementById('spinPrice').innerText = state.prices[state.country].toLocaleString('ru-RU');
+      document.getElementById('spinSym').innerText = state.syms[state.country];
+      document.getElementById('lvl').innerText = state.level;
+      document.getElementById('luckVal').innerText = state.luck;
+      document.getElementById('luckProg').innerText = state.luck;
+    }
+    renderHeader();
 
-      return {
-        text: `${l1}${d1}${d2}${d3}${l2}${l3}`,
-        digits: `${d1}${d2}${d3}`,
-        letters: `${l1}${l2}${l3}`,
-        reg: reg
-      };
+    // --- НАВИГАЦИЯ ---
+    function navTo(screenId) {
+      playTone(400);
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      document.getElementById('screen-' + screenId).classList.add('active');
+      document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+      if (event && event.currentTarget) event.currentTarget.classList.add('active');
+
+      if (screenId === 'garage') renderGarage();
+      if (screenId === 'collection') renderCollection();
+      if (screenId === 'stats') renderStats();
     }
 
-    function evaluatePlate(plate) {
-      let basePrice = 200;
-      let multiplier = 1.0;
+    function openSheet(id) { document.getElementById(id).classList.add('show'); }
+    function closeSheet(id) { document.getElementById(id).classList.remove('show'); }
+    function openMenu() { openSheet('menuSheet'); }
+    function openCountrySheet() { openSheet('countrySheet'); }
+    function openLuckSheet() { openSheet('luckSheet'); }
+
+    // --- СМЕНА СТРАНЫ ---
+    function setCountry(c) {
+      state.country = c;
+      const flags = { ru: '🇷🇺', by: '🇧🇾', kz: '🇰🇿', ae: '🇦🇪' };
+      const titles = { ru: 'Россия', by: 'Беларусь', kz: 'Казахстан', ae: 'ОАЭ Дубай' };
+      document.getElementById('countryFlag').innerText = flags[c];
+      document.getElementById('countryTitle').innerText = titles[c];
+      closeSheet('countrySheet');
+      save();
+    }
+
+    // --- ГЕНЕРАТОРЫ И ОЦЕНКА ---
+    function getRandom(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+
+    function generatePlate(country) {
+      if (country === 'ru') {
+        const l1 = getRandom(LETTERS), l2 = getRandom(LETTERS), l3 = getRandom(LETTERS);
+        const d1 = Math.floor(Math.random() * 10), d2 = Math.floor(Math.random() * 10), d3 = Math.floor(Math.random() * 10);
+        const reg = getRandom(REGIONS);
+        return { text: `${l1}${d1}${d2}${d3}${l2}${l3}`, reg: reg, type: 'ru', digits: `${d1}${d2}${d3}`, letters: `${l1}${l2}${l3}` };
+      } else if (country === 'ae') {
+        const num = Math.floor(1000 + Math.random() * 90000);
+        return { text: String(num), reg: 'DUBAI', type: 'ae', digits: String(num), letters: '' };
+      } else if (country === 'kz') {
+        const num = Math.floor(100 + Math.random() * 900);
+        const l = getRandom(LETTERS) + getRandom(LETTERS);
+        return { text: `${num} ${l}`, reg: '02', type: 'kz', digits: String(num), letters: l };
+      } else {
+        const num = Math.floor(1000 + Math.random() * 9000);
+        return { text: `${num} AX-7`, reg: 'BY', type: 'by', digits: String(num), letters: 'AX' };
+      }
+    }
+
+    function evaluate(p) {
+      let mult = 1.0;
       let perks = [];
       let rarity = "Обычный";
 
-      // Проверка одинаковых цифр
-      const [d1, d2, d3] = plate.digits.split('');
-      if (d1 === d2 && d2 === d3) {
-        multiplier *= 15;
-        perks.push("Три одинаковые цифры ×15");
-        rarity = "Эпический";
-      } else if (d1 === d2 || d2 === d3 || d1 === d3) {
-        multiplier *= 1.8;
-        perks.push("2 одинаковые цифры ×1.8");
+      if (p.type === 'ru') {
+        const [d1, d2, d3] = p.digits.split('');
+        if (d1 === d2 && d2 === d3) {
+          mult *= 18;
+          perks.push("Три одинаковые цифры ×18");
+          rarity = "Эпический";
+          state.collection.allDigits++;
+        } else if (d1 === d2 || d2 === d3 || d1 === d3) {
+          mult *= 1.8;
+          perks.push("2 одинаковые цифры ×1.8");
+          state.collection.pairs++;
+        }
+        const [l1, l2, l3] = p.letters.split('');
+        if (l1 === l2 && l2 === l3) {
+          mult *= 10;
+          perks.push("Три одинаковые буквы ×10");
+          rarity = "Легендарный";
+          state.collection.allLetters++;
+        }
+        if (['77', '99', '199', '777', '799'].includes(p.reg)) {
+          mult *= 1.4;
+          perks.push("Столичный регион ×1.4");
+          state.collection.capital++;
+        }
+      } else {
+        mult = 1.5 + Math.random() * 4;
       }
 
-      // Проверка букв
-      const [l1, l2, l3] = plate.letters.split('');
-      if (l1 === l2 && l2 === l3) {
-        multiplier *= 8;
-        perks.push("Три одинаковые буквы ×8");
-        rarity = "Легендарный";
-      } else if (l1 === l2 || l2 === l3 || l1 === l3) {
-        multiplier *= 1.8;
-        perks.push("2 одинаковые буквы ×1.8");
+      // Проверка шкалы удачи
+      if (state.luck >= 100) {
+        mult *= 5;
+        perks.push("🍀 БОНУС ШКАЛЫ УДАЧИ ×5!");
+        state.luck = 0;
       }
 
-      // Столичные регионы
-      if (['77', '99', '199', '777', '799'].includes(plate.reg)) {
-        multiplier *= 1.4;
-        perks.push("Столичный регион ×1.4");
-      }
-
-      const finalPrice = Math.round(basePrice * multiplier);
+      const base = state.prices[state.country] * 0.35;
+      const finalPrice = Math.round(base * mult);
       return { finalPrice, perks, rarity };
     }
 
     let isSpinning = false;
+    let currentPlate = null;
+    let currentCost = 0;
 
     function spin() {
       if (isSpinning) return;
-      if (balance < SPIN_COST) {
-        alert("Недостаточно денег!");
+      const cost = state.prices[state.country];
+      if (state.wallets[state.country] < cost) {
+        alert("Недостаточно средств в кошельке этой страны!");
         return;
       }
 
-      updateBalance(balance - SPIN_COST);
+      state.wallets[state.country] -= cost;
+      state.totalSpins++;
+      state.luck = Math.min(100, state.luck + 1);
+      addXP(15);
+      save();
+
+      document.getElementById('postSpinActions').style.display = 'none';
       isSpinning = true;
 
-      let counter = 0;
-      const totalTicks = 20;
-
-      // Анимация быстрой смены номеров (эффект барабана)
+      let step = 0;
+      const totalSteps = 18;
       const interval = setInterval(() => {
-        const temp = generateNumber();
-        document.getElementById('plateMain').innerText = temp.text;
-        document.getElementById('plateReg').innerText = temp.reg;
-        
-        // Виброотклик Telegram при каждом шаге
-        if (tg?.HapticFeedback) {
-          tg.HapticFeedback.impactOccurred('light');
-        }
+        const dummy = generatePlate(state.country);
+        renderPlate(dummy);
+        playTone(300 + step * 25, 'sine', 0.03);
+        if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
 
-        counter++;
-        if (counter >= totalTicks) {
+        step++;
+        if (step >= totalSteps) {
           clearInterval(interval);
           finishSpin();
         }
       }, 50);
     }
 
+    function renderPlate(p) {
+      const box = document.getElementById('plateBox');
+      box.className = `plate plate-${p.type}`;
+      if (p.type === 'ru') {
+        box.innerHTML = `
+          <div class="main">${p.text}</div>
+          <div class="side">
+            <span class="side-code">${p.reg}</span>
+            <div class="side-sub"><span>RUS</span><div class="flag"><div class="flag-w"></div><div class="flag-b"></div><div class="flag-r"></div></div></div>
+          </div>`;
+      } else if (p.type === 'ae') {
+        box.innerHTML = `<span class="city">DUBAI</span><span class="number">${p.text}</span>`;
+      } else if (p.type === 'kz') {
+        box.innerHTML = `<div class="flag-kz">KZ</div><div class="main">${p.text}</div>`;
+      } else {
+        box.innerHTML = `<div class="main">${p.text}</div>`;
+      }
+    }
+
     function finishSpin() {
-      const finalPlate = generateNumber();
-      const evalData = evaluatePlate(finalPlate);
+      currentPlate = generatePlate(state.country);
+      const res = evaluate(currentPlate);
+      currentCost = res.finalPrice;
 
-      document.getElementById('plateMain').innerText = finalPlate.text;
-      document.getElementById('plateReg').innerText = finalPlate.reg;
-      document.getElementById('cost').innerText = `+${evalData.finalPrice.toLocaleString('ru-RU')} ₽`;
-      document.getElementById('rarity').innerText = evalData.rarity;
+      renderPlate(currentPlate);
+      document.getElementById('cost').innerText = `+${res.finalPrice.toLocaleString('ru-RU')} ${state.syms[state.country]}`;
+      document.getElementById('rarity').innerText = res.rarity;
+      document.getElementById('perks').innerHTML = res.perks.length > 0 ? res.perks.join('<br>') : 'Обычный номер';
       
-      const perksEl = document.getElementById('perks');
-      perksEl.innerHTML = evalData.perks.length > 0 ? evalData.perks.join('<br>') : "Обычная серия";
+      document.getElementById('postSpinActions').style.display = 'flex';
 
-      updateBalance(balance + evalData.finalPrice);
-
-      // Тяжелый виброотклик при выпадении результата
-      if (tg?.HapticFeedback) {
-        tg.HapticFeedback.notificationOccurred('success');
+      // Обновление рекорда
+      if (res.finalPrice > state.bestCost) {
+        state.bestCost = res.finalPrice;
+        state.bestPlate = `${currentPlate.text} (${currentPlate.reg})`;
       }
 
+      playTone(587, 'triangle', 0.15);
+      if (tg?.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
       isSpinning = false;
+      save();
+    }
+
+    function sellCurrent() {
+      state.wallets[state.country] += currentCost;
+      playTone(700, 'sine', 0.1);
+      document.getElementById('postSpinActions').style.display = 'none';
+      document.getElementById('cost').innerText = `Продано!`;
+      save();
+    }
+
+    function keepNumber() {
+      state.garage.unshift({ plate: currentPlate, cost: currentCost, country: state.country });
+      document.getElementById('postSpinActions').style.display = 'none';
+      document.getElementById('cost').innerText = `В гараже!`;
+      save();
+    }
+
+    // --- ОПЫТ И УРОВЕНЬ ---
+    function addXP(amount) {
+      state.xp += amount;
+      if (state.xp >= state.level * 100) {
+        state.xp = 0;
+        state.level++;
+        if (window.confetti) confetti();
+      }
+    }
+
+    // --- ЭКРАНЫ: ГАРАЖ, КОЛЛЕКЦИЯ, СТАТИСТИКА ---
+    function renderGarage() {
+      const el = document.getElementById('garageList');
+      if (state.garage.length === 0) {
+        el.innerHTML = '<div style="color:var(--text-dim); text-align:center; padding:30px;">Гараж пуст</div>';
+        return;
+      }
+      el.innerHTML = state.garage.map((g, i) => `
+        <div class="list-card">
+          <div>
+            <b>${g.plate.text}</b> <span style="font-size:11px; color:var(--text-dim);">${g.plate.reg}</span>
+            <div style="font-size:12px; color:var(--accent);">${g.cost.toLocaleString('ru-RU')} ${state.syms[g.country]}</div>
+          </div>
+          <button class="btn-sec" onclick="sellFromGarage(${i})">Продать</button>
+        </div>
+      `).join('');
+    }
+
+    function sellFromGarage(index) {
+      const item = state.garage[index];
+      state.wallets[item.country] += item.cost;
+      state.garage.splice(index, 1);
+      save();
+      renderGarage();
+    }
+
+    function renderCollection() {
+      const el = document.getElementById('collectionList');
+      el.innerHTML = `
+        <div class="list-card"><span>Все цифры одинаковые</span><b>${state.collection.allDigits} раз</b></div>
+        <div class="list-card"><span>Все буквы одинаковые</span><b>${state.collection.allLetters} раз</b></div>
+        <div class="list-card"><span>2 одинаковые цифры</span><b>${state.collection.pairs} раз</b></div>
+        <div class="list-card"><span>Столичный регион</span><b>${state.collection.capital} раз</b></div>
+      `;
+    }
+
+    function renderStats() {
+      document.getElementById('lvlVal').innerText = state.level;
+      document.getElementById('xpVal').innerText = state.xp;
+      document.getElementById('xpMax').innerText = state.level * 100;
+      document.getElementById('xpFill').style.width = `${(state.xp / (state.level * 100)) * 100}%`;
+      document.getElementById('totalSpins').innerText = state.totalSpins;
+      document.getElementById('bestNumber').innerText = state.bestPlate ? `${state.bestPlate} (${state.bestCost} ₽)` : '-';
+    }
+
+    // --- ЕЖЕДНЕВНЫЙ ПОДАРОК И КУПОНЫ ---
+    function openDailyReward() {
+      if (window.confetti) confetti();
+      state.wallets[state.country] += 15000;
+      alert("🎁 Вы получили ежедневный бонус +15 000 ₽!");
+      save();
+    }
+
+    function openPromo() {
+      const code = prompt("Введите промокод (например: START):");
+      if (code && code.toUpperCase() === 'START') {
+        state.wallets.ru += 25000;
+        alert("Успешно! Начислено +25 000 ₽");
+        save();
+      } else if (code) {
+        alert("Неверный купон!");
+      }
     }
   </script>
 </body>
