@@ -5,18 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>Номерок</title>
 
-  <!-- Telegram WebApp SDK -->
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
-
-  <!-- Внешние библиотеки -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.4/howler.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
-  <!-- Google Fonts: Oswald для имитации шрифта номеров, Plus Jakarta Sans для интерфейса -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
 
   <style>
     * {
@@ -26,7 +22,7 @@
     }
 
     body {
-      background-color: #000000;
+      background-color: #07080a;
       color: #ffffff;
       font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
       user-select: none;
@@ -36,19 +32,18 @@
       flex-direction: column;
     }
 
-    /* Фоновое зеленое свечение (Ambient Glow) как в оригинале */
+    /* Фоновое зеленое свечение вокруг номера */
     .ambient-glow {
       position: absolute;
-      top: 18%;
+      top: 24%;
       left: 50%;
       transform: translate(-50%, -50%);
       width: 320px;
-      height: 240px;
-      background: radial-gradient(circle, rgba(16, 185, 129, 0.22) 0%, rgba(5, 150, 105, 0.08) 45%, rgba(0,0,0,0) 75%);
-      filter: blur(40px);
+      height: 220px;
+      background: radial-gradient(circle, rgba(46, 204, 113, 0.22) 0%, rgba(39, 174, 96, 0.06) 50%, rgba(0,0,0,0) 75%);
+      filter: blur(42px);
       pointer-events: none;
       z-index: 0;
-      transition: all 0.5s ease;
     }
 
     /* АВТОМОБИЛЬНЫЙ НОМЕР РФ ГОСТ 1 В 1 */
@@ -58,10 +53,7 @@
       background: linear-gradient(180deg, #ffffff 0%, #f4f4f4 100%);
       border: 3.5px solid #181818;
       border-radius: 9px;
-      box-shadow: 
-        0 14px 35px rgba(0, 0, 0, 0.9),
-        inset 0 1px 1px rgba(255, 255, 255, 0.9),
-        inset 0 -1px 2px rgba(0,0,0,0.3);
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.85), inset 0 1px 1px rgba(255, 255, 255, 0.9);
       display: flex;
       color: #111111;
       position: relative;
@@ -79,13 +71,16 @@
       padding-top: 1px;
     }
 
+    .p-slot {
+      display: inline-block;
+      transition: transform 0.05s ease;
+    }
     .p-letter {
       font-size: 38px;
       font-weight: 700;
       letter-spacing: 0.5px;
       transform: scaleY(1.05);
     }
-
     .p-digits {
       font-size: 52px;
       font-weight: 700;
@@ -129,101 +124,12 @@
       flex-direction: column;
       border: 0.5px solid #999999;
       border-radius: 0.5px;
-      box-shadow: 0 1px 2px rgba(0,0,0,0.15);
     }
     .f-w { background: #ffffff; height: 33%; }
     .f-b { background: #0039a6; height: 33%; }
     .f-r { background: #d52b1e; height: 34%; }
 
-    /* НОМЕР ОАЭ (ДУБАЙ) */
-    .plate-ae {
-      width: 326px;
-      height: 72px;
-      background: #ffffff;
-      border: 3.5px solid #181818;
-      border-radius: 9px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 24px;
-      color: #111;
-      font-family: 'Oswald', sans-serif;
-      box-shadow: 0 14px 35px rgba(0, 0, 0, 0.9);
-      position: relative;
-      z-index: 10;
-    }
-    .plate-ae .city-box {
-      border-right: 2.5px solid #111;
-      padding-right: 18px;
-      font-size: 19px;
-      font-weight: 700;
-      letter-spacing: 1px;
-    }
-    .plate-ae .num-box {
-      font-size: 42px;
-      font-weight: 700;
-      letter-spacing: 6px;
-    }
-
-    /* НОМЕР КАЗАХСТАН */
-    .plate-kz {
-      width: 326px;
-      height: 72px;
-      background: #ffffff;
-      border: 3.5px solid #181818;
-      border-radius: 9px;
-      display: flex;
-      align-items: center;
-      color: #111;
-      font-family: 'Oswald', sans-serif;
-      box-shadow: 0 14px 35px rgba(0, 0, 0, 0.9);
-      position: relative;
-      z-index: 10;
-    }
-    .plate-kz-flag {
-      width: 42px;
-      height: 100%;
-      background: #00afca;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      border-right: 2.5px solid #111;
-      color: #f1c40f;
-      font-size: 11px;
-      font-weight: 900;
-    }
-    .plate-kz-body {
-      flex: 1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 40px;
-      font-weight: 700;
-      letter-spacing: 3px;
-    }
-
-    /* НОМЕР БЕЛАРУСЬ */
-    .plate-by {
-      width: 326px;
-      height: 72px;
-      background: #ffffff;
-      border: 3.5px solid #181818;
-      border-radius: 9px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #111;
-      font-family: 'Oswald', sans-serif;
-      font-size: 40px;
-      font-weight: 700;
-      letter-spacing: 4px;
-      box-shadow: 0 14px 35px rgba(0, 0, 0, 0.9);
-      position: relative;
-      z-index: 10;
-    }
-
-    /* ВЫЕЗЖАЮЩАЯ ШТОРКА (BOTTOM SHEET) */
+    /* ШТОРКА (BOTTOM SHEET) */
     .sheet-bg {
       position: fixed;
       inset: 0;
@@ -232,7 +138,7 @@
       z-index: 100;
       opacity: 0;
       pointer-events: none;
-      transition: opacity 0.26s cubic-bezier(0.16, 1, 0.3, 1);
+      transition: opacity 0.25s ease;
       display: flex;
       align-items: flex-end;
     }
@@ -255,7 +161,7 @@
       transform: translateY(0);
     }
 
-    /* Анимация точек «Крутим...» */
+    /* Анимация мигания точек в «Крутим...» */
     .spin-dots span {
       animation: blink 1.2s infinite both;
     }
@@ -273,61 +179,57 @@
 
   <div class="ambient-glow" id="ambient-glow"></div>
 
-  <!-- 1. ВЕРХНЯЯ ШАПКА ХЕДЕР (1 В 1 С ОРИГИНАЛОМ) -->
+  <!-- ВЕРХНИЙ БАР (ОРИГИНАЛЬНЫЙ СТИЛЬ) -->
   <header class="w-full pt-3 pb-2 px-4 flex justify-between items-center z-20">
     <div class="flex items-center gap-1.5">
-      <!-- Бургер-кнопка меню с красной точкой -->
       <button onclick="openModal('modal-menu')" class="w-9 h-9 rounded-full bg-[#16171b] border border-[#23252a] flex items-center justify-center relative active:scale-90 transition">
         <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 6h16M4 12h16M4 18h16"></path></svg>
         <span class="absolute top-1.5 right-1.5 w-2 h-2 bg-[#ff3b30] rounded-full shadow-[0_0_6px_#ff3b30]"></span>
       </button>
 
-      <!-- Уровень -->
       <button onclick="openModal('modal-stats')" class="bg-[#16171b] border border-[#23252a] px-3 py-1.5 rounded-full text-xs font-bold flex items-center gap-1 active:scale-95 transition">
         Ур. <span id="ui-hdr-lvl">4</span>
       </button>
 
-      <!-- Клевер удачи -->
       <button onclick="openModal('modal-luck')" class="bg-[#16171b] border border-[#23252a] px-3 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5 text-white active:scale-95 transition">
         <span>🍀</span> <span id="ui-hdr-luck">55</span>
       </button>
     </div>
 
-    <!-- Баланс справа -->
     <div class="text-right">
       <div class="text-[9px] text-[#71757f] font-bold tracking-wider uppercase">Баланс</div>
-      <div class="text-base font-extrabold tracking-tight text-white"><span id="ui-hdr-bal">88 329</span> <span id="ui-hdr-cur">₽</span></div>
+      <div class="text-base font-extrabold tracking-tight text-white"><span id="ui-hdr-bal">88 329</span> ₽</div>
     </div>
   </header>
 
-  <!-- ТАБ-ПЕРЕКЛЮЧАТЕЛЬ: НОМЕРА / МАШИНЫ (КАК В ОРИГИНАЛЕ) -->
+  <!-- ПЕРЕКЛЮЧАТЕЛЬ НОМЕРА / МАШИНЫ ПО ЦЕНТРУ -->
   <div class="w-full flex justify-center mt-1 z-20">
     <div class="bg-[#121316] p-0.5 rounded-full border border-[#202228] flex items-center">
       <button class="px-5 py-1 rounded-full text-xs font-bold bg-[#262831] text-white shadow-sm">Номера</button>
-      <button onclick="alert('Раздел Машины отключен в вашей сборке')" class="px-5 py-1 rounded-full text-xs font-bold text-[#71757f] hover:text-white transition">Машины</button>
+      <button onclick="alert('Машины отключены в этой версии')" class="px-5 py-1 rounded-full text-xs font-bold text-[#71757f] hover:text-white transition">Машины</button>
     </div>
   </div>
 
-  <!-- 2. ИГРОВАЯ ЗОНА СПИНА -->
+  <!-- ГЛАВНАЯ ЗОНА СПИНА -->
   <main class="flex-1 flex flex-col justify-between items-center px-4 py-2 max-w-sm mx-auto w-full z-10">
 
     <div class="w-full flex flex-col items-center mt-3">
-      <!-- СТРОКА: РЕДКОСТЬ СЛЕВА, СУММА СПРАВА -->
+      <!-- РЕДКОСТЬ И СУММА -->
       <div class="w-[326px] flex justify-between items-center mb-2 px-1">
         <div id="ui-rarity" class="text-xs font-bold text-[#2ecc71] tracking-wide">Необычный</div>
         <div id="ui-cost" class="text-xl font-black text-[#2ecc71] tracking-tight">1 068 ₽</div>
       </div>
 
-      <!-- КАРТОЧКА АВТОМОБИЛЬНОГО НОМЕРА -->
+      <!-- КАРТОЧКА НОМЕРА С ПОЭТАПНОЙ АНИМАЦИЕЙ СЛОТОВ -->
       <div id="plate-root">
         <div class="plate-rf" id="plate-box">
           <div class="plate-rf-main">
-            <span class="p-letter" id="p-l1">О</span>
-            <span class="p-digits" id="p-num">227</span>
-            <span class="p-letter" id="p-l2">ОС</span>
+            <span class="p-letter p-slot" id="slot-l1">О</span>
+            <span class="p-digits p-slot" id="slot-num">227</span>
+            <span class="p-letter p-slot" id="slot-l2">ОС</span>
           </div>
           <div class="plate-rf-reg">
-            <span class="reg-code" id="p-reg">38</span>
+            <span class="reg-code p-slot" id="slot-reg">38</span>
             <div class="reg-sub">
               <span>RUS</span>
               <div class="flag-ru"><div class="f-w"></div><div class="f-b"></div><div class="f-r"></div></div>
@@ -336,7 +238,7 @@
         </div>
       </div>
 
-      <!-- РЕГИОН И ОПИСАНИЕ МНОЖИТЕЛЕЙ ПОД НОМЕРОМ -->
+      <!-- РЕГИОН И МНОЖИТЕЛИ ПОД НОМЕРОМ -->
       <div class="text-[11px] text-[#71757f] font-semibold mt-2.5" id="ui-region">Регион 38 • Иркутская область</div>
       <div class="min-h-[48px] flex flex-col items-center justify-center gap-0.5 mt-1 text-xs" id="ui-perks">
         <div class="text-[#71757f]">2 одинаковые цифры <b class="text-[#2ecc71]">×1,8</b></div>
@@ -354,22 +256,22 @@
       </div>
     </div>
 
-    <!-- 3. НИЖНЯЯ ПАНЕЛЬ С КНОПКОЙ СПИНА -->
+    <!-- НИЖНЯЯ ПАНЕЛЬ С КНОПКОЙ СПИНА -->
     <div class="w-full flex flex-col items-center gap-2 pb-2">
       <div class="text-[11px] text-[#71757f]" id="ui-sale-note">Этот номер продастся за 1 068 ₽</div>
 
       <!-- ВЫБОР СТРАНЫ -->
       <button onclick="openModal('modal-country')" class="bg-[#16171b] border border-[#23252a] px-4 py-2.5 rounded-full flex items-center gap-2 text-xs font-bold active:scale-95 transition">
-        <span id="ui-c-flag">🇷🇺</span>
-        <span id="ui-c-name">Россия</span>
-        <span class="text-[#71757f] font-normal" id="ui-c-type">Гражданский</span>
+        <span>🇷🇺</span>
+        <span>Россия</span>
+        <span class="text-[#71757f] font-normal">Гражданский</span>
         <span class="text-[#71757f] text-[10px]">▾</span>
       </button>
 
-      <!-- ЗЕЛЕНАЯ КНОПКА «КРУТИТЬ ЕЩЁ» / СЕРАЯ «ПРОПУСТИТЬ» -->
-      <button id="btn-spin" onclick="onSpinClick()" class="w-full h-[58px] rounded-2xl bg-[#2ecc71] hover:bg-[#27ae60] active:scale-[0.98] transition font-extrabold text-base text-[#07130a] shadow-lg shadow-[#2ecc71]/20 flex items-center justify-center gap-2">
-        <span id="btn-spin-text">Крутить ещё</span>
-        <span id="btn-spin-price" class="bg-[#07130a]/15 px-2.5 py-0.5 rounded-lg text-xs font-black">1 000 ₽</span>
+      <!-- ЗЕЛЕНАЯ КНОПКА СПИНА / СЕРАЯ КНОПКА «ПРОПУСТИТЬ» -->
+      <button id="btn-spin" onclick="handleSpinButton()" class="w-full h-[58px] rounded-2xl bg-[#2ecc71] hover:bg-[#27ae60] active:scale-[0.98] transition font-extrabold text-base text-[#07130a] shadow-lg shadow-[#2ecc71]/20 flex items-center justify-center gap-2">
+        <span>Крутить ещё</span>
+        <span class="bg-[#07130a]/15 px-2.5 py-0.5 rounded-lg text-xs font-black">1 000 ₽</span>
       </button>
     </div>
   </main>
@@ -397,7 +299,6 @@
         </div>
       </div>
 
-      <!-- ЖЕЛТАЯ КАРТОЧКА МАГАЗИНА ИЗ ВИДЕО -->
       <div onclick="closeModal('modal-menu'); openModal('modal-luck');" class="bg-gradient-to-r from-[#f1c40f] to-[#e67e22] p-4 rounded-2xl text-black font-extrabold flex justify-between items-center mb-3 cursor-pointer active:scale-98 transition shadow-lg">
         <div>
           <div class="text-sm flex items-center gap-1.5">⭐ Магазин</div>
@@ -408,7 +309,7 @@
 
       <div class="space-y-2">
         <button onclick="closeModal('modal-menu'); openModal('modal-stats');" class="w-full bg-[#16171b] border border-[#23252a] p-3.5 rounded-2xl flex justify-between items-center text-xs font-bold">
-          <span>📊 Статистика профиля</span><span>Уровень <span id="m-stat-lvl">4</span> ›</span>
+          <span>📊 Статистика профиля</span><span>Уровень 4 ›</span>
         </button>
         <button onclick="closeModal('modal-menu'); openModal('modal-promo');" class="w-full bg-[#16171b] border border-[#23252a] p-3.5 rounded-2xl flex justify-between items-center text-xs font-bold">
           <span>🎟️ Активировать купон</span><span>Код ›</span>
@@ -417,41 +318,7 @@
     </div>
   </div>
 
-  <!-- ШТОРКА ВЫБОРА СТРАНЫ -->
-  <div id="modal-country" class="sheet-bg" onclick="closeModalOnBg(event, 'modal-country')">
-    <div class="sheet-box">
-      <div class="w-12 h-1 bg-[#262830] rounded-full mx-auto mb-3"></div>
-      <h3 class="text-base font-extrabold text-center mb-0.5">Какие номера крутить</h3>
-      <p class="text-[11px] text-[#71757f] text-center mb-4">У каждой страны свой кошелёк</p>
-
-      <div class="grid grid-cols-2 gap-2 mb-4">
-        <button onclick="selectCountry('ru')" class="bg-[#16171b] border-2 border-[#2ecc71] p-3 rounded-2xl flex items-center gap-2.5 text-left" id="c-btn-ru">
-          <span class="text-xl">🇷🇺</span><span class="text-xs font-bold">Россия</span>
-        </button>
-        <button onclick="selectCountry('by')" class="bg-[#16171b] border border-[#23252a] p-3 rounded-2xl flex items-center gap-2.5 text-left" id="c-btn-by">
-          <span class="text-xl">🇧🇾</span><span class="text-xs font-bold">Беларусь</span>
-        </button>
-        <button onclick="selectCountry('kz')" class="bg-[#16171b] border border-[#23252a] p-3 rounded-2xl flex items-center gap-2.5 text-left" id="c-btn-kz">
-          <span class="text-xl">🇰🇿</span><span class="text-xs font-bold">Казахстан</span>
-        </button>
-        <button onclick="selectCountry('ae')" class="bg-[#16171b] border border-[#23252a] p-3 rounded-2xl flex items-center gap-2.5 text-left" id="c-btn-ae">
-          <span class="text-xl">🇦🇪</span><span class="text-xs font-bold">Дубай</span>
-        </button>
-      </div>
-
-      <div class="bg-[#16171b] border border-[#2ecc71] p-3 rounded-2xl flex justify-between items-center mb-4">
-        <div class="flex items-center gap-3">
-          <div class="w-16 h-6 bg-white text-black font-black text-[10px] rounded flex items-center justify-center border border-black" id="c-prev-plate">А123ВС</div>
-          <div><div class="text-xs font-bold" id="c-prev-name">Гражданский</div><div class="text-[10px] text-[#71757f]" id="c-prev-sub">Стандартная серия</div></div>
-        </div>
-        <span class="text-[#2ecc71] font-bold">✓</span>
-      </div>
-
-      <div class="text-center text-xs text-[#71757f]">Кошелёк: <b class="text-white" id="m-c-bal">88 329 ₽</b> • попытка <span id="m-c-cost">1 000 ₽</span></div>
-    </div>
-  </div>
-
-  <!-- ШТОРКА КОЛЛЕКЦИИ -->
+  <!-- ШТОРКА КОЛЛЕКЦИИ (ТОЧНО КАК В ВИДЕО) -->
   <div id="modal-collection" class="sheet-bg" onclick="closeModalOnBg(event, 'modal-collection')">
     <div class="sheet-box">
       <div class="w-12 h-1 bg-[#262830] rounded-full mx-auto mb-3"></div>
@@ -559,11 +426,11 @@
 
       <div class="bg-[#16171b] border border-[#23252a] p-3.5 rounded-2xl mb-3">
         <div class="flex justify-between items-center text-xs mb-1">
-          <span class="font-bold">Уровень <span id="st-lvl">4</span></span>
-          <span class="text-[#71757f]"><span id="st-xp">57</span> / 90 XP</span>
+          <span class="font-bold">Уровень 4</span>
+          <span class="text-[#71757f]">57 / 90 XP</span>
         </div>
         <div class="w-full bg-[#23252a] h-1.5 rounded-full overflow-hidden">
-          <div id="st-xp-bar" class="bg-[#2ecc71] h-full" style="width: 63%;"></div>
+          <div class="bg-[#2ecc71] h-full" style="width: 63%;"></div>
         </div>
       </div>
 
@@ -617,13 +484,26 @@
     </div>
   </div>
 
+  <!-- ШТОРКА ВЫБОРА СТРАНЫ -->
+  <div id="modal-country" class="sheet-bg" onclick="closeModalOnBg(event, 'modal-country')">
+    <div class="sheet-box text-center">
+      <div class="w-12 h-1 bg-[#262830] rounded-full mx-auto mb-3"></div>
+      <h3 class="text-base font-extrabold mb-1">Выбор страны</h3>
+      <p class="text-xs text-[#71757f] mb-4">В данной версии активен кошелёк РФ</p>
+      <div class="bg-[#16171b] border border-[#2ecc71] p-3.5 rounded-2xl flex justify-between items-center">
+        <span>🇷🇺 Россия (Гражданский)</span>
+        <b class="text-[#2ecc71]">1 000 ₽</b>
+      </div>
+    </div>
+  </div>
+
   <script>
-    // --- ИНИЦИАЛИЗАЦИЯ TG & ЗВУКОВОЙ ПАК ---
     const tg = window.Telegram?.WebApp;
     if (tg) { tg.expand(); }
 
     const sounds = {
       click: new Howl({ src: ['https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3'], volume: 0.35 }),
+      lock: new Howl({ src: ['https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3'], volume: 0.45 }),
       win: new Howl({ src: ['https://assets.mixkit.co/active_storage/sfx/1435/1435-preview.mp3'], volume: 0.55 }),
       coin: new Howl({ src: ['https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3'], volume: 0.5 })
     };
@@ -634,7 +514,6 @@
       else if (type === 'success') tg.HapticFeedback.notificationOccurred('success');
     }
 
-    // --- БАЗА РЕГИОНОВ РФ ---
     const REGIONS_DATA = {
       '77': 'Москва', '99': 'Москва', '199': 'Москва', '777': 'Москва', '799': 'Москва',
       '78': 'Санкт-Петербург', '98': 'Санкт-Петербург', '178': 'Санкт-Петербург',
@@ -645,15 +524,9 @@
     const REG_LIST = Object.keys(REGIONS_DATA);
     const LETTERS = ['А', 'В', 'Е', 'К', 'М', 'Н', 'О', 'Р', 'С', 'Т', 'У', 'Х'];
 
-    // --- СОСТОЯНИЕ ИГРЫ ---
     let state = {
-      country: 'ru',
-      wallets: { ru: 88329, by: 4000, kz: 600000, ae: 100000 },
-      prices: { ru: 1000, by: 40, kz: 6000, ae: 10000 },
-      syms: { ru: '₽', by: 'Br', kz: '₸', ae: '₽' },
+      balance: 88329,
       luck: 55,
-      level: 4,
-      xp: 57,
       totalSpins: 148,
       bestCost: 107776,
       bestPlate: 'М320ММ 72',
@@ -661,39 +534,22 @@
       collection: { allDigits: 1, round: 25, cap: 24, letters: 20 }
     };
 
-    const savedState = localStorage.getItem('nomerok_master_save');
-    if (savedState) {
-      try { state = Object.assign(state, JSON.parse(savedState)); } catch(e){}
+    const saved = localStorage.getItem('nomerok_fixed_state');
+    if (saved) {
+      try { state = Object.assign(state, JSON.parse(saved)); } catch(e){}
     }
 
     function save() {
-      localStorage.setItem('nomerok_master_save', JSON.stringify(state));
-      renderGlobalUI();
+      localStorage.setItem('nomerok_fixed_state', JSON.stringify(state));
+      renderGlobal();
     }
 
-    function renderGlobalUI() {
-      const curBal = state.wallets[state.country];
-      const curSym = state.syms[state.country];
-      const curPrice = state.prices[state.country];
-
-      document.getElementById('ui-hdr-bal').innerText = curBal.toLocaleString('ru-RU');
-      document.getElementById('ui-hdr-cur').innerText = curSym;
-      document.getElementById('ui-hdr-lvl').innerText = state.level;
+    function renderGlobal() {
+      document.getElementById('ui-hdr-bal').innerText = state.balance.toLocaleString('ru-RU');
       document.getElementById('ui-hdr-luck').innerText = state.luck;
-
-      document.getElementById('btn-spin-price').innerText = `${curPrice.toLocaleString('ru-RU')} ${curSym}`;
-
-      // В модалках
-      document.getElementById('m-c-bal').innerText = `${curBal.toLocaleString('ru-RU')} ${curSym}`;
-      document.getElementById('m-c-cost').innerText = `${curPrice.toLocaleString('ru-RU')} ${curSym}`;
       document.getElementById('m-luck-cur').innerText = state.luck;
       document.getElementById('m-luck-left').innerText = 100 - state.luck;
       document.getElementById('m-luck-bar').style.width = `${state.luck}%`;
-
-      document.getElementById('st-lvl').innerText = state.level;
-      document.getElementById('m-stat-lvl').innerText = state.level;
-      document.getElementById('st-xp').innerText = state.xp;
-      document.getElementById('st-xp-bar').style.width = `${(state.xp / 90) * 100}%`;
       document.getElementById('st-total').innerText = state.totalSpins;
       document.getElementById('st-best').innerText = `${state.bestCost.toLocaleString('ru-RU')} ₽`;
       document.getElementById('gar-count').innerText = state.garage.length;
@@ -703,9 +559,8 @@
       document.getElementById('col-val-cap').innerText = state.collection.cap;
       document.getElementById('col-val-letters').innerText = state.collection.letters;
     }
-    renderGlobalUI();
+    renderGlobal();
 
-    // --- МОДАЛЬНЫЕ ОКНА (ШТОРКИ) ---
     function openModal(id) {
       haptic('light');
       document.getElementById(id).classList.add('active');
@@ -717,235 +572,211 @@
       if (e.target.id === id) closeModal(id);
     }
 
-    // --- ГЕНЕРАТОР НОМЕРОВ ---
     function getRandom(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
 
-    function generateNumberObject() {
-      const c = state.country;
-      if (c === 'ru') {
-        const l1 = getRandom(LETTERS);
-        const l2 = getRandom(LETTERS) + getRandom(LETTERS);
-        const num = String(Math.floor(100 + Math.random() * 900));
-        const reg = getRandom(REG_LIST);
-        return { l1, l2, num, reg, type: 'ru' };
-      } else if (c === 'ae') {
-        const num = String(Math.floor(10 + Math.random() * 9990));
-        return { num, type: 'ae' };
-      } else if (c === 'kz') {
-        const num = String(Math.floor(100 + Math.random() * 900));
-        const l = getRandom(LETTERS) + getRandom(LETTERS);
-        return { num, l, reg: '02', type: 'kz' };
-      } else {
-        const num = String(Math.floor(1000 + Math.random() * 9000));
-        return { num, l: 'AX-7', type: 'by' };
-      }
+    function generatePlateTarget() {
+      const l1 = getRandom(LETTERS);
+      const l2 = getRandom(LETTERS) + getRandom(LETTERS);
+      const num = String(Math.floor(100 + Math.random() * 900));
+      const reg = getRandom(REG_LIST);
+      return { l1, l2, num, reg };
     }
 
-    function evaluateNumber(obj) {
-      let base = state.prices[state.country] * 0.28;
+    function evaluate(p) {
+      let base = 250;
       let mult = 1.0;
       let perks = [];
       let rarity = "Обычный";
 
-      if (obj.type === 'ru') {
-        const [d1, d2, d3] = obj.num.split('');
-        const [b1, b2] = obj.l2.split('');
+      const [d1, d2, d3] = p.num.split('');
+      const [b1, b2] = p.l2.split('');
 
-        if (d1 === d2 && d2 === d3) {
-          mult *= 15;
-          perks.push(`3 одинаковые цифры <b class="text-[#2ecc71]">×15</b>`);
-          rarity = "Эпический";
-          state.collection.allDigits++;
-        } else if (d1 === d2 || d2 === d3 || d1 === d3) {
-          mult *= 1.8;
-          perks.push(`2 одинаковые цифры <b class="text-[#2ecc71]">×1,8</b>`);
-        }
+      if (d1 === d2 && d2 === d3) {
+        mult *= 15;
+        perks.push(`3 одинаковые цифры <b class="text-[#2ecc71]">×15</b>`);
+        rarity = "Эпический";
+        state.collection.allDigits++;
+      } else if (d1 === d2 || d2 === d3 || d1 === d3) {
+        mult *= 1.8;
+        perks.push(`2 одинаковые цифры <b class="text-[#2ecc71]">×1,8</b>`);
+      }
 
-        if (obj.l1 === b1 && b1 === b2) {
-          mult *= 8;
-          perks.push(`3 одинаковые буквы <b class="text-[#2ecc71]">×8</b>`);
-          rarity = "Легендарный";
-        } else if (obj.l1 === b1 || b1 === b2 || obj.l1 === b2) {
-          mult *= 1.8;
-          perks.push(`2 одинаковые буквы <b class="text-[#2ecc71]">×1,8</b>`);
-          state.collection.letters++;
-        }
+      if (p.l1 === b1 && b1 === b2) {
+        mult *= 8;
+        perks.push(`3 одинаковые буквы <b class="text-[#2ecc71]">×8</b>`);
+        rarity = "Легендарный";
+      } else if (p.l1 === b1 || b1 === b2 || p.l1 === b2) {
+        mult *= 1.8;
+        perks.push(`2 одинаковые буквы <b class="text-[#2ecc71]">×1,8</b>`);
+        state.collection.letters++;
+      }
 
-        if (['77', '99', '199', '777', '799'].includes(obj.reg)) {
-          mult *= 1.4;
-          perks.push(`Столичный регион <b class="text-[#2ecc71]">×1,4</b>`);
-          state.collection.cap++;
-        }
+      if (['77', '99', '199', '777', '799'].includes(p.reg)) {
+        mult *= 1.4;
+        perks.push(`Столичный регион <b class="text-[#2ecc71]">×1,4</b>`);
+        state.collection.cap++;
+      }
 
-        if (obj.num.endsWith('00') || obj.num.endsWith('0')) {
-          state.collection.round++;
-        }
-      } else if (obj.type === 'ae') {
-        if (obj.num.length <= 2) { mult *= 25; rarity = "Мифический"; perks.push("Короткий номер Дубая ×25"); }
-        else if (obj.num.length === 3) { mult *= 8; rarity = "Эпический"; perks.push("3 цифры ×8"); }
-        else { mult *= 1.8; }
-      } else {
-        mult = 1.6 + Math.random() * 2;
+      if (p.num.endsWith('00') || p.num.endsWith('0')) {
+        state.collection.round++;
       }
 
       if (rarity === "Обычный" && mult > 1.5) rarity = "Необычный";
-
-      // Шкала удачи
-      if (state.luck >= 100) {
-        mult *= 5;
-        perks.push("🍀 БОНУС УДАЧИ ×5!");
-        state.luck = 0;
-      }
 
       const cost = Math.round(base * mult);
       return { cost, perks, rarity };
     }
 
-    function renderPlateDOM(obj) {
-      const root = document.getElementById('plate-root');
-      if (obj.type === 'ru') {
-        root.innerHTML = `
-          <div class="plate-rf" id="plate-box">
-            <div class="plate-rf-main">
-              <span class="p-letter">${obj.l1}</span>
-              <span class="p-digits">${obj.num}</span>
-              <span class="p-letter">${obj.l2}</span>
-            </div>
-            <div class="plate-rf-reg">
-              <span class="reg-code">${obj.reg}</span>
-              <div class="reg-sub">
-                <span>RUS</span>
-                <div class="flag-ru"><div class="f-w"></div><div class="f-b"></div><div class="f-r"></div></div>
-              </div>
-            </div>
-          </div>`;
-      } else if (obj.type === 'ae') {
-        root.innerHTML = `
-          <div class="plate-ae">
-            <div class="city-box">DUBAI</div>
-            <div class="num-box">${obj.num}</div>
-          </div>`;
-      } else if (obj.type === 'kz') {
-        root.innerHTML = `
-          <div class="plate-kz">
-            <div class="plate-kz-flag">KZ</div>
-            <div class="plate-kz-body">${obj.num} ${obj.l}</div>
-          </div>`;
-      } else {
-        root.innerHTML = `
-          <div class="plate-by">
-            ${obj.num} ${obj.l}
-          </div>`;
+    // --- ПОЭТАПНАЯ АНИМАЦИЯ СПИНА (КАК В ВИДЕО) ---
+    let isSpinning = false;
+    let skipRequested = false;
+    let activeIntervals = [];
+    let currentResult = { l1: 'О', num: '227', l2: 'ОС', reg: '38', cost: 1068, rarity: 'Необычный' };
+
+    function handleSpinButton() {
+      if (isSpinning) {
+        skipRequested = true;
+        return;
       }
+      startSpinSequence();
     }
 
-    // --- ЛОГИКА СПИНА / РУЛЕТКИ ---
-    let isSpinning = false;
-    let spinInterval = null;
-    let lastGeneratedData = { l1: 'О', num: '227', l2: 'ОС', reg: '38', type: 'ru', cost: 1068, rarity: 'Необычный' };
+    function setGreenButton() {
+      const btn = document.getElementById('btn-spin');
+      btn.className = "w-full h-[58px] rounded-2xl bg-[#2ecc71] hover:bg-[#27ae60] active:scale-[0.98] transition font-extrabold text-base text-[#07130a] shadow-lg shadow-[#2ecc71]/20 flex items-center justify-center gap-2";
+      btn.innerHTML = `<span>Крутить ещё</span><span class="bg-[#07130a]/15 px-2.5 py-0.5 rounded-lg text-xs font-black">1 000 ₽</span>`;
+    }
 
-    function onSpinClick() {
-      if (isSpinning) {
-        skipSpin();
+    function setGreySkipButton() {
+      const btn = document.getElementById('btn-spin');
+      btn.className = "w-full h-[58px] rounded-2xl bg-[#1c1d22] border border-[#2a2c33] active:scale-[0.98] transition font-extrabold text-base text-white flex items-center justify-center gap-2";
+      btn.innerHTML = `<span>Пропустить</span>`;
+    }
+
+    function clearAllSpinIntervals() {
+      activeIntervals.forEach(t => clearInterval(t));
+      activeIntervals = [];
+    }
+
+    async function startSpinSequence() {
+      if (state.balance < 1000) {
+        alert("Недостаточно средств для спина!");
         return;
       }
 
-      const price = state.prices[state.country];
-      if (state.wallets[state.country] < price) {
-        alert("Недостаточно денег для крутки в кошельке этой страны!");
-        return;
-      }
-
-      state.wallets[state.country] -= price;
+      state.balance -= 1000;
       state.totalSpins++;
       state.luck = (state.luck + 1) % 100;
       save();
 
       isSpinning = true;
-
-      // Превращаем зеленую кнопку в серую «Пропустить»
-      const btn = document.getElementById('btn-spin');
-      btn.className = "w-full h-[58px] rounded-2xl bg-[#1c1d22] border border-[#2a2c33] active:scale-[0.98] transition font-extrabold text-base text-white flex items-center justify-center gap-2";
-      btn.innerHTML = `<span>Пропустить</span>`;
+      skipRequested = false;
+      setGreySkipButton();
 
       document.getElementById('ui-sale-note').style.opacity = '0';
       document.getElementById('post-spin-tools').style.opacity = '0.3';
 
-      let count = 0;
-      const totalSteps = 22;
+      const target = generatePlateTarget();
+      const evalData = evaluate(target);
 
-      spinInterval = setInterval(() => {
-        const dummy = generateNumberObject();
-        renderPlateDOM(dummy);
-        sounds.click.play();
-        haptic('light');
+      // Запуск вращения каждого отдельного слота
+      const slotL1 = document.getElementById('slot-l1');
+      const slotNum = document.getElementById('slot-num');
+      const slotL2 = document.getElementById('slot-l2');
+      const slotReg = document.getElementById('slot-reg');
 
-        count++;
-        if (count >= totalSteps) {
-          finishSpin();
-        }
-      }, 55);
+      const t1 = setInterval(() => { slotL1.innerText = getRandom(LETTERS); sounds.click.play(); haptic('light'); }, 50);
+      const t2 = setInterval(() => { slotNum.innerText = Math.floor(100 + Math.random() * 900); }, 50);
+      const t3 = setInterval(() => { slotL2.innerText = getRandom(LETTERS) + getRandom(LETTERS); }, 50);
+      const t4 = setInterval(() => { slotReg.innerText = getRandom(REG_LIST); }, 50);
+
+      activeIntervals.push(t1, t2, t3, t4);
+
+      // 1. Остановка первой буквы (через 600 мс)
+      await wait(600);
+      clearInterval(t1);
+      slotL1.innerText = target.l1;
+      sounds.lock.play();
+      haptic('light');
+
+      // 2. Остановка 3 цифр (через 450 мс)
+      if (!skipRequested) await wait(450);
+      clearInterval(t2);
+      slotNum.innerText = target.num;
+      sounds.lock.play();
+      haptic('light');
+
+      // 3. Остановка 2 букв (через 450 мс)
+      if (!skipRequested) await wait(450);
+      clearInterval(t3);
+      slotL2.innerText = target.l2;
+      sounds.lock.play();
+      haptic('light');
+
+      // 4. Остановка региона (через 500 мс)
+      if (!skipRequested) await wait(500);
+      clearInterval(t4);
+      slotReg.innerText = target.reg;
+      sounds.lock.play();
+
+      clearAllSpinIntervals();
+      finishSpinProcess(target, evalData);
     }
 
-    function finishSpin() {
-      clearInterval(spinInterval);
-      const finalObj = generateNumberObject();
-      const res = evaluateNumber(finalObj);
+    function wait(ms) {
+      return new Promise(resolve => {
+        const timer = setTimeout(resolve, ms);
+        const checkSkip = setInterval(() => {
+          if (skipRequested) {
+            clearTimeout(timer);
+            clearInterval(checkSkip);
+            resolve();
+          }
+        }, 30);
+      });
+    }
 
-      renderPlateDOM(finalObj);
+    function finishSpinProcess(target, evalData) {
+      document.getElementById('slot-l1').innerText = target.l1;
+      document.getElementById('slot-num').innerText = target.num;
+      document.getElementById('slot-l2').innerText = target.l2;
+      document.getElementById('slot-reg').innerText = target.reg;
 
-      const sym = state.syms[state.country];
-      document.getElementById('ui-rarity').innerText = res.rarity;
-      document.getElementById('ui-cost').innerText = `${res.cost.toLocaleString('ru-RU')} ${sym}`;
-      
-      if (finalObj.type === 'ru') {
-        document.getElementById('ui-region').innerText = `Регион ${finalObj.reg} • ${REGIONS_DATA[finalObj.reg] || 'РФ'}`;
-      } else {
-        document.getElementById('ui-region').innerText = `Иностранная серия`;
-      }
+      document.getElementById('ui-rarity').innerText = evalData.rarity;
+      document.getElementById('ui-cost').innerText = `${evalData.cost.toLocaleString('ru-RU')} ₽`;
+      document.getElementById('ui-region').innerText = `Регион ${target.reg} • ${REGIONS_DATA[target.reg] || 'РФ'}`;
+      document.getElementById('ui-perks').innerHTML = evalData.perks.length > 0 ? evalData.perks.join('') : '<div class="text-[#71757f]">Обычная серия</div>';
+      document.getElementById('ui-sale-note').innerText = `Этот номер продастся за ${evalData.cost.toLocaleString('ru-RU')} ₽`;
 
-      document.getElementById('ui-perks').innerHTML = res.perks.length > 0 ? res.perks.join('') : '<div class="text-[#71757f]">Обычная серия</div>';
-      document.getElementById('ui-sale-note').innerText = `Этот номер продастся за ${res.cost.toLocaleString('ru-RU')} ${sym}`;
+      currentResult = { ...target, cost: evalData.cost, rarity: evalData.rarity };
 
-      lastGeneratedData = { ...finalObj, cost: res.cost, rarity: res.rarity };
-
-      // Баланс увеличивается на стоимость номера (автопродажа как в видео)
-      state.wallets[state.country] += res.cost;
-      if (res.cost > state.bestCost) {
-        state.bestCost = res.cost;
-        state.bestPlate = finalObj.type === 'ru' ? `${finalObj.l1}${finalObj.num}${finalObj.l2} ${finalObj.reg}` : `${finalObj.num}`;
+      state.balance += evalData.cost;
+      if (evalData.cost > state.bestCost) {
+        state.bestCost = evalData.cost;
+        state.bestPlate = `${target.l1}${target.num}${target.l2} ${target.reg}`;
       }
       save();
 
-      // Возвращаем зеленую кнопку «Крутить ещё»
-      const btn = document.getElementById('btn-spin');
-      btn.className = "w-full h-[58px] rounded-2xl bg-[#2ecc71] hover:bg-[#27ae60] active:scale-[0.98] transition font-extrabold text-base text-[#07130a] shadow-lg shadow-[#2ecc71]/20 flex items-center justify-center gap-2";
-      btn.innerHTML = `<span id="btn-spin-text">Крутить ещё</span><span id="btn-spin-price" class="bg-[#07130a]/15 px-2.5 py-0.5 rounded-lg text-xs font-black">${state.prices[state.country].toLocaleString('ru-RU')} ${sym}</span>`;
-
+      setGreenButton();
       document.getElementById('ui-sale-note').style.opacity = '1';
       document.getElementById('post-spin-tools').style.opacity = '1';
 
-      if (['Эпический', 'Легендарный', 'Мифический'].includes(res.rarity)) {
-        confetti({ particleCount: 70, spread: 60, origin: { y: 0.65 } });
+      if (['Эпический', 'Легендарный'].includes(evalData.rarity)) {
+        confetti({ particleCount: 75, spread: 60, origin: { y: 0.65 } });
         sounds.win.play();
         haptic('success');
       }
 
       isSpinning = false;
+      skipRequested = false;
     }
 
-    function skipSpin() {
-      clearInterval(spinInterval);
-      finishSpin();
-    }
-
-    // --- ГАРАЖ, ПОДАРОК И КУПОН ---
     function savePlateToGarage() {
       haptic('light');
-      state.garage.unshift({ ...lastGeneratedData, country: state.country });
+      state.garage.unshift(currentResult);
       save();
       renderGarageDOM();
-      alert("Номер успешно оставлен себе в гараж!");
+      alert("Номер успешно сохранён в гараж!");
     }
 
     function renderGarageDOM() {
@@ -957,8 +788,8 @@
       el.innerHTML = state.garage.map((g, i) => `
         <div class="bg-[#16171b] border border-[#23252a] p-3 rounded-2xl flex justify-between items-center">
           <div>
-            <div class="font-black text-sm">${g.type === 'ru' ? `${g.l1}${g.num}${g.l2}${g.reg}` : g.num}</div>
-            <div class="text-xs text-[#2ecc71] font-bold">${g.cost.toLocaleString('ru-RU')} ${state.syms[g.country]}</div>
+            <div class="font-black text-sm">${g.l1}${g.num}${g.l2} <span class="text-xs text-[#71757f]">${g.reg}</span></div>
+            <div class="text-xs text-[#2ecc71] font-bold">${g.cost.toLocaleString('ru-RU')} ₽</div>
           </div>
           <button onclick="sellGarageItem(${i})" class="bg-[#23252a] active:scale-95 text-xs font-bold px-3 py-1.5 rounded-xl">Продать</button>
         </div>
@@ -966,8 +797,7 @@
     }
 
     function sellGarageItem(i) {
-      const item = state.garage[i];
-      state.wallets[item.country] += item.cost;
+      state.balance += state.garage[i].cost;
       state.garage.splice(i, 1);
       sounds.coin.play();
       save();
@@ -977,7 +807,7 @@
     function claimDailyReward() {
       confetti();
       sounds.win.play();
-      state.wallets[state.country] += 15000;
+      state.balance += 15000;
       save();
       closeModal('modal-daily');
     }
@@ -985,12 +815,12 @@
     function claimPromo() {
       const val = document.getElementById('input-promo').value.trim().toUpperCase();
       if (val === 'START' || val === 'NOMEROK') {
-        state.wallets.ru += 25000;
+        state.balance += 25000;
         confetti();
         sounds.coin.play();
         save();
         closeModal('modal-promo');
-        alert("Успешно! +25 000 ₽ начислено на баланс РФ");
+        alert("Успешно! +25 000 ₽ начислено");
       } else {
         alert("Неверный промокод");
       }
@@ -998,31 +828,10 @@
 
     function shareResult() {
       if (navigator.share) {
-        navigator.share({ title: 'Номерок', text: `Мой номер в игре Номерок стоит ${lastGeneratedData.cost} ₽!` });
+        navigator.share({ title: 'Номерок', text: `Мой номер стоит ${currentResult.cost} ₽!` });
       } else {
         alert("Ссылка на номер скопирована в буфер обмена!");
       }
-    }
-
-    function selectCountry(c) {
-      state.country = c;
-      const flags = { ru: '🇷🇺', by: '🇧🇾', kz: '🇰🇿', ae: '🇦🇪' };
-      const names = { ru: 'Россия', by: 'Беларусь', kz: 'Казахстан', ae: 'Дубай' };
-      document.getElementById('ui-c-name').innerText = names[c];
-      document.getElementById('ui-c-flag').innerText = flags[c];
-
-      ['ru', 'by', 'kz', 'ae'].forEach(k => {
-        const btn = document.getElementById(`c-btn-${k}`);
-        if (k === c) {
-          btn.className = "bg-[#16171b] border-2 border-[#2ecc71] p-3 rounded-2xl flex items-center gap-2.5 text-left";
-        } else {
-          btn.className = "bg-[#16171b] border border-[#23252a] p-3 rounded-2xl flex items-center gap-2.5 text-left";
-        }
-      });
-
-      closeModal('modal-country');
-      save();
-      renderPlateDOM(generateNumberObject());
     }
   </script>
 </body>
