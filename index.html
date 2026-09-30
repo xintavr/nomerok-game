@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Номерок</title>
+  <!-- Подключение Telegram WebApp SDK -->
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <style>
+    :root {
+      --bg-color: #0f1012;
+      --card-bg: #1c1d22;
+      --green: #2ecc71;
+      --text-muted: #888a93;
+    }
+
+    body {
+      margin: 0;
+      padding: 20px;
+      background-color: var(--bg-color);
+      color: #ffffff;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      min-height: 90vh;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .top-bar {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .balance-badge {
+      background: var(--card-bg);
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-weight: bold;
+      font-size: 16px;
+    }
+
+    .game-area {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+    }
+
+    .status-badge {
+      font-size: 14px;
+      padding: 4px 10px;
+      border-radius: 8px;
+      margin-bottom: 12px;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+
+    .cost-preview {
+      font-size: 24px;
+      font-weight: 800;
+      color: var(--green);
+      margin-bottom: 20px;
+    }
+
+    /* Русский автомобильный номер на чистом CSS */
+    .plate-container {
+      width: 90%;
+      max-width: 340px;
+      height: 72px;
+      background: #ffffff;
+      border: 3px solid #111;
+      border-radius: 8px;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.5);
+      display: flex;
+      color: #111;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .plate-main {
+      flex: 3;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 38px;
+      font-weight: 900;
+      letter-spacing: 2px;
+      border-right: 2px solid #222;
+      font-family: monospace, sans-serif;
+    }
+
+    .plate-region {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-family: monospace, sans-serif;
+    }
+
+    .region-code {
+      font-size: 26px;
+      font-weight: 900;
+      line-height: 1;
+    }
+
+    .region-sub {
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      font-size: 11px;
+      font-weight: 700;
+      margin-top: 2px;
+    }
+
+    .flag {
+      width: 14px;
+      height: 9px;
+      display: flex;
+      flex-direction: column;
+      border: 0.5px solid #ccc;
+    }
+    .flag-w { background: #fff; height: 33%; }
+    .flag-b { background: #0039A6; height: 33%; }
+    .flag-r { background: #D52B1E; height: 34%; }
+
+    .multipliers-list {
+      margin-top: 20px;
+      font-size: 13px;
+      color: var(--text-muted);
+      text-align: center;
+      min-height: 40px;
+      line-height: 1.5;
+    }
+
+    .controls {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .btn-spin {
+      background: var(--green);
+      color: #000;
+      border: none;
+      padding: 18px;
+      border-radius: 16px;
+      font-size: 18px;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(46, 204, 113, 0.3);
+    }
+
+    .btn-spin:active {
+      transform: scale(0.98);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="top-bar">
+    <div class="status-badge" id="rarity">Обычный</div>
+    <div class="balance-badge"><span id="balance">100 000</span> ₽</div>
+  </div>
+
+  <div class="game-area">
+    <div class="cost-preview" id="cost">0 ₽</div>
+
+    <div class="plate-container">
+      <div class="plate-main" id="plateMain">А000АА</div>
+      <div class="plate-region">
+        <span class="region-code" id="plateReg">77</span>
+        <div class="region-sub">
+          <span>RUS</span>
+          <div class="flag">
+            <div class="flag-w"></div>
+            <div class="flag-b"></div>
+            <div class="flag-r"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="multipliers-list" id="perks">Нажмите «Крутить», чтобы испытать удачу</div>
+  </div>
+
+  <div class="controls">
+    <button class="btn-spin" id="spinBtn" onclick="spin()">Крутить (1 000 ₽)</button>
+  </div>
+
+  <script>
+    const tg = window.Telegram?.WebApp;
+    if (tg) tg.expand();
+
+    // Разрешенные буквы по ГОСТ РФ
+    const LETTERS = ['А', 'В', 'Е', 'К', 'М', 'Н', 'О', 'Р', 'С', 'Т', 'У', 'Х'];
+    const REGIONS = ['77', '99', '199', '777', '799', '78', '98', '178', '23', '93', '123', '16', '116', '54', '63'];
+
+    let balance = parseInt(localStorage.getItem('balance')) || 100000;
+    const SPIN_COST = 1000;
+
+    function updateBalance(val) {
+      balance = val;
+      localStorage.setItem('balance', balance);
+      document.getElementById('balance').innerText = balance.toLocaleString('ru-RU');
+    }
+
+    updateBalance(balance);
+
+    function getRandomItem(arr) {
+      return arr[Math.floor(Math.random() * arr.length)];
+    }
+
+    function generateNumber() {
+      const l1 = getRandomItem(LETTERS);
+      const l2 = getRandomItem(LETTERS);
+      const l3 = getRandomItem(LETTERS);
+      const d1 = Math.floor(Math.random() * 10);
+      const d2 = Math.floor(Math.random() * 10);
+      const d3 = Math.floor(Math.random() * 10);
+      const reg = getRandomItem(REGIONS);
+
+      return {
+        text: `${l1}${d1}${d2}${d3}${l2}${l3}`,
+        digits: `${d1}${d2}${d3}`,
+        letters: `${l1}${l2}${l3}`,
+        reg: reg
+      };
+    }
+
+    function evaluatePlate(plate) {
+      let basePrice = 200;
+      let multiplier = 1.0;
+      let perks = [];
+      let rarity = "Обычный";
+
+      // Проверка одинаковых цифр
+      const [d1, d2, d3] = plate.digits.split('');
+      if (d1 === d2 && d2 === d3) {
+        multiplier *= 15;
+        perks.push("Три одинаковые цифры ×15");
+        rarity = "Эпический";
+      } else if (d1 === d2 || d2 === d3 || d1 === d3) {
+        multiplier *= 1.8;
+        perks.push("2 одинаковые цифры ×1.8");
+      }
+
+      // Проверка букв
+      const [l1, l2, l3] = plate.letters.split('');
+      if (l1 === l2 && l2 === l3) {
+        multiplier *= 8;
+        perks.push("Три одинаковые буквы ×8");
+        rarity = "Легендарный";
+      } else if (l1 === l2 || l2 === l3 || l1 === l3) {
+        multiplier *= 1.8;
+        perks.push("2 одинаковые буквы ×1.8");
+      }
+
+      // Столичные регионы
+      if (['77', '99', '199', '777', '799'].includes(plate.reg)) {
+        multiplier *= 1.4;
+        perks.push("Столичный регион ×1.4");
+      }
+
+      const finalPrice = Math.round(basePrice * multiplier);
+      return { finalPrice, perks, rarity };
+    }
+
+    let isSpinning = false;
+
+    function spin() {
+      if (isSpinning) return;
+      if (balance < SPIN_COST) {
+        alert("Недостаточно денег!");
+        return;
+      }
+
+      updateBalance(balance - SPIN_COST);
+      isSpinning = true;
+
+      let counter = 0;
+      const totalTicks = 20;
+
+      // Анимация быстрой смены номеров (эффект барабана)
+      const interval = setInterval(() => {
+        const temp = generateNumber();
+        document.getElementById('plateMain').innerText = temp.text;
+        document.getElementById('plateReg').innerText = temp.reg;
+        
+        // Виброотклик Telegram при каждом шаге
+        if (tg?.HapticFeedback) {
+          tg.HapticFeedback.impactOccurred('light');
+        }
+
+        counter++;
+        if (counter >= totalTicks) {
+          clearInterval(interval);
+          finishSpin();
+        }
+      }, 50);
+    }
+
+    function finishSpin() {
+      const finalPlate = generateNumber();
+      const evalData = evaluatePlate(finalPlate);
+
+      document.getElementById('plateMain').innerText = finalPlate.text;
+      document.getElementById('plateReg').innerText = finalPlate.reg;
+      document.getElementById('cost').innerText = `+${evalData.finalPrice.toLocaleString('ru-RU')} ₽`;
+      document.getElementById('rarity').innerText = evalData.rarity;
+      
+      const perksEl = document.getElementById('perks');
+      perksEl.innerHTML = evalData.perks.length > 0 ? evalData.perks.join('<br>') : "Обычная серия";
+
+      updateBalance(balance + evalData.finalPrice);
+
+      // Тяжелый виброотклик при выпадении результата
+      if (tg?.HapticFeedback) {
+        tg.HapticFeedback.notificationOccurred('success');
+      }
+
+      isSpinning = false;
+    }
+  </script>
+</body>
+</html>
