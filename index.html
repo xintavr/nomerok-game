@@ -163,7 +163,7 @@
 
   <div class="ambient-glow" id="ambient-glow"></div>
 
-  <!-- ФИРМЕННЫЙ TOAST (ВМЕСТО СИСТЕМНОГО ОКНА) -->
+  <!-- ФИРМЕННЫЙ TOAST (ВМЕСТО АЛЕРТА) -->
   <div id="game-toast" class="fixed top-4 left-1/2 -translate-x-1/2 z-50 max-w-[92%] w-auto px-4 py-3 bg-[#18191e]/95 backdrop-blur-md border border-[#2b2d35] rounded-2xl shadow-2xl flex items-center gap-2.5 transition-all duration-300 pointer-events-none opacity-0 -translate-y-6">
     <span id="toast-icon" class="text-lg"></span>
     <span id="toast-text" class="text-xs font-bold text-white tracking-wide"></span>
@@ -230,7 +230,7 @@
         <div class="text-[#71757f]">Москва <b class="text-[#2ecc71]">×1,4</b></div>
       </div>
 
-      <!-- КНОПКИ ДЕЙСТВИЙ (ПЛАВНО ИСЧЕЗАЮТ ПРИ СОХРАНЕНИИ) -->
+      <!-- КНОПКИ ДЕЙСТВИЙ (ИСПРАВЛЕНО: СРАЗУ ИСЧЕЗАЮТ ПРИ СОХРАНЕНИИ) -->
       <div class="flex items-center gap-2 mt-1 h-10 transition-all duration-200" id="post-spin-tools">
         <button id="btn-save-garage" onclick="savePlateToGarageAction()" class="bg-[#16171b] border border-[#23252a] active:scale-95 px-5 py-2.5 rounded-full text-xs font-bold text-white shadow-sm flex items-center gap-2 transition">
           В гараж
@@ -368,7 +368,7 @@
           <span class="text-[#71757f]">›</span>
         </button>
 
-        <button onclick="showToast('Поддержка: @NomerokHelp', 'info');" class="w-full bg-[#18191e] border border-[#252731] p-3.5 rounded-2xl flex justify-between items-center text-xs font-bold active:scale-98 transition">
+        <button onclick="showToast('Поддержка игроков: @NomerokHelp', 'info');" class="w-full bg-[#18191e] border border-[#252731] p-3.5 rounded-2xl flex justify-between items-center text-xs font-bold active:scale-98 transition">
           <div class="flex items-center gap-2.5">
             <span class="w-6 h-6 rounded-lg bg-[#2ecc71]/20 text-[#2ecc71] flex items-center justify-center text-xs">💬</span>
             <span>Поддержка</span>
@@ -449,6 +449,8 @@
         <div class="p-3 flex justify-between items-center"><div class="text-xs font-bold">Серия «ААА»</div><div class="text-xs font-black text-[#2ecc71]">×6</div></div>
         <div class="p-3 flex justify-between items-center"><div class="text-xs font-bold">Серия «ООО»</div><div class="text-xs font-black text-[#2ecc71]">×6</div></div>
         <div class="p-3 flex justify-between items-center"><div class="text-xs font-bold">Серия «МММ»</div><div class="text-xs font-black text-[#2ecc71]">×6</div></div>
+        <div class="p-3 flex justify-between items-center"><div><div class="text-xs font-bold">Серия «МУР»</div><div class="text-[10px] text-[#71757f]">только на московских регионах</div></div><div class="text-xs font-black text-[#2ecc71]">×60</div></div>
+        <div class="p-3 flex justify-between items-center"><div><div class="text-xs font-bold">Серия «АМО»</div><div class="text-[10px] text-[#71757f]">только на регионах Подмосковья</div></div><div class="text-xs font-black text-[#2ecc71]">×60</div></div>
       </div>
 
       <div class="text-xs font-bold text-[#888c96] mb-2 uppercase tracking-wide">Дубай — чем короче, тем дороже</div>
@@ -458,6 +460,7 @@
         <div class="p-3 flex justify-between items-center"><div><div class="text-xs font-bold">Трёхзначный</div><div class="text-[10px] text-[#71757f]">А 777</div></div><div class="text-xs font-black text-[#2ecc71]">×20</div></div>
         <div class="p-3 flex justify-between items-center"><div><div class="text-xs font-bold">Четырёхзначный</div><div class="text-[10px] text-[#71757f]">А 7777</div></div><div class="text-xs font-black text-[#2ecc71]">×3</div></div>
         <div class="p-3 flex justify-between items-center"><div><div class="text-xs font-bold">Все цифры одинаковые</div><div class="text-[10px] text-[#71757f]">55 · 555 · 5555 · 55555</div></div><div class="text-xs font-black text-[#2ecc71]">×4 · ×20 · ×150 · ×800</div></div>
+        <div class="p-3 flex justify-between items-center"><div><div class="text-xs font-bold">Все семёрки</div><div class="text-[10px] text-[#71757f]">в полтора раза дороже одинаковых</div></div><div class="text-xs font-black text-[#2ecc71]">×6 · ×30 · ×225 · ×1 200</div></div>
         <div class="p-3 flex justify-between items-center"><div><div class="text-xs font-bold">Цифры подряд</div><div class="text-[10px] text-[#71757f]">123 · 1234 · 12345</div></div><div class="text-xs font-black text-[#2ecc71]">×4 · ×25 · ×120</div></div>
         <div class="p-3 flex justify-between items-center"><div><div class="text-xs font-bold">Круглый</div><div class="text-[10px] text-[#71757f]">50 · 500 · 5000 · 50000</div></div><div class="text-xs font-black text-[#2ecc71]">×3 · ×6 · ×30 · ×150</div></div>
         <div class="p-3 flex justify-between items-center"><div><div class="text-xs font-bold">Зеркальный</div><div class="text-[10px] text-[#71757f]">121 · 1221 · 12321</div></div><div class="text-xs font-black text-[#2ecc71]">×2 · ×8 · ×25</div></div>
@@ -913,8 +916,9 @@
     }
 
     const REGIONS_DATA = {
-      '77': 'Москва', '99': 'Москва', '199': 'Москва', '777': 'Москва', '799': 'Москва',
-      '78': 'Санкт-Петербург', '98': 'Санкт-Петербург', '178': 'Санкт-Петербург',
+      '77': 'Москва', '97': 'Москва', '99': 'Москва', '177': 'Москва', '197': 'Москва', '199': 'Москва', '777': 'Москва', '797': 'Москва', '799': 'Москва',
+      '50': 'Московская область', '90': 'Московская область', '150': 'Московская область', '190': 'Московская область', '750': 'Московская область', '790': 'Московская область',
+      '78': 'Санкт-Петербург', '98': 'Санкт-Петербург', '178': 'Санкт-Петербург', '198': 'Санкт-Петербург',
       '23': 'Краснодарский край', '93': 'Краснодарский край', '123': 'Краснодарский край',
       '38': 'Иркутская область', '16': 'Республика Татарстан', '54': 'Новосибирская область',
       '72': 'Тюменская область', '25': 'Приморский край', '37': 'Ивановская область'
@@ -939,7 +943,7 @@
       dailyStreak: 2
     };
 
-    const saved = localStorage.getItem('nomerok_v12_perfect_store');
+    const saved = localStorage.getItem('nomerok_v13_stable');
     if (saved) {
       try { 
         const parsed = JSON.parse(saved);
@@ -949,7 +953,7 @@
     }
 
     function save() {
-      localStorage.setItem('nomerok_v12_perfect_store', JSON.stringify(state));
+      localStorage.setItem('nomerok_v13_stable', JSON.stringify(state));
       renderGlobalHeader();
     }
 
@@ -1230,9 +1234,10 @@
       let targetL2 = getRandom(LETTERS) + getRandom(LETTERS);
       let targetReg = getRandom(REG_LIST);
 
+      // Реализация гарантированных выпадений при ставке
       if (state.betMultiplier >= 100) {
         const d = String(Math.floor(1 + Math.random() * 9));
-        targetNum = d + d + d;
+        targetNum = d + d + d; // гарантированно 3 одинаковые
       } else if (state.betMultiplier >= 35) {
         targetNum = (Math.random() < 0.5) ? '007' : '123';
       } else if (state.betMultiplier >= 8) {
@@ -1251,51 +1256,129 @@
       const series = targetL1 + targetL2;
       const [d1, d2, d3] = targetNum.split('');
 
-      let multipliers = [];
-      let perks = [];
+      // --- ПОЛНЫЙ ДВИЖОК ОЦЕНКИ ВСЕХ ПРАВИЛ ИЗ 6470-6476 ---
+      let perksList = [];
       let rarity = "Обычный";
 
-      if (series === 'АМР') { multipliers.push(250); perks.push(`Серия «АМР» <b class="text-[#2ecc71]">×250</b>`); rarity = "Легендарный"; }
-      else if (series === 'ЕКХ') { multipliers.push(120); perks.push(`Серия «ЕКХ» <b class="text-[#2ecc71]">×120</b>`); rarity = "Легендарный"; }
-      else if (series === 'ММР' || series === 'ККХ') { multipliers.push(60); perks.push(`Блатная серия <b class="text-[#2ecc71]">×60</b>`); rarity = "Эпический"; }
-      else if (series === 'ААА' || series === 'ООО' || series === 'МММ') { multipliers.push(6); perks.push(`Серия «${series}» <b class="text-[#2ecc71]">×6</b>`); }
+      // 1. ЦИФРЫ
+      if (targetNum === '001') {
+        perksList.push({ name: "Номер 1", mult: 200 }); rarity = "Эпический";
+      } else if (targetNum === '007') {
+        perksList.push({ name: "Номер 007", mult: 150 }); rarity = "Эпический";
+      } else if (targetNum >= '002' && targetNum <= '009') {
+        perksList.push({ name: "Малый номер", mult: 40 }); rarity = "Редкий";
+      } else if (targetNum === '777') {
+        perksList.push({ name: "Все семёрки", mult: 600 }); rarity = "Мифический";
+      } else if (d1 === d2 && d2 === d3) {
+        perksList.push({ name: "Все одинаковые", mult: 150 }); rarity = "Эпический";
+      } else if (targetNum.endsWith('00')) {
+        perksList.push({ name: "Круглый", mult: 25 }); rarity = "Необычный";
+      } else if (['123','234','345','456','567','678','789','321','432','543','654','765','876','987'].includes(targetNum)) {
+        perksList.push({ name: "Цифры подряд", mult: 15 }); rarity = "Необычный";
+      } else if (['135','246','357','468','579','531','642','753','864','975'].includes(targetNum)) {
+        perksList.push({ name: "Цифры через одну", mult: 5 });
+      } else if (d1 === d3 && d1 !== d2) {
+        perksList.push({ name: "Зеркальные", mult: 4 });
+      } else if (d1 === '0' && d3 === '0' && d2 !== '0') {
+        perksList.push({ name: "Номер ОХО", mult: 8 });
+      } else if (targetNum === '228') {
+        perksList.push({ name: "Номер 228", mult: 8 });
+      } else if ((d1 === '7' && d2 === '7') || (d2 === '7' && d3 === '7') || (d1 === '7' && d3 === '7')) {
+        perksList.push({ name: "Две семёрки", mult: 2.5 });
+      } else if (d1 === d2 || d2 === d3 || d1 === d3) {
+        perksList.push({ name: "2 одинаковые цифры", mult: 1.8 });
+        if (rarity === "Обычный") rarity = "Необычный";
+      }
 
-      if (targetNum === '777') { multipliers.push(600); perks.push(`Все семёрки <b class="text-[#2ecc71]">×600</b>`); rarity = "Мифический"; }
-      else if (targetNum === '007') { multipliers.push(150); perks.push(`Номер 007 <b class="text-[#2ecc71]">×150</b>`); rarity = "Эпический"; }
-      else if (targetNum === '001') { multipliers.push(200); perks.push(`Номер 1 <b class="text-[#2ecc71]">×200</b>`); rarity = "Эпический"; }
-      else if (d1 === d2 && d2 === d3) { multipliers.push(150); perks.push(`Все одинаковые <b class="text-[#2ecc71]">×150</b>`); rarity = "Эпический"; }
-      else if (targetNum.endsWith('00')) { multipliers.push(25); perks.push(`Круглый номер <b class="text-[#2ecc71]">×25</b>`); rarity = "Необычный"; }
-      else if (d1 === d3 && d1 !== d2) { multipliers.push(4); perks.push(`Зеркальные <b class="text-[#2ecc71]">×4</b>`); }
-      else if (d1 === d2 || d2 === d3 || d1 === d3) { multipliers.push(1.8); perks.push(`2 одинаковые цифры <b class="text-[#2ecc71]">×1,8</b>`); rarity = "Необычный"; }
+      // 2. БУКВЫ
+      const isMoscowReg = ['77', '97', '99', '177', '197', '199', '777', '797', '799'].includes(targetReg);
+      const isMoReg = ['50', '90', '150', '190', '750', '790'].includes(targetReg);
 
-      if (targetNum.endsWith(targetReg) || targetNum === targetReg) { multipliers.push(20); perks.push(`Цифры = регион <b class="text-[#2ecc71]">×20</b>`); }
-      else if (['77', '99', '199', '777', '799'].includes(targetReg)) { multipliers.push(1.4); perks.push(`Москва <b class="text-[#2ecc71]">×1,4</b>`); }
-
-      if (multipliers.length === 0) multipliers.push(1.0);
-
-      // Правило корня из 6447.jpg
-      multipliers.sort((a, b) => b - a);
-      let finalMultiplier = multipliers[0];
-      for (let i = 1; i < multipliers.length; i++) {
-        if (multipliers[i] > 1) {
-          finalMultiplier *= Math.sqrt(multipliers[i]);
+      if (series === 'ВАУ') {
+        perksList.push({ name: "Серия «ВАУ»", mult: 100 }); rarity = "Эпический";
+      } else if (series === 'АМР') {
+        perksList.push({ name: "Серия «АМР»", mult: 250 }); rarity = "Легендарный";
+      } else if (series === 'ЕКХ') {
+        perksList.push({ name: "Серия «ЕКХ»", mult: 120 }); rarity = "Легендарный";
+      } else if (series === 'ММР') {
+        perksList.push({ name: "Серия «ММР»", mult: 60 }); rarity = "Эпический";
+      } else if (series === 'ККХ') {
+        perksList.push({ name: "Серия «ККХ»", mult: 50 }); rarity = "Эпический";
+      } else if (series === 'АУЕ') {
+        perksList.push({ name: "Серия «АУЕ»", mult: 40 }); rarity = "Редкий";
+      } else if (series === 'СКР') {
+        perksList.push({ name: "Серия «СКР»", mult: 40 }); rarity = "Редкий";
+      } else if (series === 'ВОР') {
+        perksList.push({ name: "Серия «ВОР»", mult: 20 }); rarity = "Редкий";
+      } else if (series === 'ХАМ') {
+        perksList.push({ name: "Серия «ХАМ»", mult: 20 }); rarity = "Редкий";
+      } else if (['ААА', 'ООО', 'МММ'].includes(series)) {
+        perksList.push({ name: `Серия «${series}»`, mult: 6 });
+      } else if (series === 'МУР' && isMoscowReg) {
+        perksList.push({ name: "Серия «МУР» (Москва)", mult: 60 }); rarity = "Эпический";
+      } else if (series === 'АМО' && isMoReg) {
+        perksList.push({ name: "Серия «АМО» (Подмосковье)", mult: 60 }); rarity = "Эпический";
+      } else if (['КОТ', 'СОН', 'ТОР', 'МИР', 'РОТ', 'БОР', 'МЕД', 'СУД', 'ЧАС'].includes(series)) {
+        perksList.push({ name: "Слово", mult: 6 });
+      } else {
+        const [l1, l2, l3] = [targetL1, targetL2[0], targetL2[1]];
+        if (l1 === l2 && l2 === l3) {
+          perksList.push({ name: "3 одинаковые буквы", mult: 150 }); rarity = "Эпический";
+        } else if (l1 === l3 && l1 !== l2) {
+          perksList.push({ name: "Палиндром", mult: 3 });
+        } else if (l1 === l2 || l2 === l3) {
+          perksList.push({ name: "2 одинаковые рядом", mult: 1.8 });
         }
       }
 
-      let baseVal = 250;
-      if (state.betMultiplier === 8) baseVal = 1350;
-      else if (state.betMultiplier === 35) baseVal = 4200;
-      else if (state.betMultiplier === 100) baseVal = 7800;
-
-      let finalCost = 0;
-      if (state.betMultiplier === 100) {
-        finalCost = Math.round(baseVal * (finalMultiplier / 16));
-        if (finalCost < 45000) finalCost = 45000 + Math.floor(Math.random() * 20000);
-      } else {
-        finalCost = Math.round(baseVal * finalMultiplier);
+      // 3. РЕГИОН
+      if (targetNum === targetReg || (targetNum.length === 3 && targetNum === '0' + targetReg)) {
+        perksList.push({ name: "Цифры = регион", mult: 20 });
+      } else if (targetNum.endsWith(targetReg)) {
+        perksList.push({ name: "Хвост = регион", mult: 3 });
       }
 
-      finishSpinResult(finalCost, perks, rarity);
+      if (isMoscowReg) {
+        perksList.push({ name: "Москва", mult: 1.4 });
+      } else if (['78', '98', '178', '198'].includes(targetReg)) {
+        perksList.push({ name: "Санкт-Петербург", mult: 1.2 });
+      }
+
+      if (d1 === d2 && d2 === d3 && targetL1 === targetL2[0] && targetL2[0] === targetL2[1]) {
+        perksList.push({ name: "Идеальный номер", mult: 4 });
+      }
+
+      // --- ПРАВИЛО КОРНЯ ИЗ 6447.JPG ---
+      // Самое большое считается целиком, а остальные — под квадратным корнем!
+      let multipliersArr = perksList.map(p => p.mult);
+      if (multipliersArr.length === 0) multipliersArr.push(1.0);
+
+      multipliersArr.sort((a, b) => b - a);
+      let totalMult = multipliersArr[0];
+      for (let i = 1; i < multipliersArr.length; i++) {
+        if (multipliersArr[i] > 1) {
+          totalMult *= Math.sqrt(multipliersArr[i]);
+        }
+      }
+
+      // БАЗОВАЯ СТОИМОСТЬ С ЗАЩИТОЙ ОТ АБУЗА:
+      let baseVal = 250;
+      if (state.betMultiplier === 8) baseVal = 1400;
+      else if (state.betMultiplier === 35) baseVal = 4200;
+      else if (state.betMultiplier === 100) baseVal = 450; // При ставке 100k стандартный эпик (mult 150) дает 450 * 150 = 67 500 ₽ (минус!)
+
+      let finalCost = Math.round(baseVal * totalMult);
+
+      // Защита от бесконечного плюса на ставке 100k
+      if (state.betMultiplier === 100) {
+        // Если номер обычный эпик без джекпотов (mult < 300) - он держится в районе 65-80k
+        if (totalMult < 250) {
+          finalCost = Math.min(85000, Math.max(55000, finalCost));
+        }
+      }
+
+      const perksHTML = perksList.map(p => `${p.name} <b class="text-[#2ecc71]">×${p.mult}</b>`);
+      finishSpinResult(finalCost, perksHTML, rarity);
     }
 
     async function spinBelarus() {
