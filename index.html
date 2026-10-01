@@ -163,7 +163,7 @@
 
   <div class="ambient-glow" id="ambient-glow"></div>
 
-  <!-- ФИРМЕННЫЙ TOAST (ВМЕСТО АЛЕРТА) -->
+  <!-- ФИРМЕННЫЙ TOAST (ВМЕСТО СИСТЕМНОГО ОКНА) -->
   <div id="game-toast" class="fixed top-4 left-1/2 -translate-x-1/2 z-50 max-w-[92%] w-auto px-4 py-3 bg-[#18191e]/95 backdrop-blur-md border border-[#2b2d35] rounded-2xl shadow-2xl flex items-center gap-2.5 transition-all duration-300 pointer-events-none opacity-0 -translate-y-6">
     <span id="toast-icon" class="text-lg"></span>
     <span id="toast-text" class="text-xs font-bold text-white tracking-wide"></span>
@@ -217,21 +217,20 @@
   <div id="view-plates" class="flex-1 flex flex-col justify-between items-center px-4 py-2 max-w-sm mx-auto w-full z-10">
     <div class="w-full flex flex-col items-center mt-2">
       <div class="w-[334px] flex justify-between items-center mb-1.5 px-1">
-        <div id="ui-rarity" class="text-xs font-bold text-[#2ecc71] tracking-wide">Необычный</div>
-        <div id="ui-cost" class="text-xl font-black text-[#2ecc71] tracking-tight">1 068 ₽</div>
+        <div id="ui-rarity" class="text-xs font-bold text-[#2ecc71] tracking-wide">Обычный</div>
+        <div id="ui-cost" class="text-xl font-black text-[#2ecc71] tracking-tight">350 ₽</div>
       </div>
 
       <!-- КАРТОЧКА НОМЕРА -->
       <div id="plate-root"></div>
 
       <!-- РЕГИОН И МНОЖИТЕЛИ ПОД НОМЕРОМ -->
-      <div class="text-[11px] text-[#71757f] font-semibold mt-2.5" id="ui-region">Регион 38 • Иркутская область</div>
+      <div class="text-[11px] text-[#71757f] font-semibold mt-2.5" id="ui-region">Регион 777 • Москва</div>
       <div class="min-h-[46px] flex flex-col items-center justify-center gap-0.5 mt-1 text-xs" id="ui-perks">
-        <div class="text-[#71757f]">2 одинаковые цифры <b class="text-[#2ecc71]">×1,8</b></div>
-        <div class="text-[#71757f]">2 одинаковые буквы <b class="text-[#2ecc71]">×1,8</b></div>
+        <div class="text-[#71757f]">Москва <b class="text-[#2ecc71]">×1,4</b></div>
       </div>
 
-      <!-- КНОПКИ ДЕЙСТВИЙ (ИСПРАВЛЕНО: СРАЗУ ИСЧЕЗАЮТ ПРИ СОХРАНЕНИИ) -->
+      <!-- КНОПКИ ДЕЙСТВИЙ (ПЛАВНО ИСЧЕЗАЮТ ПРИ СОХРАНЕНИИ) -->
       <div class="flex items-center gap-2 mt-1 h-10 transition-all duration-200" id="post-spin-tools">
         <button id="btn-save-garage" onclick="savePlateToGarageAction()" class="bg-[#16171b] border border-[#23252a] active:scale-95 px-5 py-2.5 rounded-full text-xs font-bold text-white shadow-sm flex items-center gap-2 transition">
           В гараж
@@ -244,7 +243,7 @@
 
     <!-- ВЫБОР СТРАНЫ + СТАВКА -->
     <div class="w-full flex flex-col items-center gap-2 pb-2">
-      <div class="text-[11px] text-[#71757f] min-h-[18px] text-center" id="ui-sale-note">Этот номер продастся за 1 068 ₽</div>
+      <div class="text-[11px] text-[#71757f] min-h-[18px] text-center" id="ui-sale-note">Этот номер продастся за 350 ₽</div>
 
       <div class="flex items-center gap-2 w-full">
         <button onclick="openModal('modal-country')" class="flex-1 bg-[#16171b] border border-[#23252a] px-3.5 py-2.5 rounded-full flex items-center justify-between text-xs font-bold active:scale-95 transition">
@@ -369,7 +368,7 @@
           <span class="text-[#71757f]">›</span>
         </button>
 
-        <button onclick="showToast('Поддержка игроков: @NomerokHelp', 'info');" class="w-full bg-[#18191e] border border-[#252731] p-3.5 rounded-2xl flex justify-between items-center text-xs font-bold active:scale-98 transition">
+        <button onclick="showToast('Поддержка: @NomerokHelp', 'info');" class="w-full bg-[#18191e] border border-[#252731] p-3.5 rounded-2xl flex justify-between items-center text-xs font-bold active:scale-98 transition">
           <div class="flex items-center gap-2.5">
             <span class="w-6 h-6 rounded-lg bg-[#2ecc71]/20 text-[#2ecc71] flex items-center justify-center text-xs">💬</span>
             <span>Поддержка</span>
@@ -923,7 +922,7 @@
     const REG_LIST = Object.keys(REGIONS_DATA);
     const LETTERS = ['А', 'В', 'Е', 'К', 'М', 'Н', 'О', 'Р', 'С', 'Т', 'У', 'Х'];
 
-    // --- ИГРОВОЕ СОСТОЯНИЕ (ЕДИНЫЙ ИСТОЧНИК ИСТИНЫ) ---
+    // --- ИГРОВОЕ СОСТОЯНИЕ ---
     let state = {
       country: 'ru',
       currentType: 'civil',
@@ -936,33 +935,21 @@
       bestCost: 107776,
       garage: [], // Хранилище номеров
       autopark: [], // Хранилище машин
-      currentPlate: {
-        raw: 'К 604 НК 93',
-        l1: 'К',
-        num: '604',
-        l2: 'НК',
-        reg: '93',
-        cost: 250,
-        rarity: 'Обычный',
-        country: 'ru',
-        perks: ['Обычная серия']
-      },
       lastDailyClaim: 0,
       dailyStreak: 2
     };
 
-    const saved = localStorage.getItem('nomerok_v11_fix_store');
+    const saved = localStorage.getItem('nomerok_v12_perfect_store');
     if (saved) {
       try { 
         const parsed = JSON.parse(saved);
         state = Object.assign(state, parsed);
         if (parsed.garage) state.garage = parsed.garage;
-        if (parsed.currentPlate) state.currentPlate = parsed.currentPlate;
       } catch(e){}
     }
 
     function save() {
-      localStorage.setItem('nomerok_v11_fix_store', JSON.stringify(state));
+      localStorage.setItem('nomerok_v12_perfect_store', JSON.stringify(state));
       renderGlobalHeader();
     }
 
@@ -1076,19 +1063,18 @@
     function renderPlateBaseLayout() {
       const root = document.getElementById('plate-root');
       const c = state.country;
-      const cp = state.currentPlate;
 
       if (c === 'ru') {
         root.innerHTML = `
           <div class="plate-rf-container" id="current-plate-box">
             <div class="plate-rf-inner">
               <div class="plate-rf-main">
-                <span class="p-rf-letter" id="slot-1">${cp.l1 || 'К'}</span>
-                <span class="p-rf-digits" id="slot-2">${cp.num || '604'}</span>
-                <span class="p-rf-letter" id="slot-3">${cp.l2 || 'НК'}</span>
+                <span class="p-rf-letter" id="slot-1">У</span>
+                <span class="p-rf-digits" id="slot-2">203</span>
+                <span class="p-rf-letter" id="slot-3">МР</span>
               </div>
               <div class="plate-rf-reg">
-                <span class="reg-rf-code" id="slot-reg">${cp.reg || '93'}</span>
+                <span class="reg-rf-code" id="slot-reg">777</span>
                 <div class="reg-rf-sub">
                   <span>RUS</span>
                   <div class="flag-rf"><div class="f-w"></div><div class="f-b"></div><div class="f-r"></div></div>
@@ -1097,7 +1083,7 @@
             </div>
           </div>
         `;
-        document.getElementById('ui-region').innerText = `Регион ${cp.reg || '93'} • ${REGIONS_DATA[cp.reg || '93'] || 'РФ'}`;
+        document.getElementById('ui-region').innerText = `Регион 777 • Москва`;
       } else if (c === 'by') {
         root.innerHTML = `
           <div class="plate-by-container" id="current-plate-box">
@@ -1137,10 +1123,10 @@
         document.getElementById('ui-region').innerText = `Код 02 • Алматы`;
       }
 
-      document.getElementById('ui-rarity').innerText = cp.rarity;
-      document.getElementById('ui-cost').innerText = `${cp.cost.toLocaleString('ru-RU')} ${state.syms[state.country]}`;
-      document.getElementById('ui-perks').innerHTML = cp.perks.join('<br>');
-      document.getElementById('ui-sale-note').innerText = `Этот номер продастся за ${cp.cost.toLocaleString('ru-RU')} ${state.syms[state.country]}`;
+      document.getElementById('ui-rarity').innerText = 'Обычный';
+      document.getElementById('ui-cost').innerText = `350 ${state.syms[state.country]}`;
+      document.getElementById('ui-perks').innerHTML = `Москва <b class="text-[#2ecc71]">×1,4</b>`;
+      document.getElementById('ui-sale-note').innerText = `Этот номер продастся за 350 ${state.syms[state.country]}`;
     }
 
     // --- КРУТИЛКА НОМЕРОВ ---
@@ -1309,7 +1295,7 @@
         finalCost = Math.round(baseVal * finalMultiplier);
       }
 
-      finishSpinResult(finalCost, perks, rarity, `${targetL1} ${targetNum} ${targetL2} ${targetReg}`, targetL1, targetNum, targetL2, targetReg);
+      finishSpinResult(finalCost, perks, rarity);
     }
 
     async function spinBelarus() {
@@ -1331,7 +1317,7 @@
 
       activeIntervals.forEach(t => clearInterval(t));
       const cost = Math.round((10 + Math.random() * 25) * state.betMultiplier);
-      finishSpinResult(cost, [`Регион ${target.reg}`], "Обычный", `${target.num} ${target.l}-${target.reg}`, '', target.num, target.l, target.reg);
+      finishSpinResult(cost, [`Регион ${target.reg}`], "Обычный");
     }
 
     async function spinDubai() {
@@ -1363,7 +1349,7 @@
 
       activeIntervals.forEach(t => clearInterval(t));
       const cost = Math.round(15000 * Math.sqrt(mult));
-      finishSpinResult(cost, perks, rarity, `DUBAI ${targetL} ${targetNum}`, targetL, targetNum, '', '');
+      finishSpinResult(cost, perks, rarity);
     }
 
     async function spinKazakhstan() {
@@ -1384,11 +1370,10 @@
 
       activeIntervals.forEach(t => clearInterval(t));
       const cost = Math.round(2500 * state.betMultiplier);
-      finishSpinResult(cost, [`Госномер Казахстана`], "Необычный", `${target.num} ${target.l} 02`, '', target.num, target.l, '02');
+      finishSpinResult(cost, [`Госномер Казахстана`], "Необычный");
     }
 
-    // ЕДИНСТВЕННАЯ ТОЧКА ОБНОВЛЕНИЯ ВЫБИТОГО НОМЕРА
-    function finishSpinResult(cost, perks, rarity, rawTitle, l1, num, l2, reg) {
+    function finishSpinResult(cost, perks, rarity) {
       const sym = state.syms[state.country];
       document.getElementById('ui-rarity').innerText = rarity;
       document.getElementById('ui-cost').innerText = `${cost.toLocaleString('ru-RU')} ${sym}`;
@@ -1396,21 +1381,6 @@
       document.getElementById('ui-sale-note').innerText = `Этот номер продастся за ${cost.toLocaleString('ru-RU')} ${sym}`;
 
       modifyActiveBalance(cost);
-
-      // СТРОГО ОБНОВЛЯЕМ STATE.CURRENTPLATE
-      state.currentPlate = {
-        raw: rawTitle,
-        l1: l1,
-        num: num,
-        l2: l2,
-        reg: reg,
-        cost: cost,
-        rarity: rarity,
-        country: state.country,
-        perks: perks,
-        timestamp: Date.now()
-      };
-      save();
 
       if (['Эпический', 'Легендарный', 'Мифический'].includes(rarity)) {
         confetti({ particleCount: 75, spread: 60, origin: { y: 0.65 } });
@@ -1421,15 +1391,32 @@
 
     function getRandom(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
 
-    // --- ЕДИНСТВЕННАЯ ЧИСТАЯ ФУНКЦИЯ СОХРАНЕНИЯ В ГАРАЖ ---
+    // --- ПРЯМОЕ СОХРАНЕНИЕ НОМЕРА ИЗ DOM (НЕВОЗМОЖНО СОХРАНИТЬ ДРУГОЙ НОМЕР!) ---
     function savePlateToGarageAction() {
-      // Считываем номер строго из актуального состояния
-      const cp = state.currentPlate;
+      // 1. Считываем символы ПРЯМО С ЭКРАНА
+      const s1 = document.getElementById('slot-1')?.innerText.trim() || '';
+      const s2 = document.getElementById('slot-2')?.innerText.trim() || '';
+      const s3 = document.getElementById('slot-3')?.innerText.trim() || '';
+      const sReg = document.getElementById('slot-reg')?.innerText.trim() || '';
+      const rarity = document.getElementById('ui-rarity')?.innerText.trim() || 'Обычный';
+      const costText = document.getElementById('ui-cost')?.innerText.replace(/\D/g, '') || '250';
+      const cost = parseInt(costText, 10) || 250;
 
-      // Проверяем, есть ли уже ТОЧНО ТАКОЙ ЖЕ номер в гараже
-      const alreadySaved = state.garage.some(item => item.raw === cp.raw && item.country === cp.country);
+      let plateRaw = '';
+      if (state.country === 'ru') {
+        plateRaw = `${s1} ${s2} ${s3} ${sReg}`;
+      } else if (state.country === 'by') {
+        plateRaw = `${s1} ${s2}-${sReg}`;
+      } else if (state.country === 'ae') {
+        plateRaw = `DUBAI ${s1} ${s2}`;
+      } else {
+        plateRaw = `${s1} ${s2} ${sReg}`;
+      }
+
+      // 2. Проверяем, есть ли ровно ЭТОТ номер в гараже
+      const alreadySaved = state.garage.some(item => item.raw === plateRaw && item.country === state.country);
       if (alreadySaved) {
-        showToast(`Номер ${cp.raw} уже есть в гараже!`, "warn");
+        showToast(`Номер ${plateRaw} уже есть в гараже!`, "warn");
         return;
       }
 
@@ -1447,8 +1434,14 @@
         }, 260);
       }
 
-      // СОХРАНЯЕМ В МАССИВ
-      state.garage.unshift({ ...cp, id: Date.now() });
+      // 3. Сохраняем ТОЧНО ТОТ НОМЕР, ЧТО БЫЛ НА ЭКРАНЕ
+      state.garage.unshift({
+        raw: plateRaw,
+        cost: cost,
+        rarity: rarity,
+        country: state.country,
+        id: Date.now()
+      });
       save();
 
       // Мгновенно скрываем кнопки
@@ -1461,7 +1454,7 @@
 
       document.getElementById('ui-sale-note').innerHTML = `<span class="text-[#2ecc71] font-bold">✓ Номер сохранён в гараж!</span>`;
       
-      showToast(`Номер ${cp.raw} отправлен в гараж!`, "success");
+      showToast(`Номер ${plateRaw} отправлен в гараж!`, "success");
       renderGarageDOM();
     }
 
@@ -1630,9 +1623,15 @@
     }
 
     function mountPlateOnWonCar() {
-      state.autopark[0].plate = state.currentPlate.raw;
+      const s1 = document.getElementById('slot-1')?.innerText.trim() || '';
+      const s2 = document.getElementById('slot-2')?.innerText.trim() || '';
+      const s3 = document.getElementById('slot-3')?.innerText.trim() || '';
+      const sReg = document.getElementById('slot-reg')?.innerText.trim() || '';
+      const plateRaw = `${s1} ${s2} ${s3} ${sReg}`.trim();
+
+      state.autopark[0].plate = plateRaw;
       state.autopark[0].price = Math.round(state.autopark[0].price * 1.1);
-      showToast(`Номер ${state.currentPlate.raw} установлен на ${wonCarData.name}! (+10% к цене)`, "success");
+      showToast(`Номер ${plateRaw} установлен на ${wonCarData.name}! (+10% к цене)`, "success");
       save();
       closeModal('modal-car-roulette');
     }
@@ -1733,7 +1732,14 @@
     }
 
     function shareResult() {
-      if (navigator.share) navigator.share({ title: 'Номерок', text: `Мой номер стоит ${state.currentPlate.cost}!` });
+      const s1 = document.getElementById('slot-1')?.innerText.trim() || '';
+      const s2 = document.getElementById('slot-2')?.innerText.trim() || '';
+      const s3 = document.getElementById('slot-3')?.innerText.trim() || '';
+      const sReg = document.getElementById('slot-reg')?.innerText.trim() || '';
+      const raw = `${s1} ${s2} ${s3} ${sReg}`.trim();
+      const cost = document.getElementById('ui-cost')?.innerText || '';
+
+      if (navigator.share) navigator.share({ title: 'Номерок', text: `Мой номер ${raw} стоит ${cost}!` });
       else showToast("Ссылка на номер скопирована в буфер!", "info");
     }
 
