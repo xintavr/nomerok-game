@@ -41,7 +41,7 @@
       z-index: 0;
     }
 
-    /* АУТЕНТИЧНЫЙ ГОСТ НОМЕР РФ (ИСПРАВЛЕНА ПОСАДКА БУКВЫ "У") */
+    /* АУТЕНТИЧНЫЙ ГОСТ НОМЕР РФ (ИДЕАЛЬНАЯ ПОСАДКА БУКВЫ "У") */
     .plate-rf-container {
       width: 334px;
       height: 72px;
@@ -82,7 +82,7 @@
       line-height: 1;
       display: inline-flex;
       align-items: center;
-      transform: translateY(-2px); /* Предотвращает вылезание буквы У вниз */
+      transform: translateY(-2.5px); /* Исключает вылезание буквы У вниз */
     }
     .p-rf-digits {
       font-size: 50px;
@@ -177,7 +177,7 @@
 
   <div class="ambient-glow" id="ambient-glow"></div>
 
-  <!-- ФИРМЕННЫЙ TOAST (ВМЕСТО АЛЕРТА) -->
+  <!-- ФИРМЕННЫЙ TOAST (ВМЕСТО СИСТЕМНОГО ОКНА ALERT) -->
   <div id="game-toast" class="fixed top-4 left-1/2 -translate-x-1/2 z-50 max-w-[92%] w-auto px-4 py-3 bg-[#18191e]/95 backdrop-blur-md border border-[#2b2d35] rounded-2xl shadow-2xl flex items-center gap-2.5 transition-all duration-300 pointer-events-none opacity-0 -translate-y-6">
     <span id="toast-icon" class="text-lg"></span>
     <span id="toast-text" class="text-xs font-bold text-white tracking-wide"></span>
@@ -235,7 +235,7 @@
         <div id="ui-cost" class="text-xl font-black text-[#2ecc71] tracking-tight">350 ₽</div>
       </div>
 
-      <!-- КАРТОЧКА НОМЕРА (ПРЕДВАРИТЕЛЬНО ВШИТА В HTML, НЕ МОЖЕТ ИСЧЕЗНУТЬ) -->
+      <!-- КАРТОЧКА НОМЕРА -->
       <div id="plate-root">
         <div class="plate-rf-container" id="current-plate-box">
           <div class="plate-rf-inner">
@@ -668,7 +668,7 @@
           particleCount: opts.particleCount || 70,
           spread: opts.spread || 60,
           origin: opts.origin || { y: 0.6 },
-          ticks: 90, // Быстро растворяется
+          ticks: 90,
           disableForReducedMotion: false
         });
       } catch (e) {}
@@ -704,742 +704,8 @@
       }, 2600);
     }
 
-    // --- БАЗА ШАНСОВ КЕЙСОВ ---
-    const CASES_DATA = {
-      'Обычный': {
-        cost: 10000,
-        odds: [
-          { r: 'Обычный', label: 'Обычный (11 авто: ВАЗ-2107, 2109, Nexia...)', pct: '70%', color: 'text-white' },
-          { r: 'Необычный', label: 'Необычный (8 авто: Vesta, Priora, Solaris...)', pct: '22%', color: 'text-[#2ecc71]' },
-          { r: 'Редкий', label: 'Редкий (6 авто: УАЗ, Camry 3.5, Passat...)', pct: '6%', color: 'text-[#3498db]' },
-          { r: 'Эпический', label: 'Эпический (4 авто: LC Prado, BMW 5, E-Class...)', pct: '1.6%', color: 'text-[#9b59b6]' },
-          { r: 'Легендарный', label: 'Легендарный (2 авто: LC 300, Гелик)', pct: '0.35%', color: 'text-[#f1c40f]' },
-          { r: 'Мифический', label: 'Мифический (1 авто: Lamborghini Urus)', pct: '0.05%', color: 'text-[#e74c3c]' }
-        ]
-      },
-      'Редкий': {
-        cost: 30000,
-        odds: [
-          { r: 'Обычный', label: 'Обычный (ВАЗ-2107, ВАЗ-2109, Daewoo Nexia...)', pct: '32%', color: 'text-white' },
-          { r: 'Необычный', label: 'Необычный (Лада Веста, Kia Rio, Solaris...)', pct: '40%', color: 'text-[#2ecc71]' },
-          { r: 'Редкий', label: 'Редкий (УАЗ Патриот, Camry, Polo...)', pct: '19%', color: 'text-[#3498db]' },
-          { r: 'Эпический', label: 'Эпический (LC Prado, BMW 5, Audi A6...)', pct: '6.5%', color: 'text-[#9b59b6]' },
-          { r: 'Легендарный', label: 'Легендарный (LC 300, Гелик)', pct: '2%', color: 'text-[#f1c40f]' },
-          { r: 'Мифический', label: 'Мифический (Lamborghini Urus)', pct: '0.4%', color: 'text-[#e74c3c]' }
-        ]
-      },
-      'Эпический': {
-        cost: 100000,
-        odds: [
-          { r: 'Обычный', label: 'Обычный (ВАЗ-2107, Daewoo Nexia...)', pct: '10%', color: 'text-white' },
-          { r: 'Необычный', label: 'Необычный (Solaris, Vesta, Polo...)', pct: '25%', color: 'text-[#2ecc71]' },
-          { r: 'Редкий', label: 'Редкий (Camry 3.5, Passat, УАЗ...)', pct: '35%', color: 'text-[#3498db]' },
-          { r: 'Эпический', label: 'Эпический (BMW 5, E-Class, LC Prado...)', pct: '17%', color: 'text-[#9b59b6]' },
-          { r: 'Легендарный', label: 'Легендарный (LC 300, Гелик)', pct: '12%', color: 'text-[#f1c40f]' },
-          { r: 'Мифический', label: 'Мифический (Lamborghini Urus)', pct: '1%', color: 'text-[#e74c3c]' }
-        ]
-      },
-      'Легендарный': {
-        cost: 300000,
-        odds: [
-          { r: 'Обычный', label: 'Обычный', pct: '0%', color: 'text-white' },
-          { r: 'Необычный', label: 'Необычный (Solaris, Vesta...)', pct: '5%', color: 'text-[#2ecc71]' },
-          { r: 'Редкий', label: 'Редкий (Camry, Passat, УАЗ...)', pct: '20%', color: 'text-[#3498db]' },
-          { r: 'Эпический', label: 'Эпический (BMW 5, E-Class, LC Prado...)', pct: '32%', color: 'text-[#9b59b6]' },
-          { r: 'Легендарный', label: 'Легендарный (LC 300, Гелик)', pct: '40%', color: 'text-[#f1c40f]' },
-          { r: 'Мифический', label: 'Мифический (Lamborghini Urus)', pct: '3%', color: 'text-[#e74c3c]' }
-        ]
-      }
-    };
-
-    // --- БАЗА КОЛЛЕКЦИИ ---
-    const COLLECTION_FOUND = [
-      { name: "Все цифры одинаковые", ex: "Например, 555", cnt: 1 },
-      { name: "Круглый номер", ex: "Например, 300", cnt: 25 },
-      { name: "Номер ОХО", ex: "Например, 070", cnt: 1 },
-      { name: "Короткий номер Дубая", ex: "Чем меньше цифр, тем дороже", cnt: 2 },
-      { name: "Двойной код Дубая", ex: "AA 12345", cnt: 2 },
-      { name: "Цифры через одну", ex: "Например, 135 или 2468", cnt: 2 },
-      { name: "Хвост = регион", ex: "Например, 142 с регионом 42", cnt: 2 },
-      { name: "3 одинаковые буквы", ex: "Все буквы серии одинаковые", cnt: 1 },
-      { name: "Блатная серия", ex: "Буквы, которые знают все", cnt: 2 },
-      { name: "Малый номер", ex: "Цифры меньше 10", cnt: 3 },
-      { name: "Цифры подряд", ex: "По порядку вверх или вниз", cnt: 3 },
-      { name: "Две семёрки", ex: "Например, 177 или 770", cnt: 4 },
-      { name: "Слово на номере", ex: "Буквы складываются в слово", cnt: 1 },
-      { name: "Зеркальные цифры", ex: "Читаются одинаково с двух сторон", cnt: 9 },
-      { name: "Палиндром букв", ex: "Первая и последняя буквы совпадают", cnt: 10 },
-      { name: "2 одинаковые буквы", ex: "Две буквы рядом одинаковые", cnt: 20 },
-      { name: "Столичный регион", ex: "Москва, Минск, Астана...", cnt: 24 },
-      { name: "2 одинаковые цифры", ex: "Самое частое сочетание", cnt: 25 }
-    ];
-
-    const COLLECTION_LOCKED = [
-      { name: "Номер 1", ex: "Цифры 001 или 0001" },
-      { name: "Номер 007", ex: "Как у одного агента" },
-      { name: "Все семёрки", ex: "Самый известный блатной номер" },
-      { name: "Ровные сотни", ex: "Четыре цифры, в конце 00" },
-      { name: "3 одинаковые", ex: "В номере из четырёх цифр" },
-      { name: "Повтор пары", ex: "Например, 1212" },
-      { name: "2 пары цифр", ex: "Например, 1122" },
-      { name: "Номер 228", ex: "Легендарные цифры" },
-      { name: "Одинаковые буквы", ex: "В серии из двух букв" },
-      { name: "Цифры = регион", ex: "Номер совпадает с кодом региона" },
-      { name: "Идеальный номер", ex: "И цифры, и буквы одинаковые" }
-    ];
-
-    function renderCollectionModal() {
-      const fGrid = document.getElementById('col-found-grid');
-      const lGrid = document.getElementById('col-locked-grid');
-
-      fGrid.innerHTML = COLLECTION_FOUND.map(c => `
-        <div class="bg-[#18191e] border border-[#262831] p-3 rounded-2xl flex flex-col justify-between">
-          <div><div class="text-xs font-bold text-white mb-0.5">${c.name}</div><div class="text-[10px] text-[#71757f] leading-tight mb-2">${c.ex}</div></div>
-          <div class="text-[10px] text-[#2ecc71] font-bold">выпало ${c.cnt} раз</div>
-        </div>
-      `).join('');
-
-      lGrid.innerHTML = COLLECTION_LOCKED.map(c => `
-        <div class="bg-[#18191e]/60 border border-[#202227] p-3 rounded-2xl opacity-60 flex flex-col justify-between">
-          <div><div class="text-xs font-bold text-white mb-0.5">🔒 ${c.name}</div><div class="text-[10px] text-[#71757f] leading-tight">${c.ex}</div></div>
-        </div>
-      `).join('');
-    }
-
-    // --- 32 МОДЕЛИ МАШИН С ЧЕСТНЫМ ИЗОМЕТРИЧЕСКИМ SVG (КОЛЕСА СТРОГО НА ЗЕМЛЕ) ---
-    function renderRealisticCarSVG(color, isSuv, isSport) {
-      const c = color || '#3498db';
-      const groundY = 88;
-      const bLen = isSuv ? 140 : 130;
-
-      return `
-        <svg width="130" height="75" viewBox="0 0 170 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <!-- Контактная тень под авто -->
-          <ellipse cx="85" cy="${groundY + 3}" rx="68" ry="8" fill="rgba(0,0,0,0.55)" filter="blur(2px)"/>
-          
-          <!-- Заднее левое колесо (посажено в арку и стоит на земле) -->
-          <ellipse cx="44" cy="${groundY - 1}" rx="12" ry="10" fill="#151618"/>
-          <ellipse cx="44" cy="${groundY - 1}" rx="6.5" ry="5.5" fill="#888e96"/>
-
-          <!-- Переднее левое колесо (посажено в арку и стоит на земле) -->
-          <ellipse cx="126" cy="${groundY - 9}" rx="12" ry="10" fill="#151618"/>
-          <ellipse cx="126" cy="${groundY - 9}" rx="6.5" ry="5.5" fill="#888e96"/>
-
-          <!-- Кузов: задняя панель -->
-          <polygon points="26,${groundY - 10} 68,${groundY - 6} 68,${groundY - 26} 26,${groundY - 30}" fill="${c}" filter="brightness(0.72)"/>
-          <!-- Задние фонари -->
-          <polygon points="28,${groundY - 23} 36,${groundY - 22} 36,${groundY - 17} 28,${groundY - 18}" fill="#e63946"/>
-          <polygon points="56,${groundY - 20} 64,${groundY - 19} 64,${groundY - 14} 56,${groundY - 15}" fill="#e63946"/>
-          <rect x="40" y="${groundY - 20}" width="12" height="6" fill="#fff" rx="1"/>
-
-          <!-- Кузов: левая боковина с вырезами под арки -->
-          <polygon points="68,${groundY - 6} 148,${groundY - 18} 148,${isSuv ? 36 : 42} 68,${isSuv ? 46 : 52}" fill="${c}" filter="brightness(0.9)"/>
-
-          <!-- Остекление и крыша (3/4 изометрия) -->
-          <polygon points="26,${groundY - 30} 68,${groundY - 26} 62,${isSuv ? 24 : 28} 34,${isSuv ? 22 : 26}" fill="#141a21"/>
-          <polygon points="34,${isSuv ? 22 : 26} 62,${isSuv ? 24 : 28} 104,${isSuv ? 20 : 23} 82,${isSuv ? 18 : 21}" fill="${c}" filter="brightness(1.15)"/>
-          <polygon points="62,${isSuv ? 24 : 28} 104,${isSuv ? 20 : 23} 148,${isSuv ? 36 : 42} 68,${isSuv ? 46 : 52}" fill="#11161d"/>
-          <polygon points="104,${isSuv ? 20 : 23} 138,${isSuv ? 27 : 32} 148,${isSuv ? 36 : 42} 118,${isSuv ? 32 : 36}" fill="${c}" filter="brightness(1.05)"/>
-
-          <!-- Блики на стекле -->
-          <line x1="38" y1="${groundY - 28}" x2="56" y2="${isSuv ? 26 : 30}" stroke="rgba(255,255,255,0.4)" stroke-width="1.5"/>
-          <line x1="76" y1="${groundY - 30}" x2="100" y2="${isSuv ? 24 : 27}" stroke="rgba(255,255,255,0.3)" stroke-width="1.5"/>
-
-          ${isSport ? `<polygon points="22,${groundY - 34} 34,${groundY - 33} 32,${groundY - 38} 20,${groundY - 39}" fill="#111"/>` : ''}
-        </svg>
-      `;
-    }
-
-    const CARS_DATABASE = [
-      { id: 'vaz2107', name: 'ВАЗ-2107', rarity: 'Обычный', colorName: 'белый', color: '#f2f2f2', type: 'classic', price: 3400 },
-      { id: 'vaz2109', name: 'ВАЗ-2109', rarity: 'Обычный', colorName: 'зеленый', color: '#2b5839', type: 'hatchback', price: 3600 },
-      { id: 'vaz2106', name: 'ВАЗ-2106', rarity: 'Обычный', colorName: 'синий', color: '#21426e', type: 'classic', price: 3200 },
-      { id: 'nexia', name: 'Daewoo Nexia', rarity: 'Обычный', colorName: 'вишневый', color: '#821625', type: 'classic', price: 4100 },
-      { id: 'vaz2114', name: 'ВАЗ-2114', rarity: 'Обычный', colorName: 'серебристый', color: '#9ba2a9', type: 'hatchback', price: 4500 },
-      { id: 'volga', name: 'ГАЗ-3110 «Волга»', rarity: 'Обычный', colorName: 'черный', color: '#1a1b1d', type: 'classic', price: 4800 },
-      { id: 'moskvich', name: 'Москвич-2141', rarity: 'Обычный', colorName: 'бежевый', color: '#c49a6c', type: 'hatchback', price: 3100 },
-      { id: 'matiz', name: 'Daewoo Matiz', rarity: 'Обычный', colorName: 'желтый', color: '#e8b209', type: 'hatchback', price: 3500 },
-      { id: 'granta', name: 'Lada Granta', rarity: 'Обычный', colorName: 'белый', color: '#e2e6ea', type: 'sedan', price: 5200 },
-      { id: 'logan', name: 'Renault Logan', rarity: 'Обычный', colorName: 'серый', color: '#5f676e', type: 'sedan', price: 5400 },
-      { id: 'izh', name: 'ИЖ-2126 «Ода»', rarity: 'Обычный', colorName: 'синий', color: '#264875', type: 'hatchback', price: 3000 },
-
-      { id: 'solaris', name: 'Hyundai Solaris', rarity: 'Необычный', colorName: 'оранжевый', color: '#e85d04', type: 'sedan', price: 8765 },
-      { id: 'vesta', name: 'Lada Vesta', rarity: 'Необычный', colorName: 'лайм', color: '#70a515', type: 'sedan', price: 9100 },
-      { id: 'priora', name: 'Лада Приора', rarity: 'Необычный', colorName: 'желтый', color: '#e5a922', type: 'sedan', price: 8200 },
-      { id: 'rio', name: 'Kia Rio', rarity: 'Необычный', colorName: 'красный', color: '#ba181b', type: 'sedan', price: 8900 },
-      { id: 'polo', name: 'Volkswagen Polo', rarity: 'Необычный', colorName: 'белый', color: '#f0f3f6', type: 'sedan', price: 9400 },
-      { id: 'rapid', name: 'Skoda Rapid', rarity: 'Необычный', colorName: 'синий', color: '#006699', type: 'sedan', price: 9600 },
-      { id: 'focus', name: 'Ford Focus 2', rarity: 'Необычный', colorName: 'черный', color: '#16161a', type: 'hatchback', price: 10200 },
-      { id: 'cruze', name: 'Chevrolet Cruze', rarity: 'Необычный', colorName: 'серебристый', color: '#bac1c8', type: 'sedan', price: 10500 },
-
-      { id: 'patriot', name: 'УАЗ Патриот', rarity: 'Редкий', colorName: 'хаки', color: '#3f4b39', type: 'suv', price: 22000 },
-      { id: 'passat', name: 'Volkswagen Passat', rarity: 'Редкий', colorName: 'белый', color: '#f8f9fa', type: 'sedan', price: 25000 },
-      { id: 'camry', name: 'Toyota Camry 3.5', rarity: 'Редкий', colorName: 'черный', color: '#0f1114', type: 'sedan', price: 32000 },
-      { id: 'rav4', name: 'Toyota RAV4', rarity: 'Редкий', colorName: 'серый', color: '#3d444b', type: 'suv', price: 29000 },
-      { id: 'evo', name: 'Mitsubishi Lancer Evo', rarity: 'Редкий', colorName: 'красный', color: '#9b083b', type: 'sport', price: 35000 },
-      { id: 'wrx', name: 'Subaru Impreza WRX', rarity: 'Редкий', colorName: 'синий', color: '#004385', type: 'sport', price: 34000 },
-
-      { id: 'prado', name: 'Toyota LC Prado', rarity: 'Эпический', colorName: 'черный', color: '#080a0d', type: 'suv', price: 85000 },
-      { id: 'bmw5', name: 'BMW 5 Series', rarity: 'Эпический', colorName: 'темно-синий', color: '#020340', type: 'sedan', price: 92000 },
-      { id: 'mercedes_e', name: 'Mercedes-Benz E-Class', rarity: 'Эпический', colorName: 'мокрый асфальт', color: '#2b3035', type: 'sedan', price: 96000 },
-      { id: 'audi_a6', name: 'Audi A6', rarity: 'Эпический', colorName: 'серебристый', color: '#cbd2d9', type: 'sedan', price: 89000 },
-
-      { id: 'lc300', name: 'Toyota Land Cruiser 300', rarity: 'Легендарный', colorName: 'белый перламутр', color: '#f4f5f7', type: 'suv', price: 240000 },
-      { id: 'gelik', name: 'Mercedes-Benz G-Class', rarity: 'Легендарный', colorName: 'матовый черный', color: '#0d0d0e', type: 'suv', price: 280000 },
-
-      { id: 'urus', name: 'Lamborghini Urus', rarity: 'Мифический', colorName: 'желтый', color: '#ffd000', type: 'sport', price: 650000 }
-    ];
-
-    const REGIONS_DATA = {
-      '77': 'Москва', '97': 'Москва', '99': 'Москва', '177': 'Москва', '197': 'Москва', '199': 'Москва', '777': 'Москва', '797': 'Москва', '799': 'Москва',
-      '50': 'Московская область', '90': 'Московская область', '150': 'Московская область', '190': 'Московская область', '750': 'Московская область', '790': 'Московская область',
-      '78': 'Санкт-Петербург', '98': 'Санкт-Петербург', '178': 'Санкт-Петербург', '198': 'Санкт-Петербург',
-      '23': 'Краснодарский край', '93': 'Краснодарский край', '123': 'Краснодарский край',
-      '38': 'Иркутская область', '16': 'Республика Татарстан', '54': 'Новосибирская область',
-      '72': 'Тюменская область', '25': 'Приморский край', '37': 'Ивановская область'
-    };
-    const REG_LIST = Object.keys(REGIONS_DATA);
-    const LETTERS = ['А', 'В', 'Е', 'К', 'М', 'Н', 'О', 'Р', 'С', 'Т', 'У', 'Х'];
-
-    // --- ИГРОВОЕ СОСТОЯНИЕ ---
-    let state = {
-      country: 'ru',
-      currentType: 'civil',
-      betMultiplier: 1,
-      wallets: { ru: 91723, by: 3960, kz: 600000 },
-      basePrices: { ru: 1000, by: 40, kz: 6000, ae: 10000 },
-      syms: { ru: '₽', by: 'Br', kz: '₸', ae: '₽' },
-      luck: 50,
-      totalSpins: 154,
-      bestCost: 107776,
-      garage: [], // Хранилище номеров
-      autopark: [], // Хранилище машин
-      lastDailyClaim: 0,
-      dailyStreak: 2
-    };
-
-    const saved = localStorage.getItem('nomerok_v14_pure_state');
-    if (saved) {
-      try { 
-        const parsed = JSON.parse(saved);
-        state = Object.assign(state, parsed);
-        if (parsed.garage) state.garage = parsed.garage;
-      } catch(e){}
-    }
-
-    function save() {
-      localStorage.setItem('nomerok_v14_pure_state', JSON.stringify(state));
-      renderGlobalHeader();
-    }
-
-    function getActiveBalance() {
-      return state.country === 'ae' ? state.wallets.ru : state.wallets[state.country];
-    }
-
-    function modifyActiveBalance(amount) {
-      if (state.country === 'ae') state.wallets.ru += amount;
-      else state.wallets[state.country] += amount;
-      save();
-    }
-
-    function getCurrentSpinCost() {
-      return state.basePrices[state.country] * state.betMultiplier;
-    }
-
-    function renderGlobalHeader() {
-      const bal = getActiveBalance();
-      const sym = state.syms[state.country];
-      const spinCost = getCurrentSpinCost();
-
-      document.getElementById('ui-hdr-bal').innerText = bal.toLocaleString('ru-RU');
-      document.getElementById('ui-hdr-sym').innerText = sym;
-      document.getElementById('ui-hdr-luck').innerText = state.luck;
-      document.getElementById('btn-spin-price').innerText = `${spinCost.toLocaleString('ru-RU')} ${sym}`;
-
-      document.getElementById('menu-badge-garage').innerText = state.garage.length;
-      document.getElementById('menu-badge-autopark').innerText = state.autopark.length;
-      document.getElementById('ui-park-badge').innerText = `${state.autopark.length} / 30`;
-      document.getElementById('park-cnt').innerText = state.autopark.length;
-      document.getElementById('gar-cnt').innerText = state.garage.length;
-      document.getElementById('ui-bet-label').innerText = `Ставка ×${state.betMultiplier}`;
-    }
-
-    // --- ПЕРЕКЛЮЧЕНИЕ ТАБОВ ---
-    function switchMainTab(tab) {
-      sounds.click.play();
-      haptic('light');
-      const vPlates = document.getElementById('view-plates');
-      const vCars = document.getElementById('view-cars');
-      const btnPlates = document.getElementById('tab-btn-plates');
-      const btnCars = document.getElementById('tab-btn-cars');
-
-      if (tab === 'plates') {
-        vPlates.classList.remove('hidden');
-        vCars.classList.add('hidden');
-        btnPlates.className = "px-5 py-1 rounded-full text-xs font-bold bg-[#262831] text-white shadow-sm transition";
-        btnCars.className = "px-5 py-1 rounded-full text-xs font-bold text-[#71757f] transition";
-      } else {
-        vPlates.classList.add('hidden');
-        vCars.classList.remove('hidden');
-        btnCars.className = "px-5 py-1 rounded-full text-xs font-bold bg-[#262831] text-white shadow-sm transition";
-        btnPlates.className = "px-5 py-1 rounded-full text-xs font-bold text-[#71757f] transition";
-      }
-    }
-
-    // --- МОДАЛКИ ---
-    function openModal(id) {
-      haptic('light');
-      if (id === 'modal-garage') renderGarageDOM();
-      if (id === 'modal-autopark') renderAutoparkDOM();
-      if (id === 'modal-bet') renderBetModal();
-      if (id === 'modal-country') renderCountryModal();
-      if (id === 'modal-daily') updateDailyModalState();
-      if (id === 'modal-collection') renderCollectionModal();
-      document.getElementById(id).classList.add('active');
-    }
-    function closeModal(id) { document.getElementById(id).classList.remove('active'); }
-    function closeModalOnBg(e, id) { if (e.target.id === id) closeModal(id); }
-
-    // --- СТАВКА ---
-    function renderBetModal() {
-      const base = state.basePrices[state.country];
-      const sym = state.syms[state.country];
-      const list = document.getElementById('bet-options-list');
-
-      const bets = [
-        { mult: 1, name: 'Обычная крутка', sub: 'любой номер', cost: base },
-        { mult: 8, name: 'Необычный и выше', sub: 'гарантия редкости • ×8 к цене', cost: base * 8, color: 'text-[#2ecc71]' },
-        { mult: 35, name: 'Редкий и выше', sub: 'гарантия редкости • ×35 к цене', cost: base * 35, color: 'text-[#3498db]' },
-        { mult: 100, name: 'Эпический и выше', sub: 'гарантия редкости • ×100 к цене', cost: base * 100, color: 'text-[#9b59b6]' }
-      ];
-
-      list.innerHTML = bets.map(b => `
-        <div onclick="selectBet(${b.mult})" class="bg-[#18191e] border ${state.betMultiplier === b.mult ? 'border-[#2ecc71]' : 'border-[#262831]'} p-3.5 rounded-2xl flex justify-between items-center cursor-pointer active:scale-98 transition">
-          <div>
-            <div class="text-xs font-bold ${b.color || 'text-white'}">${b.name}</div>
-            <div class="text-[10px] text-[#71757f]">${b.sub}</div>
-          </div>
-          <div class="flex items-center gap-2">
-            <span class="text-xs font-black text-white">${b.cost.toLocaleString('ru-RU')} ${sym}</span>
-            ${state.betMultiplier === b.mult ? '<span class="w-5 h-5 rounded-full bg-[#2ecc71] text-black text-[11px] font-black flex items-center justify-center">✓</span>' : ''}
-          </div>
-        </div>
-      `).join('');
-
-      document.getElementById('bet-footer-info').innerHTML = `
-        ${document.getElementById('ui-c-name').innerText} • кошелёк ${getActiveBalance().toLocaleString('ru-RU')} ${sym}<br>
-        Бесплатные попытки тратятся только на обычную крутку.
-      `;
-    }
-
-    function selectBet(mult) {
-      state.betMultiplier = mult;
-      closeModal('modal-bet');
-      save();
-      renderGlobalHeader();
-    }
-
-    function renderPlateBaseLayout() {
-      const root = document.getElementById('plate-root');
-      const c = state.country;
-
-      if (c === 'ru') {
-        root.innerHTML = `
-          <div class="plate-rf-container" id="current-plate-box">
-            <div class="plate-rf-inner">
-              <div class="plate-rf-main">
-                <span class="p-rf-letter" id="slot-1">У</span>
-                <span class="p-rf-digits" id="slot-2">203</span>
-                <span class="p-rf-letter" id="slot-3">МР</span>
-              </div>
-              <div class="plate-rf-reg">
-                <span class="reg-rf-code" id="slot-reg">777</span>
-                <div class="reg-rf-sub">
-                  <span>RUS</span>
-                  <div class="flag-rf"><div class="f-w"></div><div class="f-b"></div><div class="f-r"></div></div>
-                </div>
-              </div>
-            </div>
-          </div>
-        `;
-        document.getElementById('ui-region').innerText = `Регион 777 • Москва`;
-      } else if (c === 'by') {
-        root.innerHTML = `
-          <div class="plate-by-container" id="current-plate-box">
-            <div class="plate-by-inner">
-              <div class="plate-by-flagbox">
-                <svg class="by-flag-svg" viewBox="0 0 30 15"><rect width="30" height="10" fill="#c8102e"/><rect y="10" width="30" height="5" fill="#007a3d"/><rect width="6" height="15" fill="#fff"/></svg>
-                <span class="by-text-code">BY</span>
-              </div>
-              <div class="plate-by-number">
-                <span id="slot-1">5460</span>&nbsp;<span id="slot-2">XH</span>-<span id="slot-reg">4</span>
-              </div>
-            </div>
-          </div>
-        `;
-        document.getElementById('ui-region').innerText = `Код 4 • Гродненская область`;
-      } else if (c === 'ae') {
-        root.innerHTML = `
-          <div class="plate-ae-container" id="current-plate-box">
-            <div class="plate-ae-inner">
-              <div class="text-base font-bold">DUBAI • <span id="slot-1">S</span></div>
-              <div class="text-4xl font-extrabold tracking-widest" id="slot-2">409</div>
-            </div>
-          </div>
-        `;
-        document.getElementById('ui-region').innerText = `Объединённые Арабские Эмираты • Дубай`;
-      } else if (c === 'kz') {
-        root.innerHTML = `
-          <div class="plate-rf-container" id="current-plate-box">
-            <div class="plate-rf-inner">
-              <div class="w-10 bg-[#00afca] text-[#f1c40f] font-black text-xs flex items-center justify-center border-r border-black">KZ</div>
-              <div class="flex-1 flex items-center justify-center font-mono text-3xl font-black tracking-wider">
-                <span id="slot-1">777</span>&nbsp;<span id="slot-2">ABC</span>&nbsp;|&nbsp;<span id="slot-reg">02</span>
-              </div>
-            </div>
-          </div>
-        `;
-        document.getElementById('ui-region').innerText = `Код 02 • Алматы`;
-      }
-
-      document.getElementById('ui-rarity').innerText = 'Обычный';
-      document.getElementById('ui-cost').innerText = `350 ${state.syms[state.country]}`;
-      document.getElementById('ui-perks').innerHTML = `Москва <b class="text-[#2ecc71]">×1,4</b>`;
-      document.getElementById('ui-sale-note').innerText = `Этот номер продастся за 350 ${state.syms[state.country]}`;
-    }
-
-    // --- КРУТИЛКА НОМЕРОВ ---
-    let isSpinning = false;
-    let skipRequested = false;
-    let activeIntervals = [];
-
-    function handleSpinButton() {
-      if (isSpinning) {
-        skipRequested = true;
-        return;
-      }
-      startPlateSpin();
-    }
-
-    function resetSpinButtonUI() {
-      const btn = document.getElementById('btn-spin');
-      const sym = state.syms[state.country];
-      btn.className = "w-full h-[58px] rounded-2xl bg-[#2ecc71] hover:bg-[#27ae60] active:scale-[0.98] transition font-extrabold text-base text-[#07130a] shadow-lg shadow-[#2ecc71]/20 flex items-center justify-center gap-2";
-      btn.innerHTML = `<span>Крутить ещё</span><span id="btn-spin-price" class="bg-[#07130a]/15 px-2.5 py-0.5 rounded-lg text-xs font-black">${getCurrentSpinCost().toLocaleString('ru-RU')} ${sym}</span>`;
-      
-      const tools = document.getElementById('post-spin-tools');
-      tools.style.display = 'flex';
-      tools.style.opacity = '1';
-      tools.style.transform = 'translateY(0)';
-      
-      document.getElementById('ui-sale-note').style.opacity = '1';
-      isSpinning = false;
-      skipRequested = false;
-      activeIntervals.forEach(t => clearInterval(t));
-      activeIntervals = [];
-    }
-
-    async function startPlateSpin() {
-      const cost = getCurrentSpinCost();
-      const bal = getActiveBalance();
-
-      if (bal < cost) {
-        showToast("Недостаточно средств для спина!", "error");
-        return;
-      }
-
-      modifyActiveBalance(-cost);
-      state.totalSpins++;
-      state.luck = (state.luck + 1) % 100;
-      save();
-
-      isSpinning = true;
-      skipRequested = false;
-
-      const watchdog = setTimeout(() => {
-        if (isSpinning) resetSpinButtonUI();
-      }, 3500);
-
-      const btn = document.getElementById('btn-spin');
-      btn.className = "w-full h-[58px] rounded-2xl bg-[#1c1d22] border border-[#2a2c33] active:scale-[0.98] transition font-extrabold text-base text-white flex items-center justify-center gap-2";
-      btn.innerHTML = `<span>Пропустить</span>`;
-
-      document.getElementById('ui-sale-note').style.opacity = '0';
-      const tools = document.getElementById('post-spin-tools');
-      tools.style.opacity = '0.3';
-      tools.style.display = 'flex';
-
-      try {
-        if (state.country === 'ru') await spinRussia();
-        else if (state.country === 'by') await spinBelarus();
-        else if (state.country === 'ae') await spinDubai();
-        else await spinKazakhstan();
-      } catch (err) {
-        console.error("Spin error:", err);
-      } finally {
-        clearTimeout(watchdog);
-        resetSpinButtonUI();
-      }
-    }
-
-    function delay(ms) {
-      return new Promise(resolve => {
-        const timer = setTimeout(resolve, ms);
-        const check = setInterval(() => {
-          if (skipRequested) { clearTimeout(timer); clearInterval(check); resolve(); }
-        }, 25);
-      });
-    }
-
-    async function spinRussia() {
-      const s1 = document.getElementById('slot-1');
-      const s2 = document.getElementById('slot-2');
-      const s3 = document.getElementById('slot-3');
-      const sReg = document.getElementById('slot-reg');
-      if (!s1 || !s2 || !s3 || !sReg) return;
-
-      const t1 = setInterval(() => { s1.innerText = getRandom(LETTERS); sounds.click.play(); haptic('light'); }, 50);
-      const t2 = setInterval(() => { s2.innerText = Math.floor(100 + Math.random() * 900); }, 50);
-      const t3 = setInterval(() => { s3.innerText = getRandom(LETTERS) + getRandom(LETTERS); }, 50);
-      const t4 = setInterval(() => { sReg.innerText = getRandom(REG_LIST); }, 50);
-      activeIntervals = [t1, t2, t3, t4];
-
-      let targetNum = String(Math.floor(100 + Math.random() * 900));
-      let targetL1 = getRandom(LETTERS);
-      let targetL2 = getRandom(LETTERS) + getRandom(LETTERS);
-      let targetReg = getRandom(REG_LIST);
-
-      if (state.betMultiplier >= 100) {
-        const d = String(Math.floor(1 + Math.random() * 9));
-        targetNum = d + d + d;
-      } else if (state.betMultiplier >= 35) {
-        targetNum = (Math.random() < 0.5) ? '007' : '123';
-      } else if (state.betMultiplier >= 8) {
-        const d = String(Math.floor(1 + Math.random() * 9));
-        targetNum = d + d + String(Math.floor(Math.random() * 9));
-      }
-
-      await delay(600); clearInterval(t1); s1.innerText = targetL1; sounds.lock.play();
-      if (!skipRequested) await delay(450); clearInterval(t2); s2.innerText = targetNum; sounds.lock.play();
-      if (!skipRequested) await delay(450); clearInterval(t3); s3.innerText = targetL2; sounds.lock.play();
-      if (!skipRequested) await delay(500); clearInterval(t4); sReg.innerText = targetReg; sounds.lock.play();
-
-      activeIntervals.forEach(t => clearInterval(t));
-      document.getElementById('ui-region').innerText = `Регион ${targetReg} • ${REGIONS_DATA[targetReg] || 'РФ'}`;
-
-      const series = targetL1 + targetL2;
-      const [d1, d2, d3] = targetNum.split('');
-
-      // ОЦЕНКА МНОЖИТЕЛЕЙ ПО ТАБЛИЦАМ 6470-6476
-      let perksList = [];
-      let rarity = "Обычный";
-
-      if (targetNum === '001') {
-        perksList.push({ name: "Номер 1", mult: 200 }); rarity = "Эпический";
-      } else if (targetNum === '007') {
-        perksList.push({ name: "Номер 007", mult: 150 }); rarity = "Эпический";
-      } else if (targetNum >= '002' && targetNum <= '009') {
-        perksList.push({ name: "Малый номер", mult: 40 }); rarity = "Редкий";
-      } else if (targetNum === '777') {
-        perksList.push({ name: "Все семёрки", mult: 600 }); rarity = "Мифический";
-      } else if (d1 === d2 && d2 === d3) {
-        perksList.push({ name: "Все одинаковые", mult: 150 }); rarity = "Эпический";
-      } else if (targetNum.endsWith('00')) {
-        perksList.push({ name: "Круглый", mult: 25 }); rarity = "Необычный";
-      } else if (['123','234','345','456','567','678','789','321','432','543','654','765','876','987'].includes(targetNum)) {
-        perksList.push({ name: "Цифры подряд", mult: 15 }); rarity = "Необычный";
-      } else if (['135','246','357','468','579','531','642','753','864','975'].includes(targetNum)) {
-        perksList.push({ name: "Цифры через одну", mult: 5 });
-      } else if (d1 === d3 && d1 !== d2) {
-        perksList.push({ name: "Зеркальные", mult: 4 });
-      } else if (d1 === '0' && d3 === '0' && d2 !== '0') {
-        perksList.push({ name: "Номер ОХО", mult: 8 });
-      } else if (targetNum === '228') {
-        perksList.push({ name: "Номер 228", mult: 8 });
-      } else if ((d1 === '7' && d2 === '7') || (d2 === '7' && d3 === '7') || (d1 === '7' && d3 === '7')) {
-        perksList.push({ name: "Две семёрки", mult: 2.5 });
-      } else if (d1 === d2 || d2 === d3 || d1 === d3) {
-        perksList.push({ name: "2 одинаковые цифры", mult: 1.8 });
-        if (rarity === "Обычный") rarity = "Необычный";
-      }
-
-      const isMoscowReg = ['77', '97', '99', '177', '197', '199', '777', '797', '799'].includes(targetReg);
-      const isMoReg = ['50', '90', '150', '190', '750', '790'].includes(targetReg);
-
-      if (series === 'ВАУ') {
-        perksList.push({ name: "Серия «ВАУ»", mult: 100 }); rarity = "Эпический";
-      } else if (series === 'АМР') {
-        perksList.push({ name: "Серия «АМР»", mult: 250 }); rarity = "Легендарный";
-      } else if (series === 'ЕКХ') {
-        perksList.push({ name: "Серия «ЕКХ»", mult: 120 }); rarity = "Легендарный";
-      } else if (series === 'ММР') {
-        perksList.push({ name: "Серия «ММР»", mult: 60 }); rarity = "Эпический";
-      } else if (series === 'ККХ') {
-        perksList.push({ name: "Серия «ККХ»", mult: 50 }); rarity = "Эпический";
-      } else if (series === 'АУЕ' || series === 'СКР') {
-        perksList.push({ name: `Серия «${series}»`, mult: 40 }); rarity = "Редкий";
-      } else if (series === 'ВОР' || series === 'ХАМ') {
-        perksList.push({ name: `Серия «${series}»`, mult: 20 }); rarity = "Редкий";
-      } else if (['ААА', 'ООО', 'МММ'].includes(series)) {
-        perksList.push({ name: `Серия «${series}»`, mult: 6 });
-      } else if (series === 'МУР' && isMoscowReg) {
-        perksList.push({ name: "Серия «МУР» (Москва)", mult: 60 }); rarity = "Эпический";
-      } else if (series === 'АМО' && isMoReg) {
-        perksList.push({ name: "Серия «АМО» (Подмосковье)", mult: 60 }); rarity = "Эпический";
-      } else if (['КОТ', 'СОН', 'ТОР', 'МИР', 'РОТ', 'БОР', 'МЕД', 'СУД', 'ЧАС'].includes(series)) {
-        perksList.push({ name: "Слово", mult: 6 });
-      } else {
-        const [l1, l2, l3] = [targetL1, targetL2[0], targetL2[1]];
-        if (l1 === l2 && l2 === l3) {
-          perksList.push({ name: "3 одинаковые буквы", mult: 150 }); rarity = "Эпический";
-        } else if (l1 === l3 && l1 !== l2) {
-          perksList.push({ name: "Палиндром", mult: 3 });
-        } else if (l1 === l2 || l2 === l3) {
-          perksList.push({ name: "2 одинаковые рядом", mult: 1.8 });
-        }
-      }
-
-      if (targetNum === targetReg || (targetNum.length === 3 && targetNum === '0' + targetReg)) {
-        perksList.push({ name: "Цифры = регион", mult: 20 });
-      } else if (targetNum.endsWith(targetReg)) {
-        perksList.push({ name: "Хвост = регион", mult: 3 });
-      }
-
-      if (isMoscowReg) {
-        perksList.push({ name: "Москва", mult: 1.4 });
-      } else if (['78', '98', '178', '198'].includes(targetReg)) {
-        perksList.push({ name: "Санкт-Петербург", mult: 1.2 });
-      }
-
-      if (d1 === d2 && d2 === d3 && targetL1 === targetL2[0] && targetL2[0] === targetL2[1]) {
-        perksList.push({ name: "Идеальный номер", mult: 4 });
-      }
-
-      // Формула корня из 6447.jpg
-      let multipliersArr = perksList.map(p => p.mult);
-      if (multipliersArr.length === 0) multipliersArr.push(1.0);
-
-      multipliersArr.sort((a, b) => b - a);
-      let totalMult = multipliersArr[0];
-      for (let i = 1; i < multipliersArr.length; i++) {
-        if (multipliersArr[i] > 1) {
-          totalMult *= Math.sqrt(multipliersArr[i]);
-        }
-      }
-
-      let baseVal = 250;
-      if (state.betMultiplier === 8) baseVal = 1400;
-      else if (state.betMultiplier === 35) baseVal = 4200;
-      else if (state.betMultiplier === 100) baseVal = 450;
-
-      let finalCost = Math.round(baseVal * totalMult);
-
-      if (state.betMultiplier === 100) {
-        if (totalMult < 250) {
-          finalCost = Math.min(85000, Math.max(50000, finalCost));
-        }
-      }
-
-      const perksHTML = perksList.map(p => `${p.name} <b class="text-[#2ecc71]">×${p.mult}</b>`);
-      finishSpinResult(finalCost, perksHTML, rarity);
-    }
-
-    async function spinBelarus() {
-      const s1 = document.getElementById('slot-1');
-      const s2 = document.getElementById('slot-2');
-      const sReg = document.getElementById('slot-reg');
-      if (!s1 || !s2 || !sReg) return;
-
-      const t1 = setInterval(() => { s1.innerText = Math.floor(1000 + Math.random() * 9000); sounds.click.play(); }, 50);
-      const t2 = setInterval(() => { s2.innerText = getRandom(LETTERS) + getRandom(LETTERS); }, 50);
-      const t3 = setInterval(() => { sReg.innerText = Math.floor(1 + Math.random() * 7); }, 50);
-      activeIntervals = [t1, t2, t3];
-
-      const target = { num: String(Math.floor(1000 + Math.random() * 9000)), l: getRandom(LETTERS) + getRandom(LETTERS), reg: String(Math.floor(1 + Math.random() * 7)) };
-
-      await delay(600); clearInterval(t1); s1.innerText = target.num; sounds.lock.play();
-      if (!skipRequested) await delay(450); clearInterval(t2); s2.innerText = target.l; sounds.lock.play();
-      if (!skipRequested) await delay(450); clearInterval(t3); sReg.innerText = target.reg; sounds.lock.play();
-
-      activeIntervals.forEach(t => clearInterval(t));
-      const cost = Math.round((10 + Math.random() * 25) * state.betMultiplier);
-      finishSpinResult(cost, [`Регион ${target.reg}`], "Обычный");
-    }
-
-    async function spinDubai() {
-      const s1 = document.getElementById('slot-1');
-      const s2 = document.getElementById('slot-2');
-      if (!s1 || !s2) return;
-
-      const t1 = setInterval(() => { s1.innerText = getRandom(['A','B','S','X']); sounds.click.play(); }, 50);
-      const t2 = setInterval(() => { s2.innerText = Math.floor(10 + Math.random() * 9990); }, 50);
-      activeIntervals = [t1, t2];
-
-      const roll = Math.random();
-      let targetNum = String(Math.floor(100 + Math.random() * 9000));
-      let targetL = 'S';
-      let mult = state.betMultiplier;
-      let perks = [];
-      let rarity = "Редкий";
-
-      if (roll < 0.005 || state.betMultiplier >= 100) {
-        targetNum = '7'; mult *= 1500; perks.push(`Однозначный номер Дубая <b class="text-[#2ecc71]">×1500</b>`); rarity = "Мифический";
-      } else if (roll < 0.03 || state.betMultiplier >= 35) {
-        targetNum = '77'; mult *= 150; perks.push(`Двузначный номер <b class="text-[#2ecc71]">×150</b>`); rarity = "Легендарный";
-      } else {
-        perks.push(`Серия Дубая ×${state.betMultiplier}`);
-      }
-
-      await delay(700); clearInterval(t1); s1.innerText = targetL; sounds.lock.play();
-      if (!skipRequested) await delay(600); clearInterval(t2); s2.innerText = targetNum; sounds.lock.play();
-
-      activeIntervals.forEach(t => clearInterval(t));
-      const cost = Math.round(15000 * Math.sqrt(mult));
-      finishSpinResult(cost, perks, rarity);
-    }
-
-    async function spinKazakhstan() {
-      const s1 = document.getElementById('slot-1');
-      const s2 = document.getElementById('slot-2');
-      const sReg = document.getElementById('slot-reg');
-      if (!s1 || !s2 || !sReg) return;
-
-      const t1 = setInterval(() => { s1.innerText = Math.floor(100 + Math.random() * 900); sounds.click.play(); }, 50);
-      const t2 = setInterval(() => { s2.innerText = getRandom(LETTERS) + getRandom(LETTERS) + getRandom(LETTERS); }, 50);
-      const t3 = setInterval(() => { sReg.innerText = '02'; }, 50);
-      activeIntervals = [t1, t2, t3];
-
-      const target = { num: String(Math.floor(100 + Math.random() * 900)), l: 'ABC', reg: '02' };
-      await delay(600); clearInterval(t1); s1.innerText = target.num; sounds.lock.play();
-      if (!skipRequested) await delay(450); clearInterval(t2); s2.innerText = target.l; sounds.lock.play();
-      if (!skipRequested) await delay(450); clearInterval(t3); sReg.innerText = target.reg; sounds.lock.play();
-
-      activeIntervals.forEach(t => clearInterval(t));
-      const cost = Math.round(2500 * state.betMultiplier);
-      finishSpinResult(cost, [`Госномер Казахстана`], "Необычный");
-    }
-
-    function finishSpinResult(cost, perks, rarity) {
-      const sym = state.syms[state.country];
-      document.getElementById('ui-rarity').innerText = rarity;
-      document.getElementById('ui-cost').innerText = `${cost.toLocaleString('ru-RU')} ${sym}`;
-      document.getElementById('ui-perks').innerHTML = perks.length > 0 ? perks.join('<br>') : 'Обычная серия';
-      document.getElementById('ui-sale-note').innerText = `Этот номер продастся за ${cost.toLocaleString('ru-RU')} ${sym}`;
-
-      modifyActiveBalance(cost);
-
-      if (['Эпический', 'Легендарный', 'Мифический'].includes(rarity)) {
-        launchConfetti({ particleCount: 75, spread: 60, origin: { y: 0.65 } });
-        sounds.win.play();
-        haptic('success');
-      }
-    }
-
-    function getRandom(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
-
     // --- ПРЯМОЕ СОХРАНЕНИЕ НОМЕРА ИЗ DOM (НЕВОЗМОЖНО СОХРАНИТЬ ДРУГОЙ НОМЕР!) ---
     function savePlateToGarageAction() {
-      // 1. Считываем символы ПРЯМО С ЭКРАНА
       const s1 = document.getElementById('slot-1')?.innerText.trim() || '';
       const s2 = document.getElementById('slot-2')?.innerText.trim() || '';
       const s3 = document.getElementById('slot-3')?.innerText.trim() || '';
@@ -1459,7 +725,6 @@
         plateRaw = `${s1} ${s2} ${sReg}`.trim();
       }
 
-      // 2. Проверяем, есть ли ровно ЭТОТ номер в гараже
       const alreadySaved = state.garage.some(item => item.raw === plateRaw && item.country === state.country);
       if (alreadySaved) {
         showToast(`Номер ${plateRaw} уже есть в гараже!`, "warn");
@@ -1469,7 +734,6 @@
       haptic('success');
       sounds.lock.play();
 
-      // Анимация вспышки рамки
       const plateBox = document.getElementById('current-plate-box');
       if (plateBox) {
         plateBox.style.transform = 'scale(1.035)';
@@ -1480,7 +744,6 @@
         }, 260);
       }
 
-      // 3. Сохраняем ТОЧНО ТОТ НОМЕР, ЧТО БЫЛ НА ЭКРАНЕ
       state.garage.unshift({
         raw: plateRaw,
         cost: cost,
@@ -1490,7 +753,6 @@
       });
       save();
 
-      // Мгновенно скрываем кнопки
       const tools = document.getElementById('post-spin-tools');
       tools.style.opacity = '0';
       tools.style.transform = 'translateY(8px)';
@@ -1576,15 +838,12 @@
       const car = state.autopark[targetMountCarIndex];
       if (!car) return;
 
-      // Если на машине уже был номер — возвращаем старый номер в гараж!
       if (car.plateObj) {
         state.garage.unshift(car.plateObj);
       }
 
-      // Забираем выбранный номер ИЗ ГАРАЖА
       const chosenPlate = state.garage.splice(plateIndex, 1)[0];
 
-      // Устанавливаем на машину
       car.plate = chosenPlate.raw;
       car.plateObj = chosenPlate;
       car.currentPrice = Math.round(car.price * 1.1 + chosenPlate.cost);
@@ -1607,7 +866,6 @@
       car.plateObj = null;
       car.currentPrice = car.price;
 
-      // Возвращаем номер в гараж
       state.garage.unshift(removed);
 
       save();
