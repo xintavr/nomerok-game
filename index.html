@@ -3,8 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>НОМЕРОК 3.0 — Перекуп & Автоимперия</title>
+  <title>НОМЕРОК — Автоимперия & 3D Подиум</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <!-- Подключаем Three.js для настоящего 3D-подиума и объемных машин -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <style>
     :root {
       --bg-main: #090c12;
@@ -49,13 +51,14 @@
       position: sticky;
       top: 0;
       z-index: 50;
-      background: rgba(9, 12, 18, 0.88);
+      background: rgba(9, 12, 18, 0.9);
       backdrop-filter: blur(14px);
       border-bottom: 1px solid var(--border);
-      padding: 10px 16px;
+      padding: 10px 14px;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      gap: 8px;
     }
 
     .balance-label {
@@ -66,20 +69,42 @@
     }
 
     .balance-val {
-      font-size: 20px;
+      font-size: 19px;
       font-weight: 900;
       color: #fff;
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
 
     .income-pill {
       background: rgba(16, 185, 129, 0.14);
       border: 1px solid rgba(16, 185, 129, 0.35);
       color: #34d399;
-      padding: 6px 12px;
+      padding: 6px 10px;
       border-radius: 999px;
-      font-size: 12px;
+      font-size: 11px;
       font-weight: 800;
+      white-space: nowrap;
     }
+
+    .admin-top-btn {
+      background: linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(239, 68, 68, 0.2));
+      border: 1px solid rgba(245, 158, 11, 0.5);
+      color: #fbbf24;
+      padding: 6px 10px;
+      border-radius: 10px;
+      font-size: 11px;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .admin-top-btn:active { transform: scale(0.95); }
 
     /* PAGES */
     .page {
@@ -115,7 +140,7 @@
       border: 1px solid var(--border);
     }
 
-    /* COUNTRY SELECTOR PILLS */
+    /* COUNTRY TABS */
     .country-tabs {
       display: flex;
       gap: 6px;
@@ -147,7 +172,7 @@
       color: #fff;
     }
 
-    /* MULTI-COUNTRY LICENSE PLATES */
+    /* LICENSE PLATES + SLOT ROLL ANIMATION */
     .plate-wrap {
       display: flex;
       justify-content: center;
@@ -167,14 +192,19 @@
       overflow: hidden;
       font-family: 'Arial Black', Impact, sans-serif;
       position: relative;
+      transition: box-shadow 0.25s, transform 0.2s;
+    }
+
+    .plate-base.rolling-active {
+      box-shadow: 0 0 25px rgba(59, 130, 246, 0.65), inset 0 0 0 2px #fff;
     }
 
     .plate-base.mythic-glow {
-      box-shadow: 0 0 25px rgba(239, 68, 68, 0.8), inset 0 0 0 2px #fff;
+      box-shadow: 0 0 28px rgba(239, 68, 68, 0.85), inset 0 0 0 2px #fff;
       border-color: #991b1b;
     }
     .plate-base.legend-glow {
-      box-shadow: 0 0 22px rgba(245, 158, 11, 0.7), inset 0 0 0 2px #fff;
+      box-shadow: 0 0 24px rgba(245, 158, 11, 0.75), inset 0 0 0 2px #fff;
     }
 
     .plate-base.sm {
@@ -193,14 +223,23 @@
       gap: 6px;
       letter-spacing: 1.5px;
     }
-    .p-let { font-size: 26px; font-weight: 900; }
-    .p-num { font-size: 33px; font-weight: 900; }
+    .p-let { font-size: 26px; font-weight: 900; display: inline-block; }
+    .p-num { font-size: 33px; font-weight: 900; display: inline-block; }
+
+    .slot-blur {
+      animation: slotJitter 0.08s infinite alternate;
+      color: #1e40af;
+      filter: blur(0.6px);
+    }
+    @keyframes slotJitter {
+      from { transform: translateY(-2px); }
+      to { transform: translateY(2px); }
+    }
 
     .plate-base.sm .p-main { padding: 0 7px; gap: 4px; }
     .plate-base.sm .p-let { font-size: 14px; }
     .plate-base.sm .p-num { font-size: 18px; }
 
-    /* RU Right Block */
     .p-reg-right {
       border-left: 3px solid #0f172a;
       padding: 4px 9px;
@@ -227,7 +266,6 @@
     }
     .plate-base.sm .p-sub-row { font-size: 7px; gap: 2px; }
 
-    /* Left Strip for KZ, UA, BY */
     .p-left-strip {
       display: flex;
       flex-direction: column;
@@ -246,7 +284,6 @@
       border-right-width: 1px;
     }
 
-    /* Dubai Luxury Plate */
     .plate-dubai {
       background: linear-gradient(135deg, #ffffff 0%, #f1f5f9 100%);
       border: 3px solid #1e293b;
@@ -267,13 +304,52 @@
     .dubai-code { font-size: 20px; font-weight: 900; }
     .plate-base.sm .dubai-code { font-size: 12px; }
 
-    /* SVG CAR DISPLAY BOX */
+    /* 3D SHOWROOM PODIUM (THREE.JS CANVAS) */
+    .podium-showcase-card {
+      background: radial-gradient(circle at 50% 25%, #1e293b 0%, #0b0f17 80%);
+      border: 1px solid rgba(59, 130, 246, 0.35);
+      border-radius: 20px;
+      padding: 12px;
+      margin-bottom: 14px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.45), inset 0 0 25px rgba(59, 130, 246, 0.08);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .three-canvas-wrap {
+      width: 100%;
+      height: 190px;
+      border-radius: 14px;
+      position: relative;
+      overflow: hidden;
+      cursor: grab;
+      background: radial-gradient(ellipse at 50% 75%, rgba(59,130,246,0.22) 0%, rgba(9,12,18,0.95) 75%);
+    }
+    .three-canvas-wrap:active { cursor: grabbing; }
+
+    .podium-hint {
+      position: absolute;
+      bottom: 8px;
+      right: 10px;
+      background: rgba(0,0,0,0.55);
+      border: 1px solid rgba(255,255,255,0.12);
+      color: #cbd5e1;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 99px;
+      pointer-events: none;
+    }
+
+    /* 2.5D VOLUMETRIC SVG STAGE WITH PODIUM RINGS */
     .svg-car-stage {
       width: 100%;
-      height: 115px;
-      background: radial-gradient(ellipse at 50% 80%, #1e293b 0%, #0d111a 75%);
+      height: 124px;
+      background:
+        radial-gradient(ellipse at 50% 20%, rgba(59, 130, 246, 0.18) 0%, transparent 60%),
+        radial-gradient(ellipse at 50% 82%, #1e293b 0%, #0a0e16 78%);
       border-radius: 14px;
-      border: 1px solid rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.08);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -281,29 +357,23 @@
       overflow: hidden;
     }
 
-    .svg-car-stage.sm-stage {
-      width: 125px;
-      height: 76px;
-      flex-shrink: 0;
-    }
-
     .svg-car-stage svg {
-      width: 92%;
-      height: 92%;
+      width: 94%;
+      height: 94%;
       overflow: visible;
     }
 
     /* FSO STROBE ANIMATION */
     @keyframes fsoFlashRed {
-      0%, 49% { opacity: 1; filter: drop-shadow(0 0 8px #ef4444); }
+      0%, 49% { opacity: 1; filter: drop-shadow(0 0 9px #ef4444); }
       50%, 100% { opacity: 0.1; }
     }
     @keyframes fsoFlashBlue {
       0%, 49% { opacity: 0.1; }
-      50%, 100% { opacity: 1; filter: drop-shadow(0 0 8px #3b82f6); }
+      50%, 100% { opacity: 1; filter: drop-shadow(0 0 9px #3b82f6); }
     }
-    .fso-r { animation: fsoFlashRed 0.28s infinite; }
-    .fso-b { animation: fsoFlashBlue 0.28s infinite; }
+    .fso-r { animation: fsoFlashRed 0.26s infinite; }
+    .fso-b { animation: fsoFlashBlue 0.26s infinite; }
 
     /* CARDS & BUTTONS */
     .gen-card, .item-card {
@@ -405,7 +475,6 @@
     .r-legend { background: rgba(245, 158, 11, 0.15); color: var(--r-legend); border: 1px solid rgba(245,158,11,0.4); }
     .r-mythic { background: rgba(239, 68, 68, 0.2); color: #f87171; border: 1px solid rgba(239,68,68,0.5); }
 
-    /* CONDITION PROGRESS BAR (USED CARS) */
     .cond-bar-wrap {
       width: 100%;
       height: 7px;
@@ -420,7 +489,6 @@
       transition: width 0.3s ease;
     }
 
-    /* CASES GRID */
     .case-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -438,7 +506,7 @@
       gap: 8px;
     }
 
-    /* ROULETTE */
+    /* MODALS */
     .modal-backdrop {
       position: fixed;
       inset: 0;
@@ -460,7 +528,8 @@
       max-width: 460px;
       padding: 18px 14px;
       text-align: center;
-      overflow: hidden;
+      overflow-y: auto;
+      max-height: 90vh;
     }
 
     .roulette-viewport {
@@ -505,8 +574,8 @@
       padding: 6px;
     }
     .roulette-item .r-svg-box {
-      width: 100px;
-      height: 56px;
+      width: 104px;
+      height: 58px;
     }
     .roulette-item .r-name {
       font-size: 10px;
@@ -542,13 +611,7 @@
       top: 0;
       bottom: 0;
       width: 10px;
-      background: repeating-linear-gradient(
-        0deg,
-        #fff,
-        #fff 6px,
-        #111 6px,
-        #111 12px
-      );
+      background: repeating-linear-gradient(0deg, #fff, #fff 6px, #111 6px, #111 12px);
       opacity: 0.5;
     }
     .drag-car-runner {
@@ -559,7 +622,26 @@
       transition: left 2.4s cubic-bezier(0.2, 0.7, 0.3, 1);
     }
 
-    /* BOTTOM NAV (6 TABS) */
+    /* ADMIN INPUTS */
+    .adm-input, .adm-select {
+      width: 100%;
+      background: #0b0f17;
+      border: 1px solid var(--border);
+      color: #fff;
+      padding: 9px 12px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 700;
+      outline: none;
+    }
+    .adm-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
+      margin-top: 6px;
+    }
+
+    /* BOTTOM NAV */
     .bottom-nav {
       position: fixed;
       bottom: 0;
@@ -658,25 +740,27 @@
 </head>
 <body>
 
-  <!-- ВЕРХНЯЯ ПАНЕЛЬ -->
+  <!-- ВЕРХНЯЯ ПАНЕЛЬ + КНОПКА АДМИНКИ -->
   <header class="header">
     <div>
       <div class="balance-label">Капитал империи</div>
       <div class="balance-val" id="ui-balance">0 ₽</div>
     </div>
-    <div class="income-pill" id="ui-income">⚡ +0 ₽/сек</div>
+    <div class="header-right">
+      <div class="income-pill" id="ui-income">⚡ +0 ₽/с</div>
+      <button class="admin-top-btn" id="btn-open-admin">👑 Админ</button>
+    </div>
   </header>
 
   <div class="toast" id="toast">Уведомление</div>
 
-  <!-- ВКЛАДКА 1: МРЭО (5 СТРАН) -->
+  <!-- ВКЛАДКА 1: МРЭО (ПОЭТАПНАЯ ПРОКРУТКА НОМЕРА) -->
   <section class="page active" id="page-mreo">
     <div class="section-title">
       <span>🚔 Межгосударственное МРЭО</span>
       <span class="sub-badge" id="roll-price-badge">Пошлина: 500 ₽</span>
     </div>
 
-    <!-- Выбор страны -->
     <div class="country-tabs" id="country-tabs">
       <button class="country-pill active" data-country="RU">🇷🇺 Россия</button>
       <button class="country-pill" data-country="KZ">🇰🇿 Казахстан</button>
@@ -713,7 +797,6 @@
       </div>
     </div>
 
-    <!-- Быстрый заработок -->
     <div class="item-card" style="display:flex; justify-content:space-between; align-items:center;">
       <div>
         <div style="font-weight:800; font-size:14px;">🔧 Опер-перегон и халтура</div>
@@ -723,7 +806,7 @@
     </div>
   </section>
 
-  <!-- ВКЛАДКА 2: Б/У АВТОРЫНОК (ПЕРЕКУПСТВО) -->
+  <!-- ВКЛАДКА 2: Б/У АВТОРЫНОК -->
   <section class="page" id="page-used">
     <div class="section-title">
       <span>🤝 Б/У Авторынок (Перекуп)</span>
@@ -744,8 +827,28 @@
     <div class="case-grid" id="cases-grid"></div>
   </section>
 
-  <!-- ВКЛАДКА 4: АВТОПАРК И ОПЕР-ТЮНИНГ -->
+  <!-- ВКЛАДКА 4: АВТОПАРК + ИНТЕРАКТИВНЫЙ 3D-ПОДИУМ -->
   <section class="page" id="page-garage">
+    <!-- ГЛАВНЫЙ ВЫСТАВОЧНЫЙ 3D-ПОДИУМ (ВОЗВРАЩЕН И УЛУЧШЕН!) -->
+    <div class="podium-showcase-card" id="garage-podium-box" style="display:none;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+        <div>
+          <span class="r-badge r-legend">🏆 ГЛАВНЫЙ 3D-ПОДИУМ</span>
+          <div style="font-size:15px; font-weight:900; margin-top:3px;" id="podium-car-name">Автомобиль</div>
+        </div>
+        <div id="podium-plate-Slot"></div>
+      </div>
+
+      <div class="three-canvas-wrap" id="podium-3d-mount">
+        <div class="podium-hint">🔄 Крути 3D подиум пальцем</div>
+      </div>
+
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-top:8px; font-size:12px;">
+        <span style="color:var(--text-muted);">На подиуме: <b style="color:var(--gold);">Бонус +20% к доходу</b></span>
+        <span style="color:var(--green); font-weight:800;" id="podium-car-stats">+0 ₽/с</span>
+      </div>
+    </div>
+
     <div class="section-title">
       <span>🏎️ Мой Автопарк и Детейлинг</span>
       <span class="sub-badge" id="cars-count-label">0 авто</span>
@@ -755,7 +858,6 @@
 
   <!-- ВКЛАДКА 5: СКЛАД НОМЕРОВ + VIP ЗАКАЗ -->
   <section class="page" id="page-plates">
-    <!-- VIP Контракт от Брокера -->
     <div class="item-card" style="background: linear-gradient(135deg, #1e1b4b 0%, #131822 100%); border-color: rgba(168,85,247,0.4);">
       <div style="display:flex; justify-content:space-between; align-items:center;">
         <span class="r-badge r-epic">🕴️ VIP-Заказ спецброкера</span>
@@ -784,7 +886,6 @@
         На старт автоматически выходит твой самый мощный автомобиль
       </div>
 
-      <!-- Анимированная трасса -->
       <div class="drag-track">
         <div class="finish-line"></div>
         <div class="drag-lane">
@@ -814,6 +915,61 @@
     </div>
   </section>
 
+  <!-- МОДАЛКА АДМИН-ПАНЕЛИ (ПАРОЛЬ admin777) -->
+  <div class="modal-backdrop" id="modal-admin">
+    <div class="modal-box" style="text-align:left;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+        <span style="font-size:17px; font-weight:900; color:var(--gold);">👑 Админ-Панель (Root)</span>
+        <button class="btn btn-ghost btn-sm" style="flex:0;" id="btn-close-admin">✕</button>
+      </div>
+
+      <!-- 1. Накрутка денег -->
+      <div style="background:rgba(255,255,255,0.03); padding:10px; border-radius:12px; border:1px solid var(--border); margin-bottom:12px;">
+        <div style="font-size:12px; font-weight:800; margin-bottom:6px; color:var(--green);">💰 Управление балансом:</div>
+        <div style="display:flex; gap:6px;">
+          <input type="number" id="adm-money-input" class="adm-input" placeholder="Сумма (например 5000000)" value="1000000" />
+          <button class="btn btn-green btn-sm" style="flex:0; white-space:nowrap;" id="btn-adm-add-money">+ Начислить</button>
+        </div>
+        <div class="btn-row" style="margin-top:6px;">
+          <button class="btn btn-ghost btn-sm" data-quick-money="100000">+100К ₽</button>
+          <button class="btn btn-ghost btn-sm" data-quick-money="1000000">+1М ₽</button>
+          <button class="btn btn-ghost btn-sm" data-quick-money="10000000">+10М ₽</button>
+        </div>
+      </div>
+
+      <!-- 2. Создание любого кастомного номера -->
+      <div style="background:rgba(255,255,255,0.03); padding:10px; border-radius:12px; border:1px solid var(--border); margin-bottom:12px;">
+        <div style="font-size:12px; font-weight:800; margin-bottom:6px; color:var(--accent);">🔢 Создать кастомный госномер:</div>
+        <div class="adm-grid">
+          <input type="text" id="adm-p-l1" class="adm-input" placeholder="1 букв" value="А" maxlength="2" />
+          <input type="text" id="adm-p-num" class="adm-input" placeholder="Цифры" value="777" maxlength="4" />
+          <input type="text" id="adm-p-l23" class="adm-input" placeholder="Буквы" value="МР" maxlength="3" />
+          <input type="text" id="adm-p-reg" class="adm-input" placeholder="Регион" value="97" maxlength="3" />
+        </div>
+        <div style="display:flex; gap:6px; margin-top:6px;">
+          <select id="adm-p-country" class="adm-select">
+            <option value="RU">🇷🇺 Россия</option>
+            <option value="KZ">🇰🇿 Казахстан</option>
+            <option value="BY">🇧🇾 Беларусь</option>
+            <option value="UA">🇺🇦 Украина</option>
+            <option value="DXB">🇦🇪 Дубай</option>
+          </select>
+          <input type="number" id="adm-p-mult" class="adm-input" placeholder="Множитель (x)" value="15" step="0.5" />
+        </div>
+        <button class="btn btn-primary btn-sm" style="width:100%; margin-top:8px;" id="btn-adm-spawn-plate">✨ Выдать этот номер на склад</button>
+      </div>
+
+      <!-- 3. Выдача любой машины -->
+      <div style="background:rgba(255,255,255,0.03); padding:10px; border-radius:12px; border:1px solid var(--border);">
+        <div style="font-size:12px; font-weight:800; margin-bottom:6px; color:var(--purple);">🏎️ Выдать автомобиль в гараж:</div>
+        <div style="display:flex; gap:6px;">
+          <select id="adm-car-select" class="adm-select"></select>
+          <button class="btn btn-purple btn-sm" style="flex:0; white-space:nowrap;" id="btn-adm-spawn-car">Выдать</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- МОДАЛКА РУЛЕТКИ КЕЙСА -->
   <div class="modal-backdrop" id="modal-roulette">
     <div class="modal-box">
@@ -836,17 +992,19 @@
     </div>
   </div>
 
-  <!-- МОДАЛКА ВИЗУАЛЬНОГО СТАЙЛИНГА (ОПЕР-ТЮНИНГ) -->
+  <!-- МОДАЛКА ВИЗУАЛЬНОГО СТАЙЛИНГА С 3D-ПОДИУМОМ -->
   <div class="modal-backdrop" id="modal-styling">
     <div class="modal-box">
-      <div style="font-size: 16px; font-weight: 800; margin-bottom: 8px;" id="styling-car-title">Детейлинг и Опер-Стайлинг</div>
-      <div class="svg-car-stage" id="styling-preview-stage" style="margin-bottom: 12px;"></div>
+      <div style="font-size: 16px; font-weight: 800; margin-bottom: 8px;" id="styling-car-title">3D Детейлинг и Опер-Стайлинг</div>
+      <div class="three-canvas-wrap" id="styling-3d-mount" style="height: 175px; margin-bottom: 12px;">
+        <div class="podium-hint">🔄 Крути 3D модель</div>
+      </div>
       <div id="styling-options-box" style="display:flex; flex-direction:column; gap:8px; text-align:left;"></div>
       <button class="btn btn-ghost" id="btn-close-styling" style="margin-top: 12px; width: 100%;">Готово</button>
     </div>
   </div>
 
-  <!-- НИЖНЕЕ МЕНЮ (6 ВКЛАДОК) -->
+  <!-- НИЖНЕЕ МЕНЮ -->
   <nav class="bottom-nav">
     <button class="nav-btn active" data-tab="page-mreo">
       <span class="ico">🚔</span><span>МРЭО</span>
@@ -881,9 +1039,245 @@
     }
 
     /* ==========================================
-       2. ВЕКТОРНЫЙ SVG-ДВИЖОК ОТРИСОВКИ МАШИН
-       Рисует 5 типов кузовов + тонировку, неон,
-       занижение (пневму), мигалки ФСО и ржавчину Б/У!
+       2. НАСТОЯЩИЙ 3D-ДВИЖОК ШОУРУМА НА THREE.JS
+       Рисует объемную 3D-машину на вращающемся
+       световом подиуме с перекраской, бункером,
+       ФСО-вспышками, пневмой и неоном!
+    ========================================== */
+    const active3DViewers = {};
+
+    function mount3DPodium(containerId, car) {
+      const container = document.getElementById(containerId);
+      if (!container || typeof THREE === 'undefined') return;
+
+      // Очищаем старый инстанс если был
+      if (active3DViewers[containerId]) {
+        cancelAnimationFrame(active3DViewers[containerId].raf);
+        if (active3DViewers[containerId].renderer) {
+          active3DViewers[containerId].renderer.dispose();
+        }
+      }
+
+      const hintEl = container.querySelector('.podium-hint');
+      container.innerHTML = '';
+      if (hintEl) container.appendChild(hintEl);
+
+      const width = container.clientWidth || 320;
+      const height = container.clientHeight || 185;
+
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(40, width / height, 0.1, 100);
+      camera.position.set(4.3, 2.3, 4.8);
+      camera.lookAt(0, 0.35, 0);
+
+      const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+      renderer.setSize(width, height);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      container.insertBefore(renderer.domElement, container.firstChild);
+
+      // Освещение шоурума
+      const ambient = new THREE.AmbientLight(0xffffff, 0.75);
+      scene.add(ambient);
+
+      const spotLight = new THREE.DirectionalLight(0xffffff, 1.15);
+      spotLight.position.set(5, 8, 5);
+      scene.add(spotLight);
+
+      const backLight = new THREE.DirectionalLight(0x3b82f6, 0.6);
+      backLight.position.set(-5, 4, -5);
+      scene.add(backLight);
+
+      const rootGroup = new THREE.Group();
+      scene.add(rootGroup);
+
+      // 1. Круглый Выставочный Подиум
+      const podiumGeo = new THREE.CylinderGeometry(2.55, 2.75, 0.22, 48);
+      const podiumMat = new THREE.MeshStandardMaterial({ color: 0x111827, metalness: 0.65, roughness: 0.3 });
+      const podiumMesh = new THREE.Mesh(podiumGeo, podiumMat);
+      podiumMesh.position.y = -0.11;
+      rootGroup.add(podiumMesh);
+
+      // Светящееся кольцо подиума (или цвет неона)
+      const ringColor = car.neon ? car.neon : '#3b82f6';
+      const ringGeo = new THREE.RingGeometry(2.38, 2.52, 48);
+      const ringMat = new THREE.MeshBasicMaterial({ color: ringColor, side: THREE.DoubleSide });
+      const ringMesh = new THREE.Mesh(ringGeo, ringMat);
+      ringMesh.rotation.x = -Math.PI / 2;
+      ringMesh.position.y = 0.01;
+      rootGroup.add(ringMesh);
+
+      // 2. Кузов Автомобиля (зависит от класса авто)
+      const carGroup = new THREE.Group();
+      const dropOffset = car.stance ? -0.11 : 0;
+      carGroup.position.y = dropOffset;
+      rootGroup.add(carGroup);
+
+      const cond = typeof car.condition === 'number' ? car.condition : 100;
+      const bodyMat = new THREE.MeshStandardMaterial({
+        color: car.color || '#3b82f6',
+        metalness: cond < 65 ? 0.2 : 0.65,
+        roughness: cond < 65 ? 0.75 : 0.22
+      });
+
+      const glassMat = new THREE.MeshStandardMaterial({
+        color: car.tint ? 0x05070a : 0x7dd3fc,
+        metalness: 0.9,
+        roughness: 0.1,
+        transparent: true,
+        opacity: car.tint ? 0.96 : 0.65
+      });
+
+      const darkTrimMat = new THREE.MeshStandardMaterial({ color: 0x0f172a, roughness: 0.5 });
+
+      const bType = car.body || 'sedan';
+      let lowerH = 0.48, lowerL = 3.3, lowerW = 1.52;
+      let cabinH = 0.42, cabinL = 1.75, cabinZ = -0.1;
+
+      if (bType === 'suv') {
+        lowerH = 0.62; lowerL = 3.35; lowerW = 1.62;
+        cabinH = 0.54; cabinL = 2.25; cabinZ = -0.18;
+      } else if (bType === 'sport') {
+        lowerH = 0.42; lowerL = 3.35; lowerW = 1.58;
+        cabinH = 0.35; cabinL = 1.55; cabinZ = -0.12;
+      } else if (bType === 'hyper') {
+        lowerH = 0.36; lowerL = 3.5; lowerW = 1.68;
+        cabinH = 0.30; cabinL = 1.45; cabinZ = -0.05;
+      } else if (bType === 'retro') {
+        lowerH = 0.46; lowerL = 3.15; lowerW = 1.44;
+        cabinH = 0.44; cabinL = 1.65; cabinZ = -0.08;
+      }
+
+      // Нижняя часть кузова
+      const baseMesh = new THREE.Mesh(new THREE.BoxGeometry(lowerW, lowerH, lowerL), bodyMat);
+      baseMesh.position.y = 0.34 + lowerH / 2;
+      carGroup.add(baseMesh);
+
+      // Кабина / Крыша
+      const cabinMesh = new THREE.Mesh(new THREE.BoxGeometry(lowerW * 0.86, cabinH, cabinL), bodyMat);
+      cabinMesh.position.set(0, 0.34 + lowerH + cabinH / 2 - 0.02, cabinZ);
+      carGroup.add(cabinMesh);
+
+      // Остекление (Лобовое, заднее и боковые стекла)
+      const glassBox = new THREE.Mesh(new THREE.BoxGeometry(lowerW * 0.88, cabinH * 0.78, cabinL * 0.92), glassMat);
+      glassBox.position.copy(cabinMesh.position);
+      carGroup.add(glassBox);
+
+      // Радиаторная решетка спереди
+      const grilleMesh = new THREE.Mesh(new THREE.BoxGeometry(lowerW * 0.52, lowerH * 0.48, 0.06), darkTrimMat);
+      grilleMesh.position.set(0, 0.34 + lowerH * 0.48, lowerL / 2 + 0.01);
+      carGroup.add(grilleMesh);
+
+      // Передние LED Фары
+      const headMat = new THREE.MeshBasicMaterial({ color: 0xfef08a });
+      const headL = new THREE.Mesh(new THREE.BoxGeometry(0.26, 0.12, 0.06), headMat);
+      headL.position.set(lowerW * 0.35, 0.34 + lowerH * 0.62, lowerL / 2 + 0.01);
+      const headR = headL.clone();
+      headR.position.x = -lowerW * 0.35;
+      carGroup.add(headL, headR);
+
+      // Задние стоп-фонари
+      const tailMat = new THREE.MeshBasicMaterial({ color: 0xef4444 });
+      const tailL = new THREE.Mesh(new THREE.BoxGeometry(0.32, 0.12, 0.06), tailMat);
+      tailL.position.set(lowerW * 0.33, 0.34 + lowerH * 0.62, -lowerL / 2 - 0.01);
+      const tailR = tailL.clone();
+      tailR.position.x = -lowerW * 0.33;
+      carGroup.add(tailL, tailR);
+
+      // Спойлер для спорткаров и гиперкаров
+      if (bType === 'sport' || bType === 'hyper') {
+        const wingMesh = new THREE.Mesh(new THREE.BoxGeometry(lowerW * 0.9, 0.06, 0.26), darkTrimMat);
+        wingMesh.position.set(0, 0.34 + lowerH + 0.18, -lowerL / 2 + 0.18);
+        carGroup.add(wingMesh);
+      }
+
+      // ФСО Вспышки за решеткой радиатора
+      let fsoRedMesh = null, fsoBlueMesh = null;
+      if (car.fso) {
+        fsoRedMesh = new THREE.Mesh(new THREE.SphereGeometry(0.08, 12, 12), new THREE.MeshBasicMaterial({ color: 0xef4444 }));
+        fsoBlueMesh = new THREE.Mesh(new THREE.SphereGeometry(0.08, 12, 12), new THREE.MeshBasicMaterial({ color: 0x3b82f6 }));
+        fsoRedMesh.position.set(0.18, 0.34 + lowerH * 0.5, lowerL / 2 + 0.05);
+        fsoBlueMesh.position.set(-0.18, 0.34 + lowerH * 0.5, lowerL / 2 + 0.05);
+        carGroup.add(fsoRedMesh, fsoBlueMesh);
+      }
+
+      // Неон под днищем машины
+      if (car.neon) {
+        const neonPlane = new THREE.Mesh(
+          new THREE.PlaneGeometry(lowerW * 0.95, lowerL * 0.85),
+          new THREE.MeshBasicMaterial({ color: car.neon, side: THREE.DoubleSide, transparent: true, opacity: 0.65 })
+        );
+        neonPlane.rotation.x = -Math.PI / 2;
+        neonPlane.position.y = 0.03;
+        rootGroup.add(neonPlane);
+      }
+
+      // 4 Колеса с литыми дисками (не опускаются под пол при пневме)
+      const wheelPositions = [
+        [lowerW / 2, 0.34, lowerL * 0.33],
+        [-lowerW / 2, 0.34, lowerL * 0.33],
+        [lowerW / 2, 0.34, -lowerL * 0.33],
+        [-lowerW / 2, 0.34, -lowerL * 0.33]
+      ];
+      const tireGeo = new THREE.CylinderGeometry(0.34, 0.34, 0.24, 24);
+      const tireMat = new THREE.MeshStandardMaterial({ color: 0x0b0f17, roughness: 0.8 });
+      const rimGeo = new THREE.CylinderGeometry(0.21, 0.21, 0.26, 16);
+      const rimMat = new THREE.MeshStandardMaterial({ color: 0xcbd5e1, metalness: 0.85, roughness: 0.2 });
+
+      wheelPositions.forEach(([wx, wy, wz]) => {
+        const wGroup = new THREE.Group();
+        const tire = new THREE.Mesh(tireGeo, tireMat);
+        tire.rotation.z = Math.PI / 2;
+        const rim = new THREE.Mesh(rimGeo, rimMat);
+        rim.rotation.z = Math.PI / 2;
+        wGroup.add(tire, rim);
+        wGroup.position.set(wx, wy, wz);
+        rootGroup.add(wGroup);
+      });
+
+      // Вращение пальцем или мышкой
+      let isDragging = false;
+      let prevX = 0;
+      let autoRotate = true;
+
+      const onDown = (clientX) => { isDragging = true; autoRotate = false; prevX = clientX; };
+      const onMove = (clientX) => {
+        if (!isDragging) return;
+        const delta = clientX - prevX;
+        rootGroup.rotation.y += delta * 0.012;
+        prevX = clientX;
+      };
+      const onUp = () => { isDragging = false; setTimeout(() => { autoRotate = true; }, 2500); };
+
+      container.onmousedown = (e) => onDown(e.clientX);
+      window.addEventListener('mousemove', (e) => onMove(e.clientX));
+      window.addEventListener('mouseup', onUp);
+
+      container.ontouchstart = (e) => { if (e.touches[0]) onDown(e.touches[0].clientX); };
+      container.ontouchmove = (e) => { if (e.touches[0]) onMove(e.touches[0].clientX); };
+      container.ontouchend = onUp;
+
+      let tick = 0;
+      const viewerState = { raf: null, renderer };
+      active3DViewers[containerId] = viewerState;
+
+      function animate() {
+        viewerState.raf = requestAnimationFrame(animate);
+        tick++;
+        if (autoRotate) {
+          rootGroup.rotation.y += 0.0085;
+        }
+        if (fsoRedMesh && fsoBlueMesh) {
+          const flash = Math.floor(tick / 8) % 2 === 0;
+          fsoRedMesh.visible = flash;
+          fsoBlueMesh.visible = !flash;
+        }
+        renderer.render(scene, camera);
+      }
+      animate();
+    }
+
+    /* ==========================================
+       3. ОБЪЕМНЫЙ 2.5D РЕНДЕР С ПОДИУМОМ ДЛЯ КАРТОЧЕК
     ========================================== */
     function renderCarSVG(car) {
       const uid = car.uid || ('tmp_' + Math.random().toString(36).slice(2, 7));
@@ -895,86 +1289,99 @@
       const isDropped = !!car.stance;
       const cond = typeof car.condition === 'number' ? car.condition : 100;
 
-      const glassFill = isTinted ? '#07090e' : '#7dd3fc';
-      const glassOpacity = isTinted ? '0.96' : '0.58';
+      const glassFill = isTinted ? '#05070b' : '#7dd3fc';
+      const glassOpacity = isTinted ? '0.96' : '0.62';
       const dropY = isDropped ? 4.5 : 0;
 
-      // Силуэты кузовов и крыш для разных классов
       let chassisPath = '';
-      let roofPath = '';
       let windowPath = '';
+      let hoodHighlight = '';
 
       if (bodyType === 'retro') {
-        // Классика (ВАЗ 2107 / Mark II — угловатый олдскул)
         chassisPath = 'M 18 68 L 22 48 L 52 46 L 68 26 L 138 26 L 154 46 L 198 49 L 200 68 Z';
         windowPath = 'M 57 45 L 71 29 L 134 29 L 148 45 Z';
+        hoodHighlight = 'M 24 49 L 196 50 L 196 54 L 24 53 Z';
       } else if (bodyType === 'suv') {
-        // Гелик / Крузак / Urus — высокий массивный кузов
         chassisPath = 'M 16 68 L 18 40 L 48 38 L 60 16 L 168 16 L 180 38 L 202 42 L 202 68 Z';
         windowPath = 'M 54 37 L 64 20 L 162 20 L 172 37 Z';
+        hoodHighlight = 'M 20 42 L 199 44 L 199 49 L 20 47 Z';
       } else if (bodyType === 'sport') {
-        // Купе (GT-R / 911 / M4) — обтекаемый со спойлером
         chassisPath = 'M 14 68 L 18 44 L 30 44 L 64 25 L 136 25 L 166 42 L 204 46 L 206 68 Z';
         windowPath = 'M 60 42 L 70 28 L 132 28 L 156 42 Z';
+        hoodHighlight = 'M 22 46 L 202 48 L 202 52 L 22 50 Z';
       } else if (bodyType === 'hyper') {
-        // Гиперкар (Bugatti / SF90) — сверхнизкий агрессивный
         chassisPath = 'M 10 68 L 16 48 L 54 38 L 82 24 L 144 24 L 176 40 L 208 48 L 210 68 Z';
         windowPath = 'M 68 38 L 86 27 L 138 27 L 164 39 Z';
+        hoodHighlight = 'M 20 48 L 205 50 L 205 54 L 20 52 Z';
       } else {
-        // Бизнес-седан (Camry / BMW M5 / Maybach / Priora)
         chassisPath = 'M 15 68 L 20 45 L 54 42 L 74 23 L 146 23 L 168 42 L 202 46 L 204 68 Z';
         windowPath = 'M 60 41 L 77 26 L 142 26 L 161 41 Z';
+        hoodHighlight = 'M 22 46 L 200 48 L 200 53 L 22 51 Z';
       }
 
-      // Визуальные дефекты и ржавчина, если машина Б/У и состояние < 75%
       const showDamage = cond < 75;
       const showHeavyRust = cond < 50;
+      const podiumRingColor = neonColor || 'rgba(59, 130, 246, 0.55)';
 
       return `
-        <svg viewBox="0 0 220 92" xmlns="http://www.w3.org/2000/svg">
+        <svg viewBox="0 0 220 98" xmlns="http://www.w3.org/2000/svg">
           <defs>
-            <linearGradient id="grad_${uid}" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stop-color="${bodyColor}" stop-opacity="1" />
-              <stop offset="55%" stop-color="${bodyColor}" stop-opacity="0.82" />
-              <stop offset="100%" stop-color="#0f172a" stop-opacity="0.95" />
+            <linearGradient id="grad_${uid}" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stop-color="#ffffff" stop-opacity="0.35" />
+              <stop offset="18%" stop-color="${bodyColor}" stop-opacity="1" />
+              <stop offset="70%" stop-color="${bodyColor}" stop-opacity="0.88" />
+              <stop offset="100%" stop-color="#090d16" stop-opacity="0.98" />
+            </linearGradient>
+            <linearGradient id="podium_${uid}" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stop-color="#0f172a" />
+              <stop offset="50%" stop-color="#334155" />
+              <stop offset="100%" stop-color="#0f172a" />
             </linearGradient>
           </defs>
 
-          <!-- Тень под машиной -->
-          <ellipse cx="110" cy="79" rx="88" ry="6" fill="rgba(0,0,0,0.65)" />
+          <!-- ВЫСТАВОЧНЫЙ 3D-ПОДИУМ ПОД МАШИНОЙ -->
+          <ellipse cx="110" cy="84" rx="102" ry="11" fill="url(#podium_${uid})" stroke="rgba(255,255,255,0.18)" stroke-width="1" />
+          <ellipse cx="110" cy="81" rx="94" ry="8.5" fill="#0b0f17" stroke="${podiumRingColor}" stroke-width="1.8" />
+          <ellipse cx="110" cy="79" rx="78" ry="5" fill="rgba(0,0,0,0.75)" />
 
-          <!-- Неоновая подсветка дна -->
-          ${neonColor ? `<ellipse cx="110" cy="77" rx="76" ry="5" fill="${neonColor}" opacity="0.85" style="filter: blur(5px);" />` : ''}
+          <!-- Неоновая подсветка на подиуме -->
+          ${neonColor ? `<ellipse cx="110" cy="78" rx="74" ry="5.5" fill="${neonColor}" opacity="0.88" style="filter: blur(5px);" />` : ''}
 
-          <!-- Группа кузова (опускается при установке Пневмы Stance) -->
+          <!-- Группа кузова -->
           <g transform="translate(0, ${dropY})">
-            <!-- Спойлер для спорт и гиперкаров -->
-            ${(bodyType === 'sport' || bodyType === 'hyper') ? `<path d="M 16 45 L 10 34 L 26 34 L 24 45 Z" fill="#1e293b" />` : ''}
+            ${(bodyType === 'sport' || bodyType === 'hyper') ? `<path d="M 16 45 L 10 33 L 27 33 L 24 45 Z" fill="#1e293b" stroke="rgba(255,255,255,0.2)" stroke-width="0.8" />` : ''}
 
-            <!-- Основной кузов -->
-            <path d="${chassisPath}" fill="url(#grad_${uid})" stroke="rgba(255,255,255,0.22)" stroke-width="1.2" />
+            <!-- Основной объемный кузов -->
+            <path d="${chassisPath}" fill="url(#grad_${uid})" stroke="rgba(255,255,255,0.28)" stroke-width="1.2" />
 
-            <!-- Окна (Светлые или Тонировка Бункер 5%) -->
-            <path d="${windowPath}" fill="${glassFill}" opacity="${glassOpacity}" stroke="rgba(255,255,255,0.3)" stroke-width="1" />
+            <!-- Блик ребра жесткости (придает 3D объем) -->
+            <path d="${hoodHighlight}" fill="rgba(255,255,255,0.16)" />
 
-            <!-- Стойка двери -->
-            <line x1="110" y1="25" x2="110" y2="64" stroke="rgba(0,0,0,0.45)" stroke-width="2" />
+            <!-- Нижний карбоновый сплиттер/порог -->
+            <rect x="22" y="64" width="176" height="3.5" rx="1.5" fill="#090c12" opacity="0.8" />
+
+            <!-- Окна -->
+            <path d="${windowPath}" fill="${glassFill}" opacity="${glassOpacity}" stroke="rgba(255,255,255,0.35)" stroke-width="1" />
+
+            <!-- Центральная стойка и боковое зеркало -->
+            <line x1="112" y1="24" x2="112" y2="64" stroke="rgba(0,0,0,0.55)" stroke-width="2.5" />
+            <ellipse cx="155" cy="42" rx="5" ry="3" fill="${bodyColor}" stroke="#fff" stroke-width="0.8" />
 
             <!-- Ручки дверей -->
-            <rect x="88" y="46" width="8" height="2.5" rx="1" fill="rgba(255,255,255,0.5)" />
-            <rect x="122" y="46" width="8" height="2.5" rx="1" fill="rgba(255,255,255,0.5)" />
+            <rect x="90" y="46" width="9" height="2.5" rx="1" fill="rgba(255,255,255,0.65)" />
+            <rect x="124" y="46" width="9" height="2.5" rx="1" fill="rgba(255,255,255,0.65)" />
 
-            <!-- Фары передние (LED) и задние фонари -->
-            <polygon points="195,48 204,49 203,56 193,55" fill="#fef08a" style="filter: drop-shadow(3px 0 6px #fef08a);" />
-            <polygon points="16,47 23,47 22,55 15,55" fill="#ef4444" style="filter: drop-shadow(-3px 0 5px #ef4444);" />
+            <!-- Оптика с 3D свечением -->
+            <polygon points="194,47 204,49 203,56 192,55" fill="#fef08a" style="filter: drop-shadow(4px 0 6px #fef08a);" />
+            <polygon points="15,47 23,47 22,55 14,55" fill="#ef4444" style="filter: drop-shadow(-4px 0 6px #ef4444);" />
 
-            <!-- ФСО Вспышки (Мигалки за решеткой) -->
+            <!-- ФСО Вспышки -->
             ${hasFso ? `
-              <circle class="fso-r" cx="186" cy="53" r="4" fill="#ef4444" />
-              <circle class="fso-b" cx="177" cy="53" r="4" fill="#3b82f6" />
+              <circle class="fso-r" cx="186" cy="53" r="4.2" fill="#ef4444" />
+              <circle class="fso-b" cx="177" cy="53" r="4.2" fill="#3b82f6" />
             ` : ''}
 
-            <!-- Визуальные повреждения для Б/У авто (царапины и рыжики ржавчины) -->
+            <!-- Визуал износа Б/У -->
             ${showDamage ? `
               <path d="M 75 55 L 95 50 M 80 58 L 102 52" stroke="#1e293b" stroke-width="2" />
               <circle cx="135" cy="58" r="5" fill="#7c2d12" opacity="0.75" />
@@ -985,25 +1392,26 @@
             ` : ''}
           </g>
 
-          <!-- Заднее колесо -->
+          <!-- Детализированные колеса с тормозными суппортами -->
           <g transform="translate(52, 68)">
-            <circle cx="0" cy="0" r="14" fill="#0f172a" stroke="#334155" stroke-width="2" />
-            <circle cx="0" cy="0" r="9" fill="#94a3b8" />
-            <circle cx="0" cy="0" r="3" fill="#ef4444" />
+            <circle cx="0" cy="0" r="14.5" fill="#090c12" stroke="#334155" stroke-width="2" />
+            <circle cx="0" cy="0" r="9.5" fill="#cbd5e1" stroke="#475569" stroke-width="1" />
+            <circle cx="3" cy="0" r="4" fill="#ef4444" />
+            <circle cx="0" cy="0" r="2.8" fill="#0f172a" />
           </g>
 
-          <!-- Переднее колесо -->
           <g transform="translate(166, 68)">
-            <circle cx="0" cy="0" r="14" fill="#0f172a" stroke="#334155" stroke-width="2" />
-            <circle cx="0" cy="0" r="9" fill="#94a3b8" />
-            <circle cx="0" cy="0" r="3" fill="#ef4444" />
+            <circle cx="0" cy="0" r="14.5" fill="#090c12" stroke="#334155" stroke-width="2" />
+            <circle cx="0" cy="0" r="9.5" fill="#cbd5e1" stroke="#475569" stroke-width="1" />
+            <circle cx="-3" cy="0" r="4" fill="#ef4444" />
+            <circle cx="0" cy="0" r="2.8" fill="#0f172a" />
           </g>
         </svg>
       `;
     }
 
     /* ==========================================
-       3. БАЗА АВТОМОБИЛЕЙ И КОНТЕЙНЕРОВ
+       4. БАЗА АВТОМОБИЛЕЙ И КОНТЕЙНЕРОВ
     ========================================== */
     const RARITY_INFO = {
       common: { name: 'Обычный', class: 'r-common', color: '#94a3b8' },
@@ -1073,7 +1481,7 @@
     ];
 
     /* ==========================================
-       4. ЕДИНЫЙ STATE И СОХРАНЕНИЕ (БЕЗ ДЮПОВ)
+       5. STATE И СОХРАНЕНИЕ
     ========================================== */
     const STORAGE_KEY = 'nomerok_v3_empire';
 
@@ -1082,6 +1490,7 @@
       selectedCountry: 'RU',
       plates: [],
       cars: [],
+      podiumCarUid: null,
       usedListings: [],
       vipOrder: null,
       usedPromos: [],
@@ -1091,6 +1500,8 @@
     let state = loadState();
     let activeCarUidForModal = null;
     let activeCarUidForStyling = null;
+    let isRollingPlate = false;
+    let adminUnlocked = false;
 
     function loadState() {
       try {
@@ -1102,6 +1513,7 @@
           selectedCountry: p.selectedCountry || 'RU',
           plates: Array.isArray(p.plates) ? p.plates : [],
           cars: Array.isArray(p.cars) ? p.cars : [],
+          podiumCarUid: p.podiumCarUid || null,
           usedListings: Array.isArray(p.usedListings) ? p.usedListings : [],
           vipOrder: p.vipOrder || null,
           usedPromos: Array.isArray(p.usedPromos) ? p.usedPromos : [],
@@ -1119,6 +1531,7 @@
           selectedCountry: state.selectedCountry,
           plates: state.plates,
           cars: state.cars,
+          podiumCarUid: state.podiumCarUid,
           usedListings: state.usedListings,
           vipOrder: state.vipOrder,
           usedPromos: state.usedPromos
@@ -1141,12 +1554,10 @@
     }
 
     /* ==========================================
-       5. МУЛЬТИ-СТРАНОВОЙ ГЕНЕРАТОР НОМЕРОВ
-       (RU, KZ, BY, UA, DXB)
+       6. ГЕНЕРАТОР НОМЕРОВ + ПОШАГОВАЯ АНИМАЦИЯ
     ========================================== */
     const LET_RU = ['А','В','Е','К','М','Н','О','Р','С','Т','У','Х'];
     const LET_LAT = ['A','B','E','K','M','H','O','P','C','T','X','Z','V'];
-
     function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
 
     function generatePlateObject(country = 'RU') {
@@ -1154,9 +1565,8 @@
       let tags = [];
       let displayData = {};
 
-      // Форсируем шанс красивых цифр для фана
       let num3;
-      if (Math.random() < 0.12) {
+      if (Math.random() < 0.14) {
         num3 = pick(['001','007','777','888','999','666','111','555','100','500']);
       } else {
         num3 = String(Math.floor(Math.random() * 999) + 1).padStart(3, '0');
@@ -1176,13 +1586,12 @@
         else if (num3[0] === num3[2]) { mult += 0.6; tags.push({ text: `ЗЕРКАЛКА (${num3})`, color: 'r-rare' }); }
 
         if (num3 === reg) { mult += 3.8; tags.push({ text: 'ДУБЛЬ С РЕГИОНОМ', color: 'r-mythic' }); }
-        displayData = { country: 'RU', l1, num: num3, l2, l3, reg, label: `${l1}${num3}${l2}${l3} ${reg}` };
+        displayData = { country: 'RU', l1, num: num3, l2, l3, reg };
 
       } else if (country === 'KZ') {
         const l1 = pick(LET_LAT), l2 = pick(LET_LAT), l3 = pick(LET_LAT);
-        const reg = pick(['01','02','05','07','13','16','17']); // 01 Астана, 02 Алматы
+        const reg = pick(['01','02','05','07','13','16','17']);
         const series = l1 + l2 + l3;
-
         if (['ZZZ','VIP','QQQ','NNN','AAA'].includes(series) || (l1 === l2 && l2 === l3)) {
           mult += 3.2; tags.push({ text: `VIP СЕРИЯ ${series}`, color: 'r-legend' });
         }
@@ -1192,57 +1601,48 @@
         if (reg === '01' || reg === '02') {
           mult += 0.7; tags.push({ text: reg === '01' ? 'АСТАНА (01)' : 'АЛМАТЫ (02)', color: 'r-rare' });
         }
-        displayData = { country: 'KZ', num: num3, series, reg, label: `${num3} ${series} ${reg}` };
+        displayData = { country: 'KZ', l1: '', num: num3, l2: series, l3: '', series, reg };
 
       } else if (country === 'BY') {
         const d4 = Math.random() < 0.14 ? pick(['7777','0001','0007','8888','1111']) : String(Math.floor(Math.random() * 9000) + 1000);
         const l1 = pick(LET_LAT), l2 = pick(LET_LAT);
-        const reg = pick(['7','5','1','2','6']); // 7 - Минск
-
+        const reg = pick(['7','5','1','2','6']);
         if (d4[0] === d4[1] && d4[1] === d4[2] && d4[2] === d4[3]) {
           mult += 3.8; tags.push({ text: `КВАДРО (${d4})`, color: 'r-mythic' });
         } else if (d4.startsWith('000')) {
           mult += 2.8; tags.push({ text: `ПЕРВАЯ ДЕСЯТКА (${d4})`, color: 'r-legend' });
         }
         if (l1 === l2) { mult += 1.4; tags.push({ text: `ДУБЛЬ БУКВ (${l1}${l2})`, color: 'r-epic' }); }
-        if (reg === '7') { mult += 0.6; tags.push({ text: 'МИНСК (-7)', color: 'r-rare' }); }
-        displayData = { country: 'BY', num: d4, series: `${l1}${l2}`, reg, label: `${d4} ${l1}${l2}-${reg}` };
+        displayData = { country: 'BY', l1: '', num: d4, series: `${l1}${l2}`, reg };
 
       } else if (country === 'UA') {
-        const pref = pick(['AA','KA','BC','BH','AE','AX']); // AA/KA Киев, BH Одесса
+        const pref = pick(['AA','KA','BC','BH','AE','AX']);
         const d4 = Math.random() < 0.14 ? pick(['7777','0001','0007','8888','9999']) : String(Math.floor(Math.random() * 9000) + 1000);
         const suf = pick(LET_LAT) + pick(LET_LAT);
-
         if (d4[0] === d4[1] && d4[1] === d4[2] && d4[2] === d4[3]) {
           mult += 3.6; tags.push({ text: `ЧЕТЫРЕ ОДИНАКОВЫЕ (${d4})`, color: 'r-mythic' });
-        } else if (d4.startsWith('000')) {
-          mult += 2.6; tags.push({ text: `ТОП ДЕСЯТКА (${d4})`, color: 'r-legend' });
         }
         if (suf[0] === suf[1]) { mult += 1.5; tags.push({ text: `СЕРИЯ ${suf}`, color: 'r-epic' }); }
-        displayData = { country: 'UA', pref, num: d4, suf, label: `${pref} ${d4} ${suf}` };
+        displayData = { country: 'UA', pref, num: d4, suf, reg: '' };
 
       } else if (country === 'DXB') {
-        // В Дубае чем короче номер (1 или 2 цифры) — тем дороже!
         const code = pick(['A','B','D','AA','K','R','Z']);
         const r = Math.random();
         let dxbNum;
-        if (r < 0.04) {
-          dxbNum = String(Math.floor(Math.random() * 9) + 1); // 1 цифра — королевский!
-          mult += 7.5;
-          tags.push({ text: `КОРОЛЕВСКИЙ 1-ЗНАЧНЫЙ (${dxbNum})!`, color: 'r-mythic' });
-        } else if (r < 0.14) {
-          dxbNum = String(Math.floor(Math.random() * 89) + 10); // 2 цифры
-          mult += 4.2;
-          tags.push({ text: `ШЕЙХ 2-ЗНАЧНЫЙ (${dxbNum})`, color: 'r-legend' });
+        if (r < 0.05) {
+          dxbNum = String(Math.floor(Math.random() * 9) + 1);
+          mult += 7.5; tags.push({ text: `КОРОЛЕВСКИЙ 1-ЗНАЧНЫЙ (${dxbNum})!`, color: 'r-mythic' });
+        } else if (r < 0.15) {
+          dxbNum = String(Math.floor(Math.random() * 89) + 10);
+          mult += 4.2; tags.push({ text: `ШЕЙХ 2-ЗНАЧНЫЙ (${dxbNum})`, color: 'r-legend' });
         } else if (r < 0.35) {
           dxbNum = pick(['777','888','999','100','555']);
-          mult += 2.8;
-          tags.push({ text: `ДУБАЙ ТРИПЛ (${dxbNum})`, color: 'r-epic' });
+          mult += 2.8; tags.push({ text: `ДУБАЙ ТРИПЛ (${dxbNum})`, color: 'r-epic' });
         } else {
           dxbNum = String(Math.floor(Math.random() * 8999) + 1000);
           mult += 0.6;
         }
-        displayData = { country: 'DXB', code, num: dxbNum, label: `DUBAI ${code} ${dxbNum}` };
+        displayData = { country: 'DXB', code, num: dxbNum, reg: '' };
       }
 
       mult = Math.round(mult * 10) / 10;
@@ -1253,7 +1653,6 @@
       else if (mult >= 1.5) rarity = 'rare';
 
       if (tags.length === 0) tags.push({ text: `СТАНДАРТ ${country}`, color: 'r-common' });
-
       const basePrice = Math.round(400 * Math.pow(mult, 1.9));
 
       return {
@@ -1266,24 +1665,31 @@
       };
     }
 
-    function renderPlateHTML(p, isSmall = false) {
+    // Отрисовка таблички номера (с поддержкой анимации отдельных сегментов)
+    function renderPlateHTML(p, isSmall = false, animStage = 4) {
       if (!p) return '';
-      const glow = p.rarity === 'mythic' ? 'mythic-glow' : (p.rarity === 'legend' ? 'legend-glow' : '');
+      const glow = (animStage === 4 && p.rarity === 'mythic') ? 'mythic-glow' : ((animStage === 4 && p.rarity === 'legend') ? 'legend-glow' : '');
+      const rollClass = animStage < 4 ? 'rolling-active' : '';
       const sm = isSmall ? 'sm' : '';
       const c = p.country || 'RU';
 
+      const blur1 = animStage < 1 ? 'slot-blur' : '';
+      const blur2 = animStage < 2 ? 'slot-blur' : '';
+      const blur3 = animStage < 3 ? 'slot-blur' : '';
+      const blur4 = animStage < 4 ? 'slot-blur' : '';
+
       if (c === 'KZ') {
         return `
-          <div class="plate-base ${sm} ${glow}">
+          <div class="plate-base ${sm} ${glow} ${rollClass}">
             <div class="p-left-strip" style="background:#00afca; color:#fde047;">
               <span>☀️</span><span>KZ</span>
             </div>
             <div class="p-main">
-              <span class="p-num">${p.num}</span>
-              <span class="p-let">${p.series}</span>
+              <span class="p-num ${blur2}">${p.num}</span>
+              <span class="p-let ${blur3}">${p.series}</span>
             </div>
             <div class="p-reg-right">
-              <span class="p-reg-num">${p.reg}</span>
+              <span class="p-reg-num ${blur4}">${p.reg}</span>
               <span class="p-sub-row">KZ</span>
             </div>
           </div>
@@ -1292,13 +1698,13 @@
 
       if (c === 'BY') {
         return `
-          <div class="plate-base ${sm} ${glow}">
+          <div class="plate-base ${sm} ${glow} ${rollClass}">
             <div class="p-left-strip" style="background:linear-gradient(180deg,#dc2626 65%,#16a34a 35%); color:#fff;">
               <span>🇧🇾</span><span>BY</span>
             </div>
             <div class="p-main">
-              <span class="p-num">${p.num}</span>
-              <span class="p-let">${p.series}-${p.reg}</span>
+              <span class="p-num ${blur2}">${p.num}</span>
+              <span class="p-let ${blur3}">${p.series}-<span class="${blur4}">${p.reg}</span></span>
             </div>
           </div>
         `;
@@ -1306,14 +1712,14 @@
 
       if (c === 'UA') {
         return `
-          <div class="plate-base ${sm} ${glow}">
+          <div class="plate-base ${sm} ${glow} ${rollClass}">
             <div class="p-left-strip" style="background:linear-gradient(180deg,#2563eb 50%,#facc15 50%); color:#fff;">
               <span>🇺🇦</span><span style="color:#0f172a;">UA</span>
             </div>
             <div class="p-main">
-              <span class="p-let">${p.pref}</span>
-              <span class="p-num">${p.num}</span>
-              <span class="p-let">${p.suf}</span>
+              <span class="p-let ${blur1}">${p.pref}</span>
+              <span class="p-num ${blur2}">${p.num}</span>
+              <span class="p-let ${blur3}">${p.suf}</span>
             </div>
           </div>
         `;
@@ -1321,36 +1727,112 @@
 
       if (c === 'DXB') {
         return `
-          <div class="plate-base plate-dubai ${sm} ${glow}">
+          <div class="plate-base plate-dubai ${sm} ${glow} ${rollClass}">
             <div class="dubai-left">
               <span class="dubai-title">DUBAI</span>
-              <span class="dubai-code">${p.code}</span>
+              <span class="dubai-code ${blur1}">${p.code}</span>
             </div>
             <div class="p-main">
-              <span class="p-num" style="letter-spacing:3px;">${p.num}</span>
+              <span class="p-num ${blur2}" style="letter-spacing:3px;">${p.num}</span>
             </div>
           </div>
         `;
       }
 
-      // Default RU
+      // RU (Сначала 1-я буква -> Цифры -> 2 буквы -> Регион)
       return `
-        <div class="plate-base ${sm} ${glow}">
+        <div class="plate-base ${sm} ${glow} ${rollClass}">
           <div class="p-main">
-            <span class="p-let">${p.l1}</span>
-            <span class="p-num">${p.num}</span>
-            <span class="p-let">${p.l2}${p.l3}</span>
+            <span class="p-let ${blur1}">${p.l1}</span>
+            <span class="p-num ${blur2}">${p.num}</span>
+            <span class="p-let ${blur3}">${p.l2}${p.l3}</span>
           </div>
           <div class="p-reg-right">
-            <span class="p-reg-num">${p.reg}</span>
+            <span class="p-reg-num ${blur4}">${p.reg}</span>
             <div class="p-sub-row"><span>RUS</span><span>🇷🇺</span></div>
           </div>
         </div>
       `;
     }
 
+    // Пошаговая слот-прокрутка номера (буква -> цифры -> буквы -> регион)
+    function animatePlateSlotRoll(finalPlate, onDone) {
+      isRollingPlate = true;
+      const mount = document.getElementById('gen-plate-mount');
+      const tagsEl = document.getElementById('gen-tags');
+      const priceEl = document.getElementById('gen-price');
+      const multEl = document.getElementById('gen-mult');
+      const rBadge = document.getElementById('gen-rarity-badge');
+      const btnRoll = document.getElementById('btn-roll');
+      const btnKeep = document.getElementById('btn-keep');
+      const btnSell = document.getElementById('btn-sell-instant');
+
+      btnRoll.disabled = true;
+      btnKeep.disabled = true;
+      btnSell.disabled = true;
+
+      rBadge.innerHTML = `<span class="r-badge r-rare">🎰 Выпуск госномера...</span>`;
+      tagsEl.innerHTML = `<span class="combo-tag r-common">Формируем серию и регион...</span>`;
+      priceEl.textContent = '...';
+      multEl.textContent = 'x?';
+
+      const startTime = performance.now();
+      const stageTimes = [420, 920, 1420, 1900]; // Тайминги остановки каждого сегмента
+      let lastStage = 0;
+
+      const interval = setInterval(() => {
+        const elapsed = performance.now() - startTime;
+        let stage = 0;
+        if (elapsed >= stageTimes[0]) stage = 1; // зафиксирована 1-я буква
+        if (elapsed >= stageTimes[1]) stage = 2; // зафиксированы цифры
+        if (elapsed >= stageTimes[2]) stage = 3; // зафиксированы 2-я и 3-я буквы
+        if (elapsed >= stageTimes[3]) stage = 4; // зафиксирован регион!
+
+        if (stage > lastStage) {
+          lastStage = stage;
+          haptic(stage === 4 ? 'heavy' : 'light');
+        }
+
+        if (stage === 4) {
+          clearInterval(interval);
+          isRollingPlate = false;
+          btnRoll.disabled = false;
+          onDone();
+          return;
+        }
+
+        // Генерируем временные бегущие символы для еще не остановившихся слотов
+        const temp = { ...finalPlate };
+        const c = finalPlate.country || 'RU';
+
+        if (c === 'RU') {
+          if (stage < 1) temp.l1 = pick(LET_RU);
+          if (stage < 2) temp.num = String(Math.floor(Math.random() * 900) + 100);
+          if (stage < 3) { temp.l2 = pick(LET_RU); temp.l3 = pick(LET_RU); }
+          if (stage < 4) temp.reg = pick(['77','99','97','78','95','05','23']);
+        } else if (c === 'KZ') {
+          if (stage < 2) temp.num = String(Math.floor(Math.random() * 900) + 100);
+          if (stage < 3) temp.series = pick(LET_LAT) + pick(LET_LAT) + pick(LET_LAT);
+          if (stage < 4) temp.reg = pick(['01','02','05','07','13']);
+        } else if (c === 'BY') {
+          if (stage < 2) temp.num = String(Math.floor(Math.random() * 9000) + 1000);
+          if (stage < 3) temp.series = pick(LET_LAT) + pick(LET_LAT);
+          if (stage < 4) temp.reg = pick(['1','2','5','6','7']);
+        } else if (c === 'UA') {
+          if (stage < 1) temp.pref = pick(['AA','KA','BC','BH','AE']);
+          if (stage < 2) temp.num = String(Math.floor(Math.random() * 9000) + 1000);
+          if (stage < 3) temp.suf = pick(LET_LAT) + pick(LET_LAT);
+        } else if (c === 'DXB') {
+          if (stage < 1) temp.code = pick(['A','B','D','K','R','Z']);
+          if (stage < 2) temp.num = String(Math.floor(Math.random() * 999) + 1);
+        }
+
+        mount.innerHTML = renderPlateHTML(temp, false, stage);
+      }, 55);
+    }
+
     /* ==========================================
-       6. Б/У АВТОРЫНОК И ПЕРЕКУПСТВО
+       7. Б/У АВТОРЫНОК
     ========================================== */
     const SELLER_STORIES = [
       '«Дедушка ездил только летом на дачу, мамой клянусь!»',
@@ -1364,10 +1846,8 @@
       const listings = [];
       for (let i = 0; i < 3; i++) {
         const tpl = pick(ALL_CARS_POOL.slice(0, 10));
-        const condition = Math.floor(Math.random() * 62) + 32; // от 32% до 93%
-        // Реальная стоимость пропорциональна состоянию
+        const condition = Math.floor(Math.random() * 62) + 32;
         const realVal = Math.round(tpl.price * (0.4 + (condition / 100) * 0.6));
-        // Продавец ставит цену с наценкой или скидкой
         const askPrice = Math.round(realVal * (0.85 + Math.random() * 0.35));
 
         listings.push({
@@ -1426,8 +1906,7 @@
 
             ${item.inspected ? `
               <div style="background:rgba(59,130,246,0.12); border:1px solid rgba(59,130,246,0.3); padding:8px; border-radius:10px; font-size:11px; margin-top:4px;">
-                🔍 <b>Отчет Автотеки:</b> Рыночная цена в идеале (100%): <b style="color:var(--gold)">${fmt(item.basePrice)} ₽</b>.
-                После ремонта можно выгодно перепродать или оставить в автопарке!
+                🔍 <b>Отчет Автотеки:</b> Цена в идеале (100%): <b style="color:var(--gold)">${fmt(item.basePrice)} ₽</b>.
               </div>
             ` : ''}
 
@@ -1448,7 +1927,7 @@
     }
 
     /* ==========================================
-       7. РАСЧЕТЫ ЭКОНОМИКИ И ТЮНИНГА АВТО
+       8. ЭКОНОМИКА, ПОДИУМ И ТЮНИНГ
     ========================================== */
     function getPlateByUid(plateUid) {
       if (!plateUid) return null;
@@ -1464,14 +1943,15 @@
       const stageMult = 1 + ((car.stage || 1) - 1) * 0.45;
       const plate = getPlateByUid(car.plateUid);
       const plateMult = plate ? plate.mult : 1;
-      // Визуальный опер-тюнинг тоже добавляет бонус к респекту и доходу!
       let styleBonus = 1;
       if (car.tint) styleBonus += 0.12;
       if (car.fso) styleBonus += 0.25;
       if (car.neon) styleBonus += 0.15;
       if (car.stance) styleBonus += 0.15;
+      // Бонус +20% если машина стоит на Главном Подиуме!
+      const podiumMult = (state.podiumCarUid === car.uid) ? 1.2 : 1.0;
 
-      return Math.round(car.baseIncome * condFactor * stageMult * plateMult * styleBonus);
+      return Math.round(car.baseIncome * condFactor * stageMult * plateMult * styleBonus * podiumMult);
     }
 
     function calcCarPower(car) {
@@ -1490,8 +1970,6 @@
       if (car.fso) modsAdd += 3500;
       if (car.neon) modsAdd += 2000;
       if (car.stance) modsAdd += 2500;
-
-      // Если машина отреставрирована до 100%, перекуп продает её за 92% полной рыночной стоимости!
       return Math.round((car.basePrice * condFactor * 0.92) + stageAdd + modsAdd);
     }
 
@@ -1505,9 +1983,6 @@
       return state.cars.reduce((sum, c) => sum + calcCarIncome(c), 0);
     }
 
-    /* ==========================================
-       8. VIP-ЗАКАЗЫ ЧЕРНОГО БРОКЕРА
-    ========================================== */
     function ensureVipOrder() {
       if (state.vipOrder) return;
       const countries = ['RU', 'KZ', 'BY', 'UA', 'DXB'];
@@ -1522,22 +1997,18 @@
       saveState();
     }
 
-    function renderVipOrder() {
-      ensureVipOrder();
-      document.getElementById('vip-order-desc').textContent = state.vipOrder.desc;
-    }
-
     /* ==========================================
-       9. РЕНДЕР ВСЕХ ВКЛАДОК
+       9. РЕНДЕРИНГ ИНТЕРФЕЙСА И 3D ПОДИУМА
     ========================================== */
     function updateHeaderUI() {
       document.getElementById('ui-balance').textContent = `${fmt(state.balance)} ₽`;
-      document.getElementById('ui-income').textContent = `⚡ +${fmt(calcTotalIncome())} ₽/сек`;
+      document.getElementById('ui-income').textContent = `⚡ +${fmt(calcTotalIncome())} ₽/с`;
       document.getElementById('nav-plates-cnt').textContent = state.plates.length;
       document.getElementById('nav-cars-cnt').textContent = state.cars.length;
     }
 
     function renderGeneratorPreview() {
+      if (isRollingPlate) return;
       const mount = document.getElementById('gen-plate-mount');
       const tagsEl = document.getElementById('gen-tags');
       const priceEl = document.getElementById('gen-price');
@@ -1571,11 +2042,28 @@
 
     function renderGarageList() {
       const box = document.getElementById('garage-list');
+      const podiumBox = document.getElementById('garage-podium-box');
       document.getElementById('cars-count-label').textContent = `${state.cars.length} авто`;
 
       if (state.cars.length === 0) {
+        podiumBox.style.display = 'none';
         box.innerHTML = `<div class="empty-state">В гараже пока пусто.<br>Купи машину на Б/У Рынке под восстановление или открой Контейнер!</div>`;
         return;
+      }
+
+      // Автоматически ставим первую машину на 3D-подиум, если не выбрана
+      if (!state.podiumCarUid || !state.cars.some(c => c.uid === state.podiumCarUid)) {
+        state.podiumCarUid = state.cars[0].uid;
+      }
+
+      const podiumCar = state.cars.find(c => c.uid === state.podiumCarUid);
+      if (podiumCar) {
+        podiumBox.style.display = 'block';
+        document.getElementById('podium-car-name').textContent = podiumCar.name;
+        const pPlate = getPlateByUid(podiumCar.plateUid);
+        document.getElementById('podium-plate-Slot').innerHTML = pPlate ? renderPlateHTML(pPlate, true) : '';
+        document.getElementById('podium-car-stats').textContent = `+${fmt(calcCarIncome(podiumCar))} ₽/с • ${calcCarPower(podiumCar)} л.с.`;
+        setTimeout(() => mount3DPodium('podium-3d-mount', podiumCar), 20);
       }
 
       box.innerHTML = state.cars.map(car => {
@@ -1588,18 +2076,19 @@
         const stageCost = Math.round(car.basePrice * 0.55 * (car.stage || 1));
         const cond = car.condition || 100;
         const condColor = cond >= 80 ? 'var(--green)' : (cond >= 55 ? 'var(--gold)' : 'var(--red)');
+        const isOnPodium = state.podiumCarUid === car.uid;
 
         return `
-          <div class="item-card">
+          <div class="item-card" style="${isOnPodium ? 'border-color: rgba(245, 158, 11, 0.5);' : ''}">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
               <div style="display:flex; gap:6px; align-items:center;">
                 <span class="r-badge ${rInfo.class}">${rInfo.name}</span>
                 <span class="r-badge r-common">Stage ${car.stage || 1}/3</span>
+                ${isOnPodium ? `<span class="r-badge r-legend">🏆 НА ПОДИУМЕ</span>` : ''}
               </div>
               <span style="font-size:12px; font-weight:800; color:${condColor};">Кузов: ${cond}%</span>
             </div>
 
-            <!-- Векторная SVG машина со всеми установленными обвесами -->
             <div class="svg-car-stage">
               ${renderCarSVG(car)}
             </div>
@@ -1609,7 +2098,6 @@
               <div style="font-size:13px; font-weight:800; color:var(--green);">+${fmt(income)} ₽/с • <span style="color:var(--gold)">${power} л.с.</span></div>
             </div>
 
-            <!-- Плашки установленного стайлинга -->
             <div style="display:flex; flex-wrap:wrap; gap:5px; margin-top:6px;">
               <span class="mod-pill ${car.tint ? 'active' : ''}">🕶️ Бункер</span>
               <span class="mod-pill ${car.fso ? 'active' : ''}">🚨 ФСО Вспышки</span>
@@ -1617,7 +2105,6 @@
               <span class="mod-pill ${car.neon ? 'active' : ''}">🟣 Неон</span>
             </div>
 
-            <!-- Слот под Госномер -->
             <div style="background: rgba(0,0,0,0.3); padding: 8px 10px; border-radius: 12px; display:flex; align-items:center; justify-content:space-between; gap:8px; margin-top:8px;">
               ${plate
                 ? `<div>${renderPlateHTML(plate, true)}</div>
@@ -1627,7 +2114,6 @@
               }
             </div>
 
-            <!-- Кнопки Ремонта (для Б/У), Стайлинга, Stage и Продажи -->
             <div class="btn-row">
               ${cond < 100 ? `
                 <button class="btn btn-green btn-sm" style="flex:1 1 100%;" data-car-act="repair" data-uid="${car.uid}">
@@ -1635,8 +2121,14 @@
                 </button>
               ` : ''}
 
+              ${!isOnPodium ? `
+                <button class="btn btn-ghost btn-sm" data-car-act="set-podium" data-uid="${car.uid}">
+                  🏆 На 3D-подиум
+                </button>
+              ` : ''}
+
               <button class="btn btn-purple btn-sm" data-car-act="styling" data-uid="${car.uid}">
-                ✨ Опер-Стайлинг
+                ✨ 3D Стайлинг
               </button>
 
               ${(car.stage || 1) < 3
@@ -1654,7 +2146,8 @@
     }
 
     function renderPlatesList() {
-      renderVipOrder();
+      ensureVipOrder();
+      document.getElementById('vip-order-desc').textContent = state.vipOrder.desc;
       const box = document.getElementById('plates-list');
       document.getElementById('plates-count-label').textContent = `${state.plates.length} шт.`;
 
@@ -1706,7 +2199,7 @@
     }
 
     /* ==========================================
-       10. ГОНКИ С АНИМАЦИЕЙ НА ТРАССЕ
+       10. ГОНКИ И АДМИН-МЕНЮ (ПАРОЛЬ admin777)
     ========================================== */
     let oppCar = { name: 'Camry 3.5 Опер', body: 'sedan', color: '#ef4444', power: 210, fso: true };
     let isRacing = false;
@@ -1766,11 +2259,117 @@
       renderRaceTab();
     }
 
+    // ОТКРЫТИЕ АДМИН-ПАНЕЛИ ПОД ПАРОЛЕМ admin777
+    const admCarSelect = document.getElementById('adm-car-select');
+    admCarSelect.innerHTML = ALL_CARS_POOL.map((c, idx) => `<option value="${idx}">${c.name} (${c.power} л.с.)</option>`).join('');
+
+    document.getElementById('btn-open-admin').addEventListener('click', () => {
+      if (!adminUnlocked) {
+        const pwd = prompt('🔒 Введите пароль администратора:');
+        if (pwd === null) return;
+        if (pwd.trim() !== 'admin777') {
+          showToast('❌ Неверный пароль администратора!');
+          return;
+        }
+        adminUnlocked = true;
+        showToast('🔓 Доступ открыт!');
+      }
+      document.getElementById('modal-admin').classList.add('open');
+    });
+
+    document.getElementById('btn-close-admin').addEventListener('click', () => {
+      document.getElementById('modal-admin').classList.remove('open');
+    });
+
+    document.getElementById('btn-adm-add-money').addEventListener('click', () => {
+      const val = Number(document.getElementById('adm-money-input').value) || 0;
+      state.balance += val;
+      saveState();
+      updateHeaderUI();
+      showToast(`👑 Начислено +${fmt(val)} ₽`);
+    });
+
+    document.querySelectorAll('button[data-quick-money]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const add = Number(btn.dataset.quickMoney);
+        state.balance += add;
+        saveState();
+        updateHeaderUI();
+        showToast(`👑 Начислено +${fmt(add)} ₽`);
+      });
+    });
+
+    document.getElementById('btn-adm-spawn-plate').addEventListener('click', () => {
+      const country = document.getElementById('adm-p-country').value;
+      const l1 = (document.getElementById('adm-p-l1').value || 'А').toUpperCase();
+      const num = (document.getElementById('adm-p-num').value || '777').toUpperCase();
+      const l23 = (document.getElementById('adm-p-l23').value || 'МР').toUpperCase();
+      const reg = (document.getElementById('adm-p-reg').value || '77').toUpperCase();
+      const mult = Math.max(1, Number(document.getElementById('adm-p-mult').value) || 10);
+
+      let rarity = 'common';
+      if (mult >= 6) rarity = 'mythic';
+      else if (mult >= 3.8) rarity = 'legend';
+      else if (mult >= 2.2) rarity = 'epic';
+      else if (mult >= 1.5) rarity = 'rare';
+
+      const price = Math.round(450 * Math.pow(mult, 1.9));
+
+      const customPlate = {
+        uid: makeUid('plate'),
+        country,
+        l1: l1[0] || 'А',
+        num,
+        l2: l23[0] || 'М',
+        l3: l23[1] || 'Р',
+        series: l1 + l23,
+        pref: l1,
+        suf: l23,
+        code: l1,
+        reg,
+        rarity,
+        mult,
+        price,
+        tags: [{ text: '👑 ADMIN ЭКСКЛЮЗИВ', color: 'r-mythic' }]
+      };
+
+      state.plates.unshift(customPlate);
+      saveState();
+      refreshAllUI();
+      showToast('👑 Кастомный госномер выдан на склад!');
+    });
+
+    document.getElementById('btn-adm-spawn-car').addEventListener('click', () => {
+      const idx = Number(admCarSelect.value) || 0;
+      const tpl = ALL_CARS_POOL[idx];
+      if (!tpl) return;
+      state.cars.unshift({
+        uid: makeUid('car'),
+        name: tpl.name,
+        body: tpl.body,
+        color: tpl.color,
+        rarity: tpl.rarity,
+        basePrice: tpl.price,
+        baseIncome: tpl.income,
+        power: tpl.power,
+        condition: 100,
+        stage: 1,
+        plateUid: null,
+        tint: false,
+        fso: false,
+        stance: false,
+        neon: null
+      });
+      saveState();
+      refreshAllUI();
+      showToast(`👑 ${tpl.name} доставлен в гараж!`);
+    });
+
     /* ==========================================
-       11. ОБРАБОТЧИКИ СОБЫТИЙ
+       11. ОСТАЛЬНЫЕ СОБЫТИЯ ИГРЫ
     ========================================== */
-    // Переключение страны в МРЭО
     document.getElementById('country-tabs').addEventListener('click', (e) => {
+      if (isRollingPlate) return;
       const btn = e.target.closest('.country-pill');
       if (!btn) return;
       state.selectedCountry = btn.dataset.country;
@@ -1783,23 +2382,27 @@
       haptic('light');
     });
 
-    // Выбить номер
+    // Выбить номер с пошаговой анимацией!
     document.getElementById('btn-roll').addEventListener('click', () => {
+      if (isRollingPlate) return;
       const cost = state.selectedCountry === 'DXB' ? 2500 : 500;
       if (state.balance < cost) {
         showToast('❌ Не хватает средств на выпуск госномера!');
         return;
       }
       state.balance -= cost;
-      state.pendingPlate = generatePlateObject(state.selectedCountry);
-      haptic('medium');
+      const rolledPlate = generatePlateObject(state.selectedCountry);
+      state.pendingPlate = rolledPlate;
       saveState();
       updateHeaderUI();
-      renderGeneratorPreview();
+
+      animatePlateSlotRoll(rolledPlate, () => {
+        renderGeneratorPreview();
+      });
     });
 
     document.getElementById('btn-keep').addEventListener('click', () => {
-      if (!state.pendingPlate) return;
+      if (!state.pendingPlate || isRollingPlate) return;
       state.plates.unshift(state.pendingPlate);
       state.pendingPlate = null;
       showToast('✅ Номер сохранен на склад!');
@@ -1808,7 +2411,7 @@
     });
 
     document.getElementById('btn-sell-instant').addEventListener('click', () => {
-      if (!state.pendingPlate) return;
+      if (!state.pendingPlate || isRollingPlate) return;
       const g = state.pendingPlate.price;
       state.balance += g;
       state.pendingPlate = null;
@@ -1824,7 +2427,7 @@
       saveState();
     });
 
-    // Действия на Б/У Авторынке
+    // Б/У Рынок
     document.getElementById('btn-refresh-used').addEventListener('click', () => {
       if (state.balance < 200) { showToast('❌ Нужно 200 ₽ на обновление базы'); return; }
       state.balance -= 200;
@@ -1842,10 +2445,10 @@
       if (!item) return;
 
       if (act === 'inspect') {
-        if (state.balance < 300) { showToast('❌ Нужно 300 ₽ на проверку толщиномером!'); return; }
+        if (state.balance < 300) { showToast('❌ Нужно 300 ₽ на толщиномер!'); return; }
         state.balance -= 300;
         item.inspected = true;
-        showToast('🔍 Отчет Автотеки открыт! Шанс торга повышен');
+        showToast('🔍 Отчет Автотеки открыт!');
         saveState();
         refreshAllUI();
       } else if (act === 'bargain') {
@@ -1855,15 +2458,15 @@
           const discount = Math.round(item.askPrice * (0.12 + Math.random() * 0.14));
           item.askPrice -= discount;
           haptic('medium');
-          showToast(`🤝 Продавец уступил -${fmt(discount)} ₽!`);
+          showToast(`🤝 Продавец скинул -${fmt(discount)} ₽!`);
         } else {
-          showToast('😠 Продавец отказался скидывать цену');
+          showToast('😠 Продавец отказался уступать');
         }
         saveState();
         refreshAllUI();
       } else if (act === 'buy') {
         if (state.balance < item.askPrice) {
-          showToast('❌ Не хватает денег на покупку этого авто!');
+          showToast('❌ Не хватает денег на покупку авто!');
           return;
         }
         state.balance -= item.askPrice;
@@ -1886,13 +2489,13 @@
         });
         state.usedListings = state.usedListings.filter(x => x.uid !== uid);
         haptic('heavy');
-        showToast('🎉 Машина куплена и доставлена в Гараж!');
+        showToast('🎉 Машина доставлена в Гараж!');
         saveState();
         refreshAllUI();
       }
     });
 
-    // Управление Гаражом и Опер-Стайлингом
+    // Гараж и 3D Стайлинг
     document.getElementById('garage-list').addEventListener('click', (e) => {
       const btn = e.target.closest('button[data-car-act]');
       if (!btn) return;
@@ -1901,20 +2504,26 @@
       const car = state.cars.find(c => c.uid === uid);
       if (!car) return;
 
-      if (act === 'repair') {
+      if (act === 'set-podium') {
+        state.podiumCarUid = car.uid;
+        haptic('medium');
+        showToast(`🏆 ${car.name} выставлен на Главный 3D-Подиум!`);
+        saveState();
+        refreshAllUI();
+      } else if (act === 'repair') {
         const cost = calcRepairCost(car);
-        if (state.balance < cost) { showToast('❌ Не хватает денег на реставрацию кузова!'); return; }
+        if (state.balance < cost) { showToast('❌ Не хватает денег на реставрацию!'); return; }
         state.balance -= cost;
         car.condition = 100;
         haptic('medium');
-        showToast('✨ Кузов отполирован до 100%! Цена машины выросла');
+        showToast('✨ Кузов отполирован до 100%!');
         saveState();
         refreshAllUI();
       } else if (act === 'styling') {
         openStylingModal(car.uid);
       } else if (act === 'stage') {
         const cost = Math.round(car.basePrice * 0.55 * (car.stage || 1));
-        if (state.balance < cost) { showToast('❌ Не хватает денег на чип-тюнинг Stage!'); return; }
+        if (state.balance < cost) { showToast('❌ Не хватает денег на Stage!'); return; }
         state.balance -= cost;
         car.stage = (car.stage || 1) + 1;
         showToast(`🚀 Чип-тюнинг Stage ${car.stage} установлен!`);
@@ -1922,13 +2531,13 @@
         refreshAllUI();
       } else if (act === 'unequip-plate') {
         car.plateUid = null;
-        showToast('🔩 Номер снят и лежит на складе');
+        showToast('🔩 Номер снят на склад');
         saveState();
         refreshAllUI();
       } else if (act === 'pick-plate') {
         openPlatePickerModal(car.uid);
       } else if (act === 'sell') {
-        car.plateUid = null; // Номер сохраняется на складе без дюпов
+        car.plateUid = null;
         const val = calcCarSellPrice(car);
         state.cars = state.cars.filter(c => c.uid !== uid);
         state.balance += val;
@@ -1938,14 +2547,12 @@
       }
     });
 
-    // Модалка Опер-Стайлинга
     function openStylingModal(carUid) {
       activeCarUidForStyling = carUid;
       const car = state.cars.find(c => c.uid === carUid);
       if (!car) return;
 
-      document.getElementById('styling-car-title').textContent = `Стайлинг: ${car.name}`;
-      document.getElementById('styling-preview-stage').innerHTML = renderCarSVG(car);
+      document.getElementById('styling-car-title').textContent = `3D Стайлинг: ${car.name}`;
 
       const colors = ['#111827', '#dc2626', '#2563eb', '#f59e0b', '#10b981', '#a855f7', '#f8fafc'];
       const neons = [
@@ -1998,6 +2605,7 @@
       `;
 
       document.getElementById('modal-styling').classList.add('open');
+      setTimeout(() => mount3DPodium('styling-3d-mount', car), 30);
     }
 
     document.getElementById('styling-options-box').addEventListener('click', (e) => {
@@ -2046,7 +2654,7 @@
       document.getElementById('modal-styling').classList.remove('open');
     });
 
-    // Склад номеров и VIP заказ
+    // Склад номеров
     document.getElementById('plates-list').addEventListener('click', (e) => {
       const btn = e.target.closest('button[data-plate-act]');
       if (!btn) return;
@@ -2080,7 +2688,7 @@
       );
 
       if (candidateIdx === -1) {
-        showToast(`❌ На складе нет свободного номера [${ord.country}] с множителем от x${ord.minMult}!`);
+        showToast(`❌ Нет свободного номера [${ord.country}] с множителем от x${ord.minMult}!`);
         return;
       }
 
@@ -2090,12 +2698,11 @@
       state.balance += reward;
       state.vipOrder = null;
       haptic('heavy');
-      showToast(`🕴️ VIP-Контракт выполнен! Получено +${fmt(reward)} ₽`);
+      showToast(`🕴️ VIP-Контракт выполнен! +${fmt(reward)} ₽`);
       saveState();
       refreshAllUI();
     });
 
-    // Установка номера на авто
     function openPlatePickerModal(carUid) {
       activeCarUidForModal = carUid;
       const modal = document.getElementById('modal-select-plate');
@@ -2141,7 +2748,7 @@
     });
 
     /* ==========================================
-       12. КОНТЕЙНЕРЫ С SVG МАШИНАМИ В РУЛЕТКЕ
+       12. РУЛЕТКА КОНТЕЙНЕРОВ
     ========================================== */
     let isSpinning = false;
 
@@ -2204,7 +2811,7 @@
       void track.offsetWidth;
 
       const vw = track.parentElement.clientWidth;
-      const itemW = 130; // 120px + 10px margin
+      const itemW = 130;
       const jitter = Math.floor(Math.random() * 44) - 22;
       const offset = (WIN_IDX * itemW) + (itemW / 2) - (vw / 2) + jitter;
 
@@ -2250,7 +2857,7 @@
     });
 
     /* ==========================================
-       13. ЗАПУСК АНИМИРОВАННОЙ ДРАГ-ГОНКИ
+       13. ДРАГ-РЕЙСИНГ, ПРОМОКОДЫ И НАВИГАЦИЯ
     ========================================== */
     document.getElementById('btn-start-race').addEventListener('click', () => {
       if (isRacing) return;
@@ -2301,7 +2908,6 @@
       }, 2350);
     });
 
-    // Промокоды и сброс
     document.getElementById('btn-promo').addEventListener('click', () => {
       const code = prompt('Введи бонус-код (доступны: OPER или DUBAI):');
       if (!code) return;
@@ -2329,18 +2935,19 @@
       }
     });
 
-    // Навигация
     document.querySelectorAll('.nav-btn').forEach(btn => {
       btn.addEventListener('click', () => {
         document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
         document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
         btn.classList.add('active');
         document.getElementById(btn.dataset.tab).classList.add('active');
+        if (btn.dataset.tab === 'page-garage') {
+          renderGarageList();
+        }
         haptic('light');
       });
     });
 
-    // Пассивный доход
     setInterval(() => {
       const inc = calcTotalIncome();
       if (inc > 0) {
@@ -2350,10 +2957,10 @@
       }
     }, 1000);
 
-    // Инициализация
+    // Первый старт
     renderCasesGrid();
     rollOpponent();
     refreshAllUI();
   </script>
 </body>
-      </html>
+</html>
